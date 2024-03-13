@@ -52,7 +52,7 @@ function SignIn() {
             setEmailError("Email is required");
             return false;
         }
-        let pattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        let pattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
         if (!email.match(pattern)) {
             setEmailError("Invalid email");
             return false;
