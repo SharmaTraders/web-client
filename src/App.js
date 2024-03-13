@@ -1,23 +1,38 @@
-import logo from './logo.svg';
 import './App.css';
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import {createHashRouter, RouterProvider} from "react-router-dom";
+import Root from "./ui/pages/Root";
+import SignIn from "./ui/pages/Login/SignIn";
+
+
+const router = createHashRouter([
+    {
+        path: "/",
+        element: <Root/>,
+        children : [
+
+        ]
+    },
+    {
+        path: "/login",
+        element: <SignIn/>
+    }
+])
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+        pauseOnHover/>
+        <RouterProvider router={router}/>
     </div>
   );
 }
