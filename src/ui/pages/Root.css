@@ -1,0 +1,24 @@
+.main-container{
+    background-color: red;
+    height: 100vh;
+    width: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.sideBarNavigationContainer {
+    background-color: yellow;
+    width: 0;
+    flex-grow: 0;
+    transition: width 0.3s ease-in;
+}
+
+.childrenContentContainer {
+    height: 100vh;
+    background-color: aliceblue;
+    flex-grow: 1;
+}
+
+.sideBarNavigationContainer.open {
+    width: 150px;
+}

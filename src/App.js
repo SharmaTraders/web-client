@@ -2,17 +2,25 @@ import './App.css';
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {createHashRouter, RouterProvider} from "react-router-dom";
-import Root from "./ui/pages/Root";
-import SignIn from "./ui/pages/Login/SignIn";
+import {HomePage} from "./ui/pages/HomePage";
+import {Parties} from "./ui/pages/Parties";
+import {Navigation} from "./ui/components/Navigation/Navigation";import SignIn from "./ui/pages/Login/SignIn";
 
 
 const router = createHashRouter([
     {
         path: "/",
-        element: <Root/>,
-        children : [
-
-        ]
+        element: <Navigation/>,
+        children: [
+            {
+                path: "/",
+                element: <HomePage/>
+            },
+            {
+                path: "/parties",
+                element: <Parties/>
+            },
+        ],
     },
     {
         path: "/signin",
