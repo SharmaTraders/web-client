@@ -97,24 +97,28 @@ function SignIn() {
     }
 
     function handleError(error) {
-        if (error.data) {
-            toast.error(error.data, {
+        if (error.data){
+            let problemDetails = error.data;
+            let errorMessage = problemDetails.detail;
+            let problemType = problemDetails.type;
+
+            toast.error(errorMessage, {
                 toastId: "login",
-                autoClose: false
+                autoClose: 7000
             });
 
-            const searchString = error.data;
-
-            if (/email/i.test(searchString)) {
-                setEmailError(error.data);
-            } else if (/password/i.test(searchString)) {
-                setPasswordError(error.data);
+            if (problemType.toLowerCase() === "email") {
+                setEmailError(errorMessage);
+            } else if (problemType.toLowerCase() === "password") {
+                setPasswordError(errorMessage);
             }
             return;
+
         }
+
         // This is when the server is down or there is a network error
         if (error.error) {
-            toast.error(error.error, {
+            toast.error("Cannot connect to server, Please check your internet or make sure that the server is running", {
                 toastId: "login",
                 autoClose: 7000
             })
