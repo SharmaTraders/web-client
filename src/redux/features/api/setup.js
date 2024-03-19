@@ -1,10 +1,9 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 
-// Some random placeholder for now..
-const remoteApi = "https://jsonplaceholder.typicode.com";
+const apiAddress = "http://localhost:8080/";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: remoteApi,
+    baseUrl: apiAddress,
     credentials: 'include',
     prepareHeaders: (headers, {getState}) => {
         const token = getState().auth.jwtToken;
