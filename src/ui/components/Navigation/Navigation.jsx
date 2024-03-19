@@ -15,6 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { mainListItems, secondaryListItems } from './NavigationItems';
 import {Outlet} from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import {Avatar} from "@mui/material";
 
 
 const drawerWidth = 240;
@@ -80,6 +81,8 @@ function Navigation() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const location = useLocation();
+    const matches = useMediaQuery('(min-width:560px)');
+
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -100,9 +103,22 @@ function Navigation() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" noWrap component="div">
-                            {getTitle(location.pathname)}
-                        </Typography>
+                        {!open || matches ? (
+                            <Typography variant="h6" noWrap component="div">
+                                {getTitle(location.pathname)}
+                            </Typography>
+                        ) : null}
+
+                        {/* Spacer to push the following content to the right */}
+                        <Box sx={{ flexGrow: 1 }} />
+
+                        {/* User Profile Section */}
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar src="https://images.unsplash.com/photo-1526800544336-d04f0cbfd700?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" sx={{ marginRight: 2 }} />
+                            <Typography variant="subtitle1" noWrap>
+                                Sharma Traders
+                            </Typography>
+                        </Box>
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
