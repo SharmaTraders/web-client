@@ -1,14 +1,14 @@
 import './App.css';
 import {RouterProvider, createHashRouter} from "react-router-dom";
 
-import Root from "./ui/pages/Root";
 import {HomePage} from "./ui/pages/HomePage";
 import {Parties} from "./ui/pages/Parties";
+import {Navigation} from "./ui/components/Navigation/Navigation";
 
 const router = createHashRouter([
     {
         path: "/",
-        element: <Root/>,
+        element: <Navigation/>,
         children: [
             {
                 path: "/",
