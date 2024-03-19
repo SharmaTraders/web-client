@@ -6,10 +6,10 @@ import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import MoneyOffIcon from '@mui/icons-material/MoneyOff';
 export const mainListItems = (
     <React.Fragment>
         <ListItemButton>
@@ -20,27 +20,33 @@ export const mainListItems = (
         </ListItemButton>
         <ListItemButton>
             <ListItemIcon>
-                <ShoppingCartIcon />
-            </ListItemIcon>
-            <ListItemText primary="Orders" />
-        </ListItemButton>
-        <ListItemButton>
-            <ListItemIcon>
                 <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Customers" />
+            <ListItemText primary="Parties" />
         </ListItemButton>
         <ListItemButton>
             <ListItemIcon>
-                <BarChartIcon />
+                <ShoppingCartIcon />
             </ListItemIcon>
-            <ListItemText primary="Reports" />
+            <ListItemText primary="Purchase" />
         </ListItemButton>
         <ListItemButton>
             <ListItemIcon>
-                <LayersIcon />
+                <ReceiptIcon />
             </ListItemIcon>
-            <ListItemText primary="Integrations" />
+            <ListItemText primary="Sales" />
+        </ListItemButton>
+        <ListItemButton>
+            <ListItemIcon>
+                <MoneyOffIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Expenses" />
+        </ListItemButton>
+        <ListItemButton>
+            <ListItemIcon>
+                <CurrencyRupeeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Income" />
         </ListItemButton>
     </React.Fragment>
 );
@@ -48,25 +54,25 @@ export const mainListItems = (
 export const secondaryListItems = (
     <React.Fragment>
         <ListSubheader component="div" inset>
-            Saved reports
+            Reports
         </ListSubheader>
         <ListItemButton>
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Current month" />
+            <ListItemText primary="Day Book" />
         </ListItemButton>
         <ListItemButton>
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Last quarter" />
+            <ListItemText primary="Purchase Reports" />
         </ListItemButton>
         <ListItemButton>
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Year-end sale" />
+            <ListItemText primary="Sell Reports" />
         </ListItemButton>
     </React.Fragment>
 );

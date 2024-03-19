@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { mainListItems, secondaryListItems } from './NavigationItems'; // Ensure you have this file
+import { mainListItems, secondaryListItems } from './NavigationItems';
 
 const drawerWidth = 240;
 
