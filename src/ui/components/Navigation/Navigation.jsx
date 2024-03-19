@@ -13,6 +13,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { mainListItems, secondaryListItems } from './NavigationItems';
+import {Outlet} from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+
 
 const drawerWidth = 240;
 
@@ -58,10 +61,25 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
+const getTitle = (pathname) => {
+    switch (pathname) {
+        case '/':
+            return 'Dashboard';
+        case '/parties':
+            return 'Parties';
+        case '/items':
+            return 'Items';
+        // Add more cases for different paths
+        default:
+            return 'Dashboard'; // default title
+    }
+};
+
 function Navigation() {
     const [open, setOpen] = React.useState(true);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const location = useLocation();
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -83,7 +101,7 @@ function Navigation() {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" noWrap component="div">
-                            Dashboard
+                            {getTitle(location.pathname)}
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -119,7 +137,8 @@ function Navigation() {
                     }}
                 >
                     <Toolbar />
-                    {/* Main content goes here */}
+                    {/* Outlet is placed here so that main content can be seen inside the box */}
+                    <Outlet/>
                 </Box>
             </Box>
         </ThemeProvider>

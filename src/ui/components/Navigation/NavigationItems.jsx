@@ -10,39 +10,48 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
+import CategoryIcon from '@mui/icons-material/Category';
+import { Link } from 'react-router-dom';
+
 export const mainListItems = (
     <React.Fragment>
-        <ListItemButton>
+        <ListItemButton component={Link} to={"/"}>
             <ListItemIcon>
                 <DashboardIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton component={Link} to={"/parties"}>
             <ListItemIcon>
                 <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Parties" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton component={Link} to={"/items"}>
+            <ListItemIcon>
+                <CategoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Items" />
+        </ListItemButton>
+        <ListItemButton component={Link} to={"/purchase"}>
             <ListItemIcon>
                 <ShoppingCartIcon />
             </ListItemIcon>
             <ListItemText primary="Purchase" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton component={Link} to={"/sales"}>
             <ListItemIcon>
                 <ReceiptIcon />
             </ListItemIcon>
             <ListItemText primary="Sales" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton component={Link} to={"/expenses"}>
             <ListItemIcon>
                 <MoneyOffIcon/>
             </ListItemIcon>
             <ListItemText primary="Expenses" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton component={Link} to={"/income"}>
             <ListItemIcon>
                 <CurrencyRupeeIcon />
             </ListItemIcon>
