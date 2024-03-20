@@ -1,16 +1,17 @@
 import React from 'react';
 import {DrawerComponent} from "./DrawerComponent";
 import {AppBarComponent} from "./AppBarComponent";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import {Outlet} from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
+import {getCurrentTheme} from "../../themes/Theme";
 
-const defaultTheme = createTheme();
 
 function Navigation() {
 
+    const defaultTheme = getCurrentTheme();
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);

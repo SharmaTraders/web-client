@@ -10,8 +10,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import {useLocation} from 'react-router-dom';
 import {Avatar} from "@mui/material";
 
-const drawerWidth = 240;
-
 const getTitle = (pathname) => {
     switch (pathname) {
         case '/':
@@ -28,6 +26,7 @@ const getTitle = (pathname) => {
 
 function AppBarComponent({open, toggleDrawer}) {
 
+    const drawerWidth = 240;
     const theme = useTheme();
     const screenSize = useMediaQuery('(min-width:560px)');
     const location = useLocation();

@@ -9,10 +9,9 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {mainListItems, secondaryListItems} from "./NavigationItems";
 
-const drawerWidth = 240;
-
 function DrawerComponent({open, toggleDrawer}) {
 
+    const drawerWidth = 240;
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
