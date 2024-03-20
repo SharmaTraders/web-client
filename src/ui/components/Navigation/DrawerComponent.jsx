@@ -60,13 +60,13 @@ function DrawerComponent({open, toggleDrawer}) {
 
             {/* Applying conditional style based on `open` state and `isMobile` */}
             <List sx={{...(isMobile && !open && {display: 'none'})}}>
-                {mainListItems}
+                {mainListItems()}
             </List>
 
             <Divider/>
 
             <List sx={{...(isMobile && !open && {display: 'none'})}}>
-                {secondaryListItems}
+                {secondaryListItems()}
             </List>
 
         </MuiDrawer>

@@ -10,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import {useLocation} from 'react-router-dom';
 import {Avatar} from "@mui/material";
 
-const getTitle = (pathname) => {
+function getTitle (pathname){
     switch (pathname) {
         case '/':
             return 'Dashboard';
@@ -22,7 +22,7 @@ const getTitle = (pathname) => {
         default:
             return 'Dashboard'; // default title
     }
-};
+}
 
 function AppBarComponent({open, toggleDrawer}) {
 
