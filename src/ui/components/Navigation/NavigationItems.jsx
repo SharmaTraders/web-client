@@ -14,7 +14,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import { Link } from 'react-router-dom';
 import {Fragment} from "react";
 
-export const mainListItems = (
+const mainListItems = (
     <Fragment>
 
         <ListItemButton component={Link} to={"/"}>
@@ -68,7 +68,7 @@ export const mainListItems = (
     </Fragment>
 );
 
-export const secondaryListItems = (
+const secondaryListItems = (
     <Fragment>
 
         <ListSubheader component="div" inset>
@@ -98,3 +98,5 @@ export const secondaryListItems = (
         </ListItemButton>
     </Fragment>
 );
+
+export {mainListItems , secondaryListItems}
