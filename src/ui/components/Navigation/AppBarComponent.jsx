@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme} from '@mui/material/styles';
+import {useTheme} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import {useLocation} from 'react-router-dom';
 import {Avatar} from "@mui/material";
 
-function getTitle (pathname){
+function getTitle(pathname) {
     switch (pathname) {
         case '/':
             return 'Dashboard';
@@ -28,7 +28,7 @@ function AppBarComponent({open, toggleDrawer}) {
 
     const drawerWidth = 240;
     const theme = useTheme();
-    const screenSize = useMediaQuery('(min-width:560px)');
+    const isDesktop = useMediaQuery('(min-width:560px)');
     const location = useLocation();
 
     return (
@@ -61,7 +61,7 @@ function AppBarComponent({open, toggleDrawer}) {
                     <MenuIcon/>
                 </IconButton>
                 {/* If it is on small screen and drawer is open remove title else show it */}
-                {!open || screenSize ? (
+                {!open || isDesktop ? (
                     <Typography variant="h6" noWrap component="div">
                         {getTitle(location.pathname)}
                     </Typography>
@@ -75,9 +75,12 @@ function AppBarComponent({open, toggleDrawer}) {
                     <Avatar
                         src="https://images.unsplash.com/photo-1526800544336-d04f0cbfd700?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                         sx={{marginRight: 2}}/>
-                    <Typography variant="subtitle1" noWrap>
-                        Sharma Traders
-                    </Typography>
+                    {isDesktop &&
+                        <Typography variant="subtitle1" noWrap>
+                            Sharma Traders
+                        </Typography>
+                    }
+
                 </Box>
             </Toolbar>
         </MuiAppBar>

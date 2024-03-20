@@ -12,7 +12,7 @@ import {getCurrentTheme} from "../../themes/Theme";
 function Navigation() {
 
     const defaultTheme = getCurrentTheme();
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
