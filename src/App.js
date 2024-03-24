@@ -2,9 +2,10 @@ import './App.css';
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {createHashRouter, RouterProvider} from "react-router-dom";
-import {HomePage} from "./ui/pages/HomePage";
-import {Parties} from "./ui/pages/Parties";
-import {Navigation} from "./ui/components/Navigation/Navigation";import SignIn from "./ui/pages/Login/SignIn";
+import {HomePage} from "./ui/pages/Home/HomePage";
+import {Navigation} from "./ui/components/Navigation/Navigation";
+import SignInPage from "./ui/pages/Login/SignInPage";
+import BillingPartiesPage from "./ui/pages/BillingParty/BillingPartiesPage";
 
 
 const router = createHashRouter([
@@ -18,13 +19,13 @@ const router = createHashRouter([
             },
             {
                 path: "/parties",
-                element: <Parties/>
+                element: <BillingPartiesPage/>
             },
         ],
     },
     {
         path: "/signin",
-        element: <SignIn/>
+        element: <SignInPage/>
     }
 ])
 

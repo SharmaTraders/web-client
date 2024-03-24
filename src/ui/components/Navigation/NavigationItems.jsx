@@ -29,7 +29,7 @@ function mainListItems() {
                 <ListItemIcon>
                     <PeopleIcon/>
                 </ListItemIcon>
-                <ListItemText primary="Parties"/>
+                <ListItemText primary="Billing Parties"/>
             </ListItemButton>
 
             <ListItemButton component={Link} to={"/items"}>

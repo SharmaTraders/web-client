@@ -24,7 +24,7 @@ import {setCredentials} from "../../../redux/features/state/authstate";
 
 const defaultTheme = getCurrentTheme();
 
-function SignIn() {
+function SignInPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -40,11 +40,11 @@ function SignIn() {
 
     if (isLoading) {
         toast.loading("Logging in...", {
-            toastId: "loading",
+            toastId: "loading-signIn",
             autoClose: false
         })
     } else {
-        toast.dismiss("loading");
+        toast.dismiss("loading-signIn");
     }
 
     function validateEmail(email) {
@@ -103,8 +103,7 @@ function SignIn() {
             let problemType = problemDetails.type;
 
             toast.error(errorMessage, {
-                toastId: "login",
-                autoClose: 7000
+               autoClose: 7000
             });
 
             if (problemType.toLowerCase() === "email") {
@@ -119,7 +118,6 @@ function SignIn() {
         // This is when the server is down or there is a network error
         if (error.error) {
             toast.error("Cannot connect to server, Please check your internet or make sure that the server is running", {
-                toastId: "login",
                 autoClose: 7000
             })
         }
@@ -218,4 +216,4 @@ function SignIn() {
     );
 }
 
-export default SignIn;
+export default SignInPage;

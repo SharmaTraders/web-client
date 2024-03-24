@@ -1,0 +1,12 @@
+.textField-group {
+    display: flex;
+    width: 100%;
+    gap: 0.8dvw;
+}
+
+@media screen and (max-width: 767px) {
+    .textField-group {
+        flex-direction: column;
+        gap: 0;
+    }
+}
