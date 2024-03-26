@@ -49,6 +49,7 @@ function AppBarComponent({open, toggleDrawer}) {
                     }),
                 }),
             }}
+            variant={"dense"}
         >
             <Toolbar>
                 <IconButton

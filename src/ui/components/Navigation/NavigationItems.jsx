@@ -14,10 +14,9 @@ import CategoryIcon from '@mui/icons-material/Category';
 import {Link} from 'react-router-dom';
 import {Fragment} from "react";
 
-function mainListItems() {
+function MainListItems() {
     return (
         <Fragment>
-
             <ListItemButton component={Link} to={"/"}>
                 <ListItemIcon>
                     <DashboardIcon/>
@@ -70,7 +69,7 @@ function mainListItems() {
     )
 }
 
-function secondaryListItems() {
+function SecondaryListItems() {
     return (
         <Fragment>
 
@@ -103,4 +102,4 @@ function secondaryListItems() {
     )
 }
 
-export {mainListItems, secondaryListItems}
+export {MainListItems, SecondaryListItems}

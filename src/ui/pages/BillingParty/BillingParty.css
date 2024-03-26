@@ -1,12 +1,61 @@
-.textField-group {
+.billing-party-page {
     display: flex;
+    flex-direction: column;
     width: 100%;
-    gap: 0.8dvw;
+    height: 100%;
 }
 
-@media screen and (max-width: 767px) {
-    .textField-group {
-        flex-direction: column;
-        gap: 0;
-    }
+.bp-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /*padding: 1.5dvh;*/
+}
+
+.bp-content{
+    display:flex;
+    height: 100%;
+}
+
+.bp-list{
+    flex: 1;
+    max-height: 74dvh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.bp-details{
+    height: 100%;
+    border: 2px solid yellow;
+    flex: 2;
+}
+
+
+.bp-card{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 2%;
+    padding: 0.6dvw 1dvw 0.6dvw 1dvh;
+    border-top: 2px solid #e7f4ef;
+    border-bottom: 2px solid #e7f4ef;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+}
+
+.bp-info{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bp-selected{
+    background-color: #e7f4ef;
+    border-left: 3px solid var(--primary);
+}
+.bp-card:hover{
+    background-color: #e7f4ef;
 }

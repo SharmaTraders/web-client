@@ -24,8 +24,13 @@ const billingPartyApi = baseApi
                     }
                 }),
                 invalidatesTags: ['BillingParty']
+            }),
+
+            getBillingParties: builder.query({
+                query: () => "billingparty",
+                providesTags: ['BillingParty'],
             })
         })
     });
 
-export const {useCreateBillingPartyMutation} = billingPartyApi;
+export const {useCreateBillingPartyMutation, useGetBillingPartiesQuery} = billingPartyApi;

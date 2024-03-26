@@ -23,6 +23,18 @@ function getCurrentTheme(){
                 primary: '#0b0500',
                 secondary: '#3f3c3c'
             },
+            error:{
+                main : "#fe5e41"
+            },
+            warning:{
+                main: "#f3c178"
+            },
+        },
+        typography: {
+            button: {
+                textTransform: 'none'
+            },
+            fontSize: 12
         }
     });
 }

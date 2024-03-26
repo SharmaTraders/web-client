@@ -7,21 +7,17 @@ import Box from '@mui/material/Box';
 import {Outlet} from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
 import {getCurrentTheme} from "../../themes/Theme";
-import "./Navigation.css";
 
 
 function Navigation() {
 
-    const defaultTheme = getCurrentTheme();
     const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
             <Box sx={{display: 'flex'}}>
-                <CssBaseline/>
                 <AppBarComponent open={open} toggleDrawer={toggleDrawer}/>
                 <DrawerComponent open={open} toggleDrawer={toggleDrawer}/>
 
@@ -39,7 +35,6 @@ function Navigation() {
                     </div>
                 </Box>
             </Box>
-        </ThemeProvider>
     );
 }
 

@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import {mainListItems, secondaryListItems} from "./NavigationItems";
+import {MainListItems, SecondaryListItems} from "./NavigationItems";
 
 function DrawerComponent({open, toggleDrawer}) {
 
@@ -23,6 +23,7 @@ function DrawerComponent({open, toggleDrawer}) {
                 '& .MuiDrawer-paper': {
                     position: 'relative',
                     whiteSpace: 'nowrap',
+                    // backgroundColor: theme.palette.secondary.main,
                     width: drawerWidth,
                     transition: theme.transitions.create('width', {
                         easing: theme.transitions.easing.sharp,
@@ -43,13 +44,15 @@ function DrawerComponent({open, toggleDrawer}) {
                 },
             }}
         >
-            <Toolbar
+                <Toolbar
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-end',
                     px: [1],
+                    backgroundColor: theme.palette.primary.main,
                 }}
+
             >
                 <IconButton onClick={toggleDrawer}>
                     <ChevronLeftIcon/>
@@ -60,13 +63,13 @@ function DrawerComponent({open, toggleDrawer}) {
 
             {/* Applying conditional style based on `open` state and `isMobile` */}
             <List sx={{...(isMobile && !open && {display: 'none'})}}>
-                {mainListItems()}
+                <MainListItems/>
             </List>
 
             <Divider/>
 
             <List sx={{...(isMobile && !open && {display: 'none'})}}>
-                {secondaryListItems()}
+                <SecondaryListItems/>
             </List>
 
         </MuiDrawer>

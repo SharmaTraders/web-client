@@ -16,6 +16,6 @@ const baseQuery = fetchBaseQuery({
 
 export const baseApi = createApi({
     baseQuery: baseQuery,
-    keepUnusedDataFor: 60*60, // 1 hour
+    keepUnusedDataFor: 60*2, // 2 minutes
     endpoints : () => ({}),
 });
