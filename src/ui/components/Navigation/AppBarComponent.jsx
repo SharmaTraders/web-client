@@ -26,7 +26,7 @@ function getTitle(pathname) {
 
 function AppBarComponent({open, toggleDrawer}) {
 
-    const drawerWidth = 240;
+    const drawerWidth = 190;
     const theme = useTheme();
     const isDesktop = useMediaQuery('(min-width:560px)');
     const location = useLocation();

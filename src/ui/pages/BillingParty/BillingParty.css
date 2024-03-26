@@ -17,6 +17,7 @@
     height: 100%;
     max-height: 74dvh;
     gap: 1rem;
+    border: 2px solid red;
 }
 
 .bp-list {
@@ -36,6 +37,7 @@
     flex-direction: column;
     gap: 1rem;
     border-radius: 1%;
+    border: 2px solid yellow;
 }
 
 .bp-details-info {
@@ -136,4 +138,31 @@
     align-items: center;
     justify-content: flex-end;
     gap: 0.8rem;
+}
+
+.bp-list-filter{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem;
+    gap: 2rem;
+    background-color: #fff;
+    border-radius: 2%;
+    border: 2px solid red;
+
+}
+
+@media screen and (max-width: 767px) {
+
+    .bp-content{
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .bp-list{
+        flex: 2;
+    }
+    .bp-details{
+        flex: 3;
+    }
 }

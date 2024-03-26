@@ -11,7 +11,7 @@ import {MainListItems, SecondaryListItems} from "./NavigationItems";
 
 function DrawerComponent({open, toggleDrawer}) {
 
-    const drawerWidth = 240;
+    const drawerWidth = 190;
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 

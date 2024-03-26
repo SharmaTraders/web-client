@@ -1,10 +1,10 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
 import {AppBarComponent} from "../../components/Navigation/AppBarComponent";
 import {DrawerComponent} from "../../components/Navigation/DrawerComponent";
-import {useSelector} from "react-redux";
+import { useSelector} from "react-redux";
 import {selectIsLoggedIn} from "../../../redux/features/state/authstate";
 import { redirect } from "react-router-dom";
 
@@ -14,7 +14,6 @@ function Root() {
 
     const [open, setOpen] = React.useState(false);
     const isLoggedIn = useSelector(selectIsLoggedIn);
-    const navigate = useNavigate();
 
     if (!isLoggedIn) {
          redirect("/signin");

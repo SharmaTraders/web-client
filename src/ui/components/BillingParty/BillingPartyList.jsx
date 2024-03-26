@@ -5,13 +5,18 @@ import {
     setSelectedBillingPartyIndex
 } from "../../../redux/features/state/billingPartyState";
 import {useGetBillingPartiesQuery} from "../../../redux/features/api/billingPartyApi";
-import {Avatar} from "@mui/material";
-import React from "react";
+import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import React, {useState} from "react";
 import Skeleton from '@mui/material/Skeleton';
 import stringAvatar from "../../../utils/stringAvatar";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from '@mui/icons-material/Search';
+import SortIcon from '@mui/icons-material/Sort';
 
 
 function BillingPartyList() {
+    const [sort , setSort] = useState("");
     const dispatch = useDispatch()
     const selectedIndex = useSelector(selectSelectedBillingPartyIndex)
     const selectedBillingParty = useSelector(selectSelectedBillingParty)
@@ -54,18 +59,89 @@ function BillingPartyList() {
     }
 
 
+    let billingPartiesToShow = billingParties;
+
+    if (sort === "name"){
+        billingPartiesToShow = billingPartiesToShow.sort((a,b) => a.name.localeCompare(b.name));
+    }
+    else if (sort === "balance desc"){
+        billingPartiesToShow = billingPartiesToShow.sort((a,b) => b.balance- a.balance);
+    }
+    else if (sort === "balance asc"){
+        billingPartiesToShow = billingPartiesToShow.sort((a,b) => a.balance -b.balance);
+    }
+
+    function handleChange(value){
+        console.log("Changed to "+ value);
+        billingPartiesToShow = billingParties.filter(
+            party => party.name.toLowerCase().includes(value.toLowerCase())
+        )
+
+    }
+
     return <>
-        {
-            billingParties.map((billingParty, index) =>
-                <div className={getClassName(index)}
-                     onClick={() => setSelected(index)}>
-                    <BillingPartyCard key={billingParty.id}
-                                      party={billingParty}
-                                      onClick={() => setSelected(index)}
-                                      isSelected={index === selectedIndex}/>
-                </div>
-            )
-        }
+        <div className={"bp-list-filter"}>
+            <TextField
+                type = "Search"
+                margin="dense"
+                fullWidth
+                size={"small"}
+                onChange={(e) => {
+                    handleChange(e.target.value);
+                }
+                }
+                required
+                label="Search"
+                InputProps={{
+                    startAdornment:
+                        <InputAdornment position="start">
+                            <SearchIcon/>
+                        </InputAdornment>,
+                }}/>
+
+
+            <FormControl sx={{ m: 1, minWidth: 140 , ml: -0.25, borderRight: "none"}} size="small">
+                <InputLabel id="sort-label">Sort</InputLabel>
+
+                <Select
+                    labelId="sort-label"
+                    label = "Sort"
+                    value={sort}
+                    onChange={(e) => {setSort(e.target.value)}}
+                    IconComponent={SortIcon}
+                >
+                    <MenuItem value={""}>
+                       <em> None</em>
+                    </MenuItem>
+                    <MenuItem value={"name"}>
+                        Name
+                    </MenuItem>
+                    <MenuItem value={"balance desc"}>
+                        Balance desc
+                    </MenuItem>
+
+                    <MenuItem value={"balance asc"}>
+                        Balance asc
+                    </MenuItem>
+
+                </Select>
+            </FormControl>
+        </div>
+
+        <div className={"bp-list"}>
+            {
+                billingPartiesToShow.map((billingParty, index) =>
+                    <div className={getClassName(index)}
+                         onClick={() => setSelected(index)}>
+                        <BillingPartyCard key={billingParty.id}
+                                          party={billingParty}
+                                          onClick={() => setSelected(index)}
+                                          isSelected={index === selectedIndex}/>
+                    </div>
+                )
+            }
+        </div>
+
     </>
 }
 
