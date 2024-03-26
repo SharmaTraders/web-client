@@ -10,10 +10,9 @@ import InputAdornment from "@mui/material/InputAdornment";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import {Slide} from "@mui/material";
+import {FormControl, MenuItem, Select, Slide} from "@mui/material";
 import "./AddBillingPartyComponent.css";
 import AddIcon from "@mui/icons-material/Add";
-
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -40,6 +39,8 @@ function AddBillingPartyComponent({open, handleClose}) {
     const [openingBalance, setOpeningBalance] = useState("0")
     const [openingBalanceError, setOpeningBalanceError] = useState(null)
 
+    const [toRecieve, setToRecieve] = useState(true);
+
     const [createBillingParty, {isLoading}] = useCreateBillingPartyMutation();
 
 
@@ -57,11 +58,14 @@ function AddBillingPartyComponent({open, handleClose}) {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
 
+        let  balance = parseFloat(openingBalance);
+        balance = toRecieve ? balance : -balance;
+
         const body = {
             name,
             address,
             phoneNumber,
-            openingBalance: parseFloat(openingBalance),
+            openingBalance: balance,
             email,
             vatNumber
         }
@@ -245,35 +249,53 @@ function AddBillingPartyComponent({open, handleClose}) {
 
 
             <div className={"textField-group"}>
-                <TextField
-                    type={"text"}
-                    margin="dense"
-                    value={openingBalance}
-                    error={Boolean(openingBalanceError)}
-                    helperText={openingBalanceError}
-                    onChange={(e) => {
-                        const inputValue = e.target.value;
-                        // Regular expression to match float numbers
-                        const regex = /^\d*\.?\d{0,2}$/;
-                        // Check if input value matches the regex
-                        if (regex.test(inputValue) || inputValue === '') {
-                            setOpeningBalance(inputValue);
+                <div className={"textField-connected"}>
+                    <TextField
+                        type={"text"}
+                        margin="dense"
+                        value={openingBalance}
+                        error={Boolean(openingBalanceError)}
+                        helperText={openingBalanceError}
+                        onChange={(e) => {
+                            const inputValue = e.target.value;
+                            // Regular expression to match float numbers
+                            const regex = /^\d*\.?\d{0,2}$/;
+                            // Check if input value matches the regex
+                            if (regex.test(inputValue) || inputValue === '') {
+                                setOpeningBalance(inputValue);
+                            }
+                            setOpeningBalanceError(null);
+
                         }
-                        setOpeningBalanceError(null);
+                        }
+                        fullWidth
+                        label="Opening Balance"
+                        className={openingBalanceError ? "error" : ""}
 
-                    }
-                    }
-                    fullWidth
-                    label="Opening Balance"
-                    className={openingBalanceError ? "error" : ""}
+                        InputProps={{
+                            startAdornment:
+                                <InputAdornment position="start">
+                                    <CurrencyRupeeIcon/>
+                                </InputAdornment>,
+                        }}
+                    />
 
-                    InputProps={{
-                        startAdornment:
-                            <InputAdornment position="start">
-                                <CurrencyRupeeIcon/>
-                            </InputAdornment>
-                    }}
-                />
+                    <FormControl sx={{ m: 1, minWidth: 120 , ml: -0.25, borderRight: "none"}} size="medium">
+                        <Select
+                            labelId="demo-select-small-label"
+                            id="demo-select-small"
+                            value={toRecieve}
+                            onChange={(e) => {setToRecieve(e.target.value)}}
+                        >
+                            <MenuItem value={true}>
+                                To Receive
+                            </MenuItem>
+                            <MenuItem value={false}>To Pay</MenuItem>
+
+                        </Select>
+                    </FormControl>
+                </div>
+
 
                 <TextField
                     margin="dense"
@@ -287,7 +309,6 @@ function AddBillingPartyComponent({open, handleClose}) {
                     }
                     }
                     required={false}
-                    fullWidth
                     label="VAT Number"
                     className={vatNumberError ? "error" : ""}
 

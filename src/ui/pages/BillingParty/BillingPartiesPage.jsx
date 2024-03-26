@@ -4,11 +4,15 @@ import AddIcon from '@mui/icons-material/Add';
 import AddBillingPartyComponent from "../../components/BillingParty/AddBillingPartyComponent";
 import Button from "@mui/material/Button";
 import BillingPartyList from "../../components/BillingParty/BillingPartyList";
+import {useSelector} from "react-redux";
+import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
+import BillingPartyDetailsInfoCard from "../../components/BillingParty/BillingPartyInfoCard";
 
 
 function BillingPartiesPage() {
+    const [openAddModal, setOpenAddModal] = useState(false);
+    const selectedBillingParty = useSelector(selectSelectedBillingParty);
 
-    const [openAddModal, setOpenAddModal] = useState(false)
 
     function handleClickOpen() {
         setOpenAddModal(true)
@@ -32,23 +36,27 @@ function BillingPartiesPage() {
                 Add Party
             </Button>
             <AddBillingPartyComponent open={openAddModal} handleClose={handleClose}/>
-
         </div>
 
         <div className={"bp-content"}>
             <div className={"bp-list"}>
                 <BillingPartyList/>
             </div>
-
             <div className={"bp-details"}>
+                <div className={"bp-details-info"}>
+                    <BillingPartyDetailsInfoCard party={selectedBillingParty}/>
 
+                </div>
+
+                <div className={"bp-details-history"}>
+                    <p>
+                        Party transaction list is not implemented yet...
+                    </p>
+                </div>
             </div>
-
         </div>
-
     </div>
 }
-
 
 
 

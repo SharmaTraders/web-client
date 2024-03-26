@@ -13,37 +13,50 @@ import MoneyOffIcon from '@mui/icons-material/MoneyOff';
 import CategoryIcon from '@mui/icons-material/Category';
 import {Link} from 'react-router-dom';
 import {Fragment} from "react";
+import Tooltip from '@mui/material/Tooltip';
+
 
 function MainListItems() {
     return (
         <Fragment>
+            <Tooltip title={"Dashboard"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/"}>
                 <ListItemIcon>
                     <DashboardIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Dashboard"/>
             </ListItemButton>
+            </Tooltip>
 
+            <Tooltip title={"Billing Parties"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/parties"}>
                 <ListItemIcon>
                     <PeopleIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Billing Parties"/>
             </ListItemButton>
+            </Tooltip>
 
+            <Tooltip title={"Items"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/items"}>
                 <ListItemIcon>
                     <CategoryIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Items"/>
             </ListItemButton>
+            </Tooltip>
 
+
+            <Tooltip title={"Purchase"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/purchase"}>
                 <ListItemIcon>
                     <ShoppingCartIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Purchase"/>
             </ListItemButton>
+            </Tooltip>
+
+            <Tooltip title={"Sales"} placement={"right-end"}>
 
             <ListItemButton component={Link} to={"/sales"}>
                 <ListItemIcon>
@@ -51,20 +64,27 @@ function MainListItems() {
                 </ListItemIcon>
                 <ListItemText primary="Sales"/>
             </ListItemButton>
+            </Tooltip>
 
+
+            <Tooltip title={"Expenses"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/expenses"}>
                 <ListItemIcon>
                     <MoneyOffIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Expenses"/>
             </ListItemButton>
+            </Tooltip>
 
+
+            <Tooltip title={"Income"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/income"}>
                 <ListItemIcon>
                     <CurrencyRupeeIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Income"/>
             </ListItemButton>
+            </Tooltip>
         </Fragment>
     )
 }

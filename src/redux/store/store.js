@@ -15,20 +15,6 @@ const persistConfig = {
     whitelist: ["auth"]
 }
 
-export const rtkQueryErrorLogger = (store) => (next) => (action) => {
-    // isRejectedWithValue Or isRejected
-    if (isRejected(action)) {
-        console.log(action); // get all data from rejected request
-        if (action.payload && action.payload.status === 401) {
-            toast.error("You need to login to perform the action", {
-                toastId: "loadingBillingParty",
-                autoClose: 8000
-            })
-        }
-    }
-
-    return next(action);
-};
 
 const rootReducer = combineReducers({
     [baseApi.reducerPath]: baseApi.reducer,
@@ -41,7 +27,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
     reducer: persistedReducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware, rtkQueryErrorLogger)
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware)
 });
 
 setupListeners(store.dispatch);

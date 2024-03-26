@@ -74,7 +74,9 @@ function AppBarComponent({open, toggleDrawer}) {
                 {/* User Profile Section */}
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                     <Avatar
-                        src="https://images.unsplash.com/photo-1526800544336-d04f0cbfd700?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        imgProps={{loading: "lazy"}}
+                        src="https://scontent-cph2-1.xx.fbcdn.net/v/t39.30808-6/419252439_1463196244596538_4842537556956711715_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=5-aKC6YJtp4AX_90WTL&_nc_ht=scontent-cph2-1.xx&oh=00_AfBvRtJAgdQ8-A_NCJufe_M7oocG270mZwJrkANeB2zP8A&oe=6608D37B"
+                        alt = {"Profile picture"}
                         sx={{marginRight: 2}}/>
                     {isDesktop &&
                         <Typography variant="subtitle1" noWrap>
