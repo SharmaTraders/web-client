@@ -4,23 +4,16 @@ const itemApi = baseApi
     .injectEndpoints({
         endpoints: (builder) => ({
             addItem: builder.mutation({
-                query: ({
-                itemName,
-                }) => ({
-                    url: "item",
-                    method: "POST",
+                query: ({email, password}) => ({
+                    url: 'auth/login/admin',
+                    method: 'POST',
                     body: {
-                        name: itemName,
-                    },
+                        email,
+                        password
+                    }
                 }),
-                invalidatesTags: ['Items'],
             }),
-
-            getItems: builder.query({
-                query: () => "item",
-                providesTags: ['Items'],
-            })
         })
     });
 
-export const {useAddItemMutation, useGetItemsQuery} = itemApi;
+export const {useAddItemMutation} = itemApi;
