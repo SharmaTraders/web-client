@@ -5,31 +5,31 @@ import Button from "@mui/material/Button";
 import Typography from '@mui/material/Typography';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {useAddItemMutation} from "../../../redux/features/api/itemApi"; // Ensure this import is correct
+import {useAddItemMutation} from "../../../redux/features/api/itemApi";
 
 function AddItem() {
     const [itemName, setItemName] = useState("");
     const [itemNameError, setItemNameError] = useState(null);
     const navigate = useNavigate();
 
-    // Notice the change here from `useAddItemQuery` to `useAddItemMutation`
-    // and the correct way to destructure the returned object
-    const { addItem } = useAddItemMutation();
+    const [addItem, {isLoading, error} ] = useAddItemMutation();
 
     async function onAddItem() {
 
         setItemNameError(null);
-        console.log(itemName + "Sdakmndfa")
 
         if (!itemName) {
             setItemNameError("Item name is required");
             return;
         }
 
-        const {data, error} = await addItem({itemName});
-
-        if (error) handleError(error);
-        if (data) handleSuccess(data);    }
+        try {
+            const result = await addItem({name: itemName}).unwrap();
+            handleSuccess(result);
+        } catch (err) {
+            handleError(err)
+        }
+    }
 
     function handleError(error) {
         if (error.data){
@@ -65,7 +65,6 @@ function AddItem() {
         setItemName("");
         navigate("/", {replace: true});    }
 
-    // Component return statement
     return (
         <Box
             sx={{

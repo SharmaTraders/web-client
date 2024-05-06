@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import AddIcon from '@mui/icons-material/Add';
 import {AddItem} from "../components/item/AddItem";
+import {ListOfItems} from "../components/item/ListOfItems";
 
 function style() {
     return {
@@ -24,20 +25,24 @@ function Items() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    return(
-        <div>
-            <Button variant="contained" onClick={handleOpen}> <AddIcon/> Add new item</Button>
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style()}>
-                    <AddItem/>
-                </Box>
-            </Modal>
-        </div>
+    return (
+        <>
+            <div>
+                <Button variant="contained" onClick={handleOpen}> <AddIcon/> Add new item</Button>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style()}>
+                        <AddItem/>
+                    </Box>
+                </Modal>
+            </div>
+
+            <ListOfItems></ListOfItems>
+        </>
     );
 }
 
