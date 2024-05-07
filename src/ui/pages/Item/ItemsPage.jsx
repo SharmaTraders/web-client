@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import AddIcon from '@mui/icons-material/Add';
 import Button from "@mui/material/Button";
 import {useSelector} from "react-redux";
-import AddItemComponent from "../../components/item/AddItemComponent";
+import AddItemComponent from "../../components/Item/AddItemComponent";
 import {selectSelectedItem} from "../../../redux/features/state/itemState";
-import ItemInfoCard from "../../components/item/ItemDetailsInfoCard";
-import ItemList from "../../components/item/ItemList";
+import ItemInfoCard from "../../components/Item/ItemDetailsInfoCard";
+import ItemList from "../../components/Item/ItemList";
 import "./ItemsPage.css";
 
 function ItemsPage() {
