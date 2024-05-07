@@ -11,6 +11,7 @@ import "./ItemsPage.css";
 function ItemsPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
     const selectedItem = useSelector(selectSelectedItem);
+    const isMobile = window.innerWidth < 768;
 
 
     function handleClickOpen() {
@@ -46,11 +47,13 @@ function ItemsPage() {
                     <ItemInfoCard item={selectedItem}/>
                 </div>
 
-                <div className={"item-details-history"}>
-                    <p>
-                        Item transaction list is not implemented yet...
-                    </p>
-                </div>
+                {!isMobile && (
+                    <div className={"item-details-history"}>
+                        <p>
+                            Item transaction list is not implemented yet...
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     </div>
