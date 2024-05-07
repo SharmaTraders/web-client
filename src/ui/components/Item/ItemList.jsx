@@ -125,12 +125,12 @@ function ItemCard({item}) {
 
         <div className={"item-details-card-2"}>
             <div className={"item-balance"}>
-                {/*Quantity: {item.quantity}*/}
-                Quantity: 10
+                {/*{item.quantity} kg*/}
+                10 Kg
             </div>
             <div className={"item-balance"}>
                 {/*Estimated Value: Rs. {item.estimatedValue}*/}
-                Estimated Value: Rs. 1000
+                Rs. 1000
             </div>
         </div>
     </>

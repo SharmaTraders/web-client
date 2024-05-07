@@ -20,8 +20,8 @@ function ItemDetailsInfoCard({ item }) {
     }
 
     function onShowHistory() {
-        toast.info("Show History is not implemented yet", {
-            toastId: "show-history-not-implemented",
+        toast.info("Transaction History is not implemented yet", {
+            toastId: "transaction-history-not-implemented",
             autoClose: 5000
         });
     }
