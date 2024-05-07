@@ -13,7 +13,6 @@ import {useSelector} from "react-redux";
 import {selectIsLoggedIn} from "./redux/features/state/authstate";
 import ItemsPage from "./ui/pages/Item/ItemsPage";
 
-
 const RequireAuth = ({children}) => {
     const userIsLogged = useSelector(selectIsLoggedIn);
 
