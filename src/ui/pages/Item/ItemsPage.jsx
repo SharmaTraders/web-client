@@ -2,15 +2,16 @@ import React, {useState} from "react";
 import AddIcon from '@mui/icons-material/Add';
 import Button from "@mui/material/Button";
 import {useSelector} from "react-redux";
-import AddItemComponent from "../../components/Item/AddItemComponent";
+import AddItemComponent from "../../components/item/AddItemComponent";
 import {selectSelectedItem} from "../../../redux/features/state/itemState";
-import ItemInfoCard from "../../components/Item/ItemDetailsInfoCard";
-import ItemList from "../../components/Item/ItemList";
+import ItemInfoCard from "../../components/item/ItemDetailsInfoCard";
+import ItemList from "../../components/item/ItemList";
 import "./ItemsPage.css";
 
 function ItemsPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
     const selectedItem = useSelector(selectSelectedItem);
+    const isMobile = window.innerWidth < 768;
 
 
     function handleClickOpen() {
@@ -46,11 +47,13 @@ function ItemsPage() {
                     <ItemInfoCard item={selectedItem}/>
                 </div>
 
-                <div className={"item-details-history"}>
-                    <p>
-                        Item transaction list is not implemented yet...
-                    </p>
-                </div>
+                {!isMobile && (
+                    <div className={"item-details-history"}>
+                        <p>
+                            Item transaction list is not implemented yet...
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     </div>

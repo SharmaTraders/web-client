@@ -32,12 +32,12 @@ function AddItemComponent({open, handleClose}) {
 
 
     if (isLoading) {
-        toast.loading("Adding Item...", {
-            toastId: "loading-Item",
+        toast.loading("Adding item...", {
+            toastId: "loading-item",
             autoClose: false
         })
     } else {
-        toast.dismiss("loading-Item");
+        toast.dismiss("loading-item");
     }
 
 
@@ -64,7 +64,7 @@ function AddItemComponent({open, handleClose}) {
             let problemType = problemDetails.type;
 
             toast.error(errorMessage, {
-                toastId: "add-Item-error",
+                toastId: "add-item-error",
                 autoClose: 7000
             });
 
@@ -83,7 +83,7 @@ function AddItemComponent({open, handleClose}) {
 
         if (error.error) {
             toast.error("Cannot connect to server, Please check your internet or make sure that the server is running", {
-                toastId: "add-Item-error",
+                toastId: "add-item-error",
                 autoClose: 7000
             })
         }
@@ -92,7 +92,7 @@ function AddItemComponent({open, handleClose}) {
 
     function handleSuccess() {
         toast.success("Item has been added.", {
-            toastId: "add-Item-success",
+            toastId: "add-item-success",
         });
         closeDialogue();
 
