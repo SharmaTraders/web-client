@@ -13,8 +13,8 @@ const authSlice = createSlice({
             state.email = username;
             state.jwtToken = jwtToken;
 
-            // Expiration time is set to 1 hour
-            state.expirationTime = Date.now() + 60 * 60 * 1000;
+            // Expiration time is set to 1 day
+            state.expirationTime = Date.now() + 60 * 60 * 1000*24;
         },
 
         logOut: function (state) {
@@ -26,6 +26,6 @@ const authSlice = createSlice({
 });
 export const { setCredentials, logOut } = authSlice.actions;
 
-export const selectIsLoggedIn = (state) => state.auth && state.auth.jwtToken && state.auth.username && state.auth.expirationTime > Date.now();
+export const selectIsLoggedIn = (state) => state.auth && state.auth.jwtToken && state.auth.email && state.auth.expirationTime > Date.now();
 export const selectEmail = (state) => state.auth.email;
 export default authSlice.reducer;

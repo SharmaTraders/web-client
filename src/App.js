@@ -1,53 +1,60 @@
 import './App.css';
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {createHashRouter, RouterProvider} from "react-router-dom";
-import {HomePage} from "./ui/pages/HomePage";
-import {Parties} from "./ui/pages/Parties";
-import {Navigation} from "./ui/components/Navigation/Navigation";import SignIn from "./ui/pages/Login/SignIn";
-import ItemsPage from "./ui/pages/Item/ItemsPage";
+import { Route, Routes} from "react-router-dom";
+import {HomePage} from "./ui/pages/Home/HomePage";
+import SignInPage from "./ui/pages/Signin/SignInPage";
+import BillingPartiesPage from "./ui/pages/BillingParty/BillingPartiesPage";
+import {getCurrentTheme} from "./ui/themes/Theme";
+import {ThemeProvider} from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import {Root} from "./ui/pages/Root/Root";
+import {useSelector} from "react-redux";
+import {selectIsLoggedIn} from "./redux/features/state/authstate";
 
 
-const router = createHashRouter([
-    {
-        path: "/",
-        element: <Navigation/>,
-        children: [
-            {
-                path: "/",
-                element: <HomePage/>
-            },
-            {
-                path: "/parties",
-                element: <Parties/>
-            },
-            {
-                path: "/items",
-                element: <ItemsPage/>
-            },
-        ],
-    },
-    {
-        path: "/signin",
-        element: <SignIn/>
+const RequireAuth = ({children}) => {
+    const userIsLogged = useSelector(selectIsLoggedIn);
+
+    if (!userIsLogged) {
+        return <SignInPage/>;
     }
-])
+    return children;
+};
+
+
+const defaultTheme = getCurrentTheme();
+
 
 function App() {
-  return (
-    <div className="App">
-      <ToastContainer
-        position="top-right"
-        autoClose={4000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        pauseOnHover/>
-        <RouterProvider router={router}/>
-    </div>
-  );
+    return (
+        <div className="App">
+            <ToastContainer
+                position="top-right"
+                autoClose={4000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                draggable
+                pauseOnHover/>
+            <ThemeProvider theme={defaultTheme}>
+                <CssBaseline/>
+                <Routes>
+                    <Route path={"/signin"} element={<SignInPage/>}/>
+                    <Route path={""} element={
+                        <RequireAuth>
+                            <Root/>
+                        </RequireAuth>
+                    }>
+                        <Route path={"/"} element={<HomePage/>}/>
+                        <Route path={"/parties"} element={<BillingPartiesPage/>}/>
+
+                    </Route>
+                </Routes>
+            </ThemeProvider>
+        </div>
+    );
 }
 
 export default App;
