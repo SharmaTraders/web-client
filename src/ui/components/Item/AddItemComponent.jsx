@@ -105,7 +105,9 @@ function AddItemComponent({open, handleClose}) {
     }
 
     function resetErrors() {
-        setItemNameError("")
+        setItemNameError("");
+        setOpeningStockWeightError("");
+        setOpeningStockValueError("");
     }
 
     function validateNonEmptyRequiredFields() {
