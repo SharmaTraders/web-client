@@ -4,6 +4,7 @@ import stringAvatar from "../../../utils/stringAvatar";
 import { getCurrentTheme } from "../../themes/Theme";
 import React from "react";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,6 +16,13 @@ function ItemDetailsInfoCard({ item }) {
     function onEdit() {
         toast.info("Edit is not implemented yet", {
             toastId: "edit-not-implemented",
+            autoClose: 5000
+        });
+    }
+
+    function onDelete() {
+        toast.info("Delete is not implemented yet", {
+            toastId: "delete-not-implemented",
             autoClose: 5000
         });
     }
@@ -62,7 +70,7 @@ function ItemDetailsInfoCard({ item }) {
                     color="primary"
                     startIcon={<SearchIcon/>}
             >
-                Transaction History
+                Search History
             </Button>
 
             <Button variant="contained"
@@ -71,6 +79,15 @@ function ItemDetailsInfoCard({ item }) {
                     color="primary"
                     startIcon={<EditIcon/>}>
                 Edit
+            </Button>
+
+            <Button variant="contained"
+                    onClick={onDelete}
+                    size={"small"}
+                    color="error"
+                    startIcon={<DeleteIcon/>}
+            >
+                Delete
             </Button>
         </div>
     </div>

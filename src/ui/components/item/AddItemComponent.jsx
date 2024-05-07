@@ -10,8 +10,6 @@ import Button from "@mui/material/Button";
 import {Slide} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {useAddItemMutation} from "../../../redux/features/api/itemApi";
-import InputAdornment from "@mui/material/InputAdornment";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -21,12 +19,6 @@ function AddItemComponent({open, handleClose}) {
 
     const [itemName, setItemName] = useState("");
     const [itemNameError, setItemNameError] = useState(null);
-
-    const [openingStockWeight, setOpeningStockWeight] = useState("");
-    const [openingStockWeightError, setOpeningStockWeightError] = useState(null);
-
-    const [openingStockValue, setOpeningStockValue] = useState("");
-    const [openingStockValueError, setOpeningStockValueError] = useState(null);
 
     const [addItem, {isLoading}] = useAddItemMutation();
 
@@ -45,11 +37,8 @@ function AddItemComponent({open, handleClose}) {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
 
-
         const body = {
-            itemName,
-            openingStockWeight: parseFloat(openingStockWeight),
-            openingStockValue: parseFloat(openingStockValue)
+            itemName
         }
         const {error} = await addItem(body);
 
@@ -71,12 +60,6 @@ function AddItemComponent({open, handleClose}) {
             if (problemType.toLowerCase() === "itemName") {
                 setItemNameError(errorMessage);
             }
-            if (problemType.toLowerCase() === "openingStockWeight") {
-                setOpeningStockWeightError(errorMessage);
-            }
-            if (problemType.toLowerCase() === "openingStockValue") {
-                setOpeningStockValueError(errorMessage);
-            }
             return;
 
         }
@@ -94,14 +77,13 @@ function AddItemComponent({open, handleClose}) {
         toast.success("Item has been added.", {
             toastId: "add-item-success",
         });
+        // Close the dialogue
         closeDialogue();
 
     }
 
     function resetValues() {
         setItemName("");
-        setOpeningStockWeight("");
-        setOpeningStockValue("");
     }
 
     function resetErrors() {
@@ -148,61 +130,6 @@ function AddItemComponent({open, handleClose}) {
 
                 label="Item name"
                 autoFocus
-            />
-
-            <TextField
-                type={"text"}
-                margin="dense"
-                value={openingStockWeight}
-                error={Boolean(openingStockWeightError)}
-                helperText={openingStockWeightError}
-                onChange={(e) => {
-                    const inputValue = e.target.value;
-                    // Regular expression to match float numbers
-                    const regex = /^\d*\.?\d{0,2}$/;
-                    // Check if input value matches the regex
-                    if (regex.test(inputValue) || inputValue === '') {
-                        setOpeningStockWeight(inputValue);
-                    }
-                    setOpeningStockWeightError(null);
-
-                }
-                }
-                fullWidth
-                label="Opening Stock (Kg)"
-                className={openingStockWeightError ? "error" : ""}
-
-            />
-
-            <TextField
-                type={"text"}
-                margin="dense"
-                value={openingStockValue}
-                error={Boolean(openingStockValueError)}
-                helperText={openingStockValueError}
-                onChange={(e) => {
-                    const inputValue = e.target.value;
-                    // Regular expression to match float numbers
-                    const regex = /^\d*\.?\d{0,2}$/;
-                    // Check if input value matches the regex
-                    if (regex.test(inputValue) || inputValue === '') {
-                        setOpeningStockValue(inputValue);
-                    }
-                    setOpeningStockValueError(null);
-
-                }
-                }
-                fullWidth
-                label="Total Estimate Value "
-                className={openingStockValueError ? "error" : ""}
-
-                InputProps={{
-                    startAdornment:
-                        <InputAdornment position="start">
-                            <CurrencyRupeeIcon/>
-                        </InputAdornment>,
-                }}
-
             />
         </DialogContent>
 
