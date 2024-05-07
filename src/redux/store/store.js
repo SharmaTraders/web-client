@@ -1,8 +1,8 @@
-
 import storage from 'redux-persist/lib/storage'
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {baseApi} from "../features/api/setup";
 import authReducer from "../features/state/authstate";
+import billingPartyReducer from "../features/state/billingPartyState";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {persistReducer} from "redux-persist";
 
@@ -11,18 +11,22 @@ const persistConfig = {
     storage,
     key: 'root',
     version: 1,
+    whitelist: ["auth"]
 }
+
 
 const rootReducer = combineReducers({
     [baseApi.reducerPath]: baseApi.reducer,
     auth: authReducer,
+    billingParty: billingPartyReducer,
+
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
     reducer: persistedReducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware)
 });
 
 setupListeners(store.dispatch);
