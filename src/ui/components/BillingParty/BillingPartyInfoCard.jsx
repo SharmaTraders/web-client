@@ -7,7 +7,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import PlaceIcon from "@mui/icons-material/Place";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Skeleton from "@mui/material/Skeleton";
 import React from "react";
 
@@ -34,12 +33,6 @@ function BillingPartyDetailsInfoCard({party}) {
         })
     }
 
-    function onDelete() {
-        toast.info(" Delete is not implemented yet", {
-            toastId: "delete-not-implemented",
-            autoClose: 5000
-        })
-    }
 
     return <div className={"bp-details-card"}>
         <div className={"bp-details-card-info"}>
@@ -90,14 +83,6 @@ function BillingPartyDetailsInfoCard({party}) {
                 Edit
             </Button>
 
-            <Button variant="contained"
-                    onClick={onDelete}
-                    size={"small"}
-                    color="error"
-                    startIcon={<DeleteIcon/>}
-            >
-                Delete
-            </Button>
         </div>
     </div>
 

@@ -19,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function AddBillingPartyComponent({open, handleClose}) {
+function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) {
 
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState(null);
@@ -39,7 +39,18 @@ function AddBillingPartyComponent({open, handleClose}) {
     const [openingBalance, setOpeningBalance] = useState("0")
     const [openingBalanceError, setOpeningBalanceError] = useState(null)
 
-    const [toRecieve, setToRecieve] = useState(true);
+    const [toReceive, setToReceive] = useState(true);
+
+    if (mode === "edit") {
+        if (!billingParty) return;
+        const {name, email, vatNumber, address, phoneNumber, openingBalance} = billingParty;
+        setName(name);
+        setEmail(email);
+        setVatNumber(vatNumber);
+        setAddress(address);
+        setPhoneNumber(phoneNumber);
+        setOpeningBalance(openingBalance);
+    }
 
     const [createBillingParty, {isLoading}] = useCreateBillingPartyMutation();
 
@@ -59,7 +70,7 @@ function AddBillingPartyComponent({open, handleClose}) {
         if (!isValid) return;
 
         let  balance = parseFloat(openingBalance);
-        balance = toRecieve ? balance : -balance;
+        balance = toReceive ? balance : -balance;
 
         const body = {
             name,
@@ -284,8 +295,8 @@ function AddBillingPartyComponent({open, handleClose}) {
                         <Select
                             labelId="demo-select-small-label"
                             id="demo-select-small"
-                            value={toRecieve}
-                            onChange={(e) => {setToRecieve(e.target.value)}}
+                            value={toReceive}
+                            onChange={(e) => {setToReceive(e.target.value)}}
                         >
                             <MenuItem value={true}>
                                 To Receive
@@ -335,4 +346,4 @@ function AddBillingPartyComponent({open, handleClose}) {
 
 }
 
-export default AddBillingPartyComponent;
+export default AddOrEditBillingPartyComponent;

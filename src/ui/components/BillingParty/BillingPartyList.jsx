@@ -16,7 +16,8 @@ import SortIcon from '@mui/icons-material/Sort';
 
 
 function BillingPartyList() {
-    const [sort , setSort] = useState("");
+    const [sort, setSort] = useState("");
+    const [searchString, setSearchString] = useState("");
     const dispatch = useDispatch()
     const selectedIndex = useSelector(selectSelectedBillingPartyIndex)
     const selectedBillingParty = useSelector(selectSelectedBillingParty)
@@ -31,7 +32,7 @@ function BillingPartyList() {
 
     const billingParties = data.billingParties;
     if (billingParties.length > 0) {
-        if (!selectedBillingParty){
+        if (!selectedBillingParty) {
             dispatch(setSelectedBillingParty(billingParties[0]));
         }
     }
@@ -53,41 +54,36 @@ function BillingPartyList() {
     }
 
 
+    let billingPartiesToShow = [...billingParties];
+
+    if (sort === "name") {
+        billingPartiesToShow = billingPartiesToShow.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sort === "balance desc") {
+        billingPartiesToShow = billingPartiesToShow.sort((a, b) => b.balance - a.balance);
+    } else if (sort === "balance asc") {
+        billingPartiesToShow = billingPartiesToShow.sort((a, b) => a.balance - b.balance);
+    }
+    if (searchString) {
+        billingPartiesToShow = billingPartiesToShow.filter(
+            party => party.name.toLowerCase().includes(searchString.toLowerCase())
+        )
+    }
+
+
     function setSelected(index) {
         dispatch(setSelectedBillingPartyIndex(index))
-        dispatch(setSelectedBillingParty(billingParties[index]));
-    }
-
-
-    let billingPartiesToShow = billingParties;
-
-    if (sort === "name"){
-        billingPartiesToShow = billingPartiesToShow.sort((a,b) => a.name.localeCompare(b.name));
-    }
-    else if (sort === "balance desc"){
-        billingPartiesToShow = billingPartiesToShow.sort((a,b) => b.balance- a.balance);
-    }
-    else if (sort === "balance asc"){
-        billingPartiesToShow = billingPartiesToShow.sort((a,b) => a.balance -b.balance);
-    }
-
-    function handleChange(value){
-        console.log("Changed to "+ value);
-        billingPartiesToShow = billingParties.filter(
-            party => party.name.toLowerCase().includes(value.toLowerCase())
-        )
-
+        dispatch(setSelectedBillingParty(billingPartiesToShow[index]));
     }
 
     return <>
         <div className={"bp-list-filter"}>
             <TextField
-                type = "Search"
+                type="Search"
                 margin="dense"
                 fullWidth
                 size={"small"}
                 onChange={(e) => {
-                    handleChange(e.target.value);
+                    setSearchString(e.target.value)
                 }
                 }
                 required
@@ -100,28 +96,30 @@ function BillingPartyList() {
                 }}/>
 
 
-            <FormControl sx={{ m: 1, minWidth: 140 , ml: -0.25, borderRight: "none"}} size="small">
+            <FormControl sx={{m: 1, minWidth: 140, ml: -0.25, borderRight: "none"}} size="small">
                 <InputLabel id="sort-label">Sort</InputLabel>
 
                 <Select
                     labelId="sort-label"
-                    label = "Sort"
+                    label="Sort"
                     value={sort}
-                    onChange={(e) => {setSort(e.target.value)}}
+                    onChange={(e) => {
+                        setSort(e.target.value)
+                    }}
                     IconComponent={SortIcon}
                 >
-                    <MenuItem value={""}>
-                       <em> None</em>
+                    <MenuItem value={"latest"}>
+                        Latest
                     </MenuItem>
                     <MenuItem value={"name"}>
-                        Name
+                        Name (Alphabetical)
                     </MenuItem>
                     <MenuItem value={"balance desc"}>
-                        Balance desc
+                        Balance (High - Low)
                     </MenuItem>
 
                     <MenuItem value={"balance asc"}>
-                        Balance asc
+                        Balance (Low - High)
                     </MenuItem>
 
                 </Select>
@@ -135,7 +133,6 @@ function BillingPartyList() {
                          onClick={() => setSelected(index)}>
                         <BillingPartyCard key={billingParty.id}
                                           party={billingParty}
-                                          onClick={() => setSelected(index)}
                                           isSelected={index === selectedIndex}/>
                     </div>
                 )
@@ -147,16 +144,18 @@ function BillingPartyList() {
 
 function BillingPartyCard({party}) {
 
-    function getClassName(){
-        if (party.balance ===0) return ""
+    function getClassName() {
+        if (party.balance === 0) return ""
         if (party.balance < 0) return "negative-balance "
         return "positive-balance "
     }
-    function getStatus(){
-        if (party.balance ===0) return "Settled"
+
+    function getStatus() {
+        if (party.balance === 0) return "Settled"
         if (party.balance < 0) return "To Pay"
         return "To Recieve"
     }
+
     return <>
         <div className={"bp-info"}>
             <Avatar
@@ -166,10 +165,10 @@ function BillingPartyCard({party}) {
         </div>
 
         <div className={"bp-balance"}>
-            <div className={"bold "+ getClassName()}>
+            <div className={"bold " + getClassName()}>
                 Rs. {party.balance < 0 ? -party.balance : party.balance}
             </div>
-            <div className={"secondary-text "+ getClassName()}>
+            <div className={"secondary-text " + getClassName()}>
                 {getStatus()}
             </div>
         </div>
@@ -198,7 +197,6 @@ function BillingPartyCardSkeleton() {
     </>
 
 }
-
 
 
 export default BillingPartyList;

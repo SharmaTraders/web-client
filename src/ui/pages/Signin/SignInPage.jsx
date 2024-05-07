@@ -13,8 +13,6 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {ThemeProvider} from '@mui/material/styles';
-import {getCurrentTheme} from '../../themes/Theme';
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
@@ -35,14 +33,13 @@ function SignInPage() {
     const [login, {isLoading}] = useLoginMutation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const loadingToastId = "signIn-loading";
 
     if (isLoading) {
         toast.loading("Logging in...", {
-            toastId: "loading-signIn",
+            toastId: loadingToastId,
             autoClose: false
         })
-    } else {
-        toast.dismiss("loading-signIn");
     }
 
     function validateEmail(email) {
@@ -120,12 +117,14 @@ function SignInPage() {
             })
         }
 
+        toast.dismiss(loadingToastId);
     }
 
     function handleSuccess(data) {
         toast.success("Logged in successfully", {
-            toastId: "login"
+            toastId: "signIn"
         });
+        toast.dismiss(loadingToastId);
         const jwtToken = data.jwtToken;
         dispatch(setCredentials({jwtToken: jwtToken, username: email}));
         setEmail("");
@@ -142,6 +141,7 @@ function SignInPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
+                    maxHeight: '100dvh'
                 }}
             >
                 <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
