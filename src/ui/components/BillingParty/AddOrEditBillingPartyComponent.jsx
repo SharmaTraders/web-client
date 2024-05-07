@@ -40,7 +40,7 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
     const [openingBalanceError, setOpeningBalanceError] = useState(null)
 
     const [toReceive, setToReceive] = useState(true);
-
+    const [createBillingParty, {isLoading}] = useCreateBillingPartyMutation();
     if (mode === "edit") {
         if (!billingParty) return;
         const {name, email, vatNumber, address, phoneNumber, openingBalance} = billingParty;
@@ -51,8 +51,6 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
         setPhoneNumber(phoneNumber);
         setOpeningBalance(openingBalance);
     }
-
-    const [createBillingParty, {isLoading}] = useCreateBillingPartyMutation();
 
 
     if (isLoading) {
