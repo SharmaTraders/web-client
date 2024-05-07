@@ -149,6 +149,22 @@
 
 }
 
+/* Tab */
+@media screen and (max-width: 1050px ) and  (min-width: 768px){
+    .bp-list-filter {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .bp-list {
+        flex: 2;
+    }
+
+    .bp-details {
+        flex: 3;
+    }
+}
+
 @media screen and (max-width: 767px) {
 
     .bp-content{
@@ -157,9 +173,9 @@
     }
 
     .bp-list{
-        flex: 2;
+        flex: 5;
     }
     .bp-details{
-        flex: 3;
+        flex: 1;
     }
 }
