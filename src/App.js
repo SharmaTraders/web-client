@@ -5,7 +5,7 @@ import {createHashRouter, RouterProvider} from "react-router-dom";
 import {HomePage} from "./ui/pages/HomePage";
 import {Parties} from "./ui/pages/Parties";
 import {Navigation} from "./ui/components/Navigation/Navigation";import SignIn from "./ui/pages/Login/SignIn";
-import {Items} from "./ui/pages/Items";
+import ItemsPage from "./ui/pages/Item/ItemsPage";
 
 
 const router = createHashRouter([
@@ -23,7 +23,7 @@ const router = createHashRouter([
             },
             {
                 path: "/items",
-                element: <Items/>
+                element: <ItemsPage/>
             },
         ],
     },

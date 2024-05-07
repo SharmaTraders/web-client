@@ -4,13 +4,16 @@ const itemApi = baseApi
     .injectEndpoints({
         endpoints: (builder) => ({
             addItem: builder.mutation({
-                query: ({name}) => ({
-                    url: 'item',
-                    method: 'POST',
+                query: ({
+                itemName,
+                }) => ({
+                    url: "item",
+                    method: "POST",
                     body: {
-                        name
-                    }
+                        name: itemName,
+                    },
                 }),
+                invalidatesTags: ['Items'],
             }),
 
             getItems: builder.query({
