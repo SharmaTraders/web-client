@@ -5,6 +5,7 @@ import authReducer from "../features/state/authstate";
 import billingPartyReducer from "../features/state/billingPartyState";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {persistReducer} from "redux-persist";
+import itemReducer from '../features/state/itemState';
 
 
 const persistConfig = {
@@ -18,6 +19,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     [baseApi.reducerPath]: baseApi.reducer,
     auth: authReducer,
+    item: itemReducer,
     billingParty: billingPartyReducer,
 
 });
