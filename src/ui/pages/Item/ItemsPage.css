@@ -15,7 +15,7 @@
 
 .item-content {
     display: flex;
-    height: 75vh;
+    height: 100%;
     gap: 1rem;
     margin-left: 1vw;
     margin-right: 1vw;
@@ -140,6 +140,22 @@
     border-radius: 2%;
 }
 
+/* Tab */
+@media screen and (max-width: 1050px ) and  (min-width: 768px){
+    .item-list-filter {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .item-list {
+        flex: 2;
+    }
+
+    .item-details {
+        flex: 3;
+    }
+}
+
 @media screen and (max-width: 767px) {
     .item-content {
         flex-direction: column;
@@ -147,7 +163,7 @@
     }
 
     .item-list {
-        flex: 4;
+        flex: 5;
     }
     .item-details {
         flex: 1;

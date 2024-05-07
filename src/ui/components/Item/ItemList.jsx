@@ -1,13 +1,13 @@
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     selectSelectedItem,
     selectSelectedItemIndex,
     setSelectedItem,
     setSelectedItemIndex
 } from "../../../redux/features/state/itemState";
-import { useGetItemsQuery } from "../../../redux/features/api/itemApi";
-import { Avatar, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import React, { useState } from "react";
+import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
+import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import React, {useState} from "react";
 import Skeleton from '@mui/material/Skeleton';
 import stringAvatar from "../../../utils/stringAvatar";
 import TextField from "@mui/material/TextField";
@@ -22,6 +22,7 @@ function ItemList() {
     const selectedIndex = useSelector(selectSelectedItemIndex)
     const selectedItem = useSelector(selectSelectedItem)
     const {data, isLoading, error} = useGetItemsQuery();
+    const [searchQuery, setSearchQuery] = useState("");
 
     if (isLoading) {
         const mockSkeletonsAmount = 5;
@@ -29,8 +30,8 @@ function ItemList() {
             <ItemCardSkeleton key={index}/>
         ));
     }
+    let items = [...data.items]; // Clone items to a new array for manipulation
 
-    const items = data?.items || [];
 
     if (items.length > 0 && !selectedItem) {
         dispatch(setSelectedItem(items[0]));
@@ -51,50 +52,56 @@ function ItemList() {
 
     let itemsToShow = items;
 
-    if (sort === "name") {
-        itemsToShow = itemsToShow.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === "quantity desc") {
-        itemsToShow = itemsToShow.sort((a, b) => b.quantity - a.quantity);
-    } else if (sort === "quantity asc") {
-        itemsToShow = itemsToShow.sort((a, b) => a.quantity - b.quantity);
-    }
 
-    function handleChange(value) {
-        console.log("Changed to " + value);
-        itemsToShow = items.filter(
-            item => item.name.toLowerCase().includes(value.toLowerCase())
-        )
+    if (sort === "NameAsc") {
+        items.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sort === "NameDesc") {
+        items.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (sort === "AmountAsc") {
+        items.sort((a, b) => a.amount - b.amount);
+    } else if (sort === "AmountDesc") {
+        items.sort((a, b) => b.amount - a.amount);
+    }
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    if (searchQuery !== "") {
+        itemsToShow = items.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
     }
 
     return <>
         <div className={"item-list-filter"}>
             <TextField
                 type="search"
+                value={searchQuery}
+                onChange={handleSearchChange}
                 margin="dense"
                 fullWidth
-                size={"small"}
-                onChange={(e) => handleChange(e.target.value)}
+                size="small"
                 label="Search"
                 InputProps={{
-                    startAdornment:
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>,
-                }}/>
+                    startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
+                }}
+            />
 
-            <FormControl sx={{ m: 1, minWidth: 140, ml: -0.25, borderRight: "none" }} size="small">
+            <FormControl sx={{m: 1, minWidth: 140, ml: -0.25, borderRight: "none"}} size="small">
                 <InputLabel id="sort-label">Sort</InputLabel>
                 <Select
                     labelId="sort-label"
                     label="Sort"
                     value={sort}
-                    onChange={(e) => {setSort(e.target.value)}}
+                    onChange={(e) => {
+                        setSort(e.target.value)
+                    }}
                     IconComponent={SortIcon}
                 >
-                    <MenuItem value=""><em>None</em></MenuItem>
-                    <MenuItem value="name">Name</MenuItem>
-                    <MenuItem value="quantity desc">Quantity Desc</MenuItem>
-                    <MenuItem value="quantity asc">Quantity Asc</MenuItem>
+                    <MenuItem value="Latest"><em>Latest</em></MenuItem>
+                    <MenuItem value="NameAsc">Name (A - Z)</MenuItem>
+                    <MenuItem value="NameDesc">Name (Z - A)</MenuItem>
+                    <MenuItem value="AmountAsc">Balance (High - Low)
+                    </MenuItem>
+                    <MenuItem value="AmountDesc">Balance (Low - High)</MenuItem>
                 </Select>
             </FormControl>
         </div>
@@ -102,7 +109,8 @@ function ItemList() {
         <div className={"item-list"}>
             {
                 itemsToShow.map((item, index) =>
-                    <div onClick={() => setSelected(index)} key={item.id} className={selectedIndex === index ? "item-card item-selected" : "item-card"}>
+                    <div onClick={() => setSelected(index)} key={item.id}
+                         className={selectedIndex === index ? "item-card item-selected" : "item-card"}>
                         <ItemCard
                             item={item}
                             isSelected={index === selectedIndex}
