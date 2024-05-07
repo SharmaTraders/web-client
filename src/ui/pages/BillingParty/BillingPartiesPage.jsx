@@ -13,6 +13,7 @@ function BillingPartiesPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
     const selectedBillingParty = useSelector(selectSelectedBillingParty);
 
+    let isMobile = window.innerWidth < 768;
 
     function handleClickOpen() {
         setOpenAddModal(true)
@@ -48,17 +49,16 @@ function BillingPartiesPage() {
 
                 </div>
 
-                <div className={"bp-details-history"}>
-                    <p>
-                        Party transaction list is not implemented yet...
-                    </p>
-                </div>
+                {!isMobile && (
+                    <div className={"bp-details-history"}>
+                        <p>
+                            Party transaction list is not implemented yet...
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     </div>
 }
-
-
-
 
 export default BillingPartiesPage;
