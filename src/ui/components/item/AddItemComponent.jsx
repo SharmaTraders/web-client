@@ -45,8 +45,11 @@ function AddItemComponent({open, handleClose}) {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
 
+
         const body = {
-            itemName
+            itemName,
+            openingStockWeight: parseFloat(openingStockWeight),
+            openingStockValue: parseFloat(openingStockValue)
         }
         const {error} = await addItem(body);
 
