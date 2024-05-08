@@ -1,4 +1,3 @@
-import {toast} from "react-toastify";
 import {Avatar} from "@mui/material";
 import stringAvatar from "../../../utils/stringAvatar";
 import {getCurrentTheme} from "../../themes/Theme";
@@ -7,12 +6,16 @@ import EmailIcon from "@mui/icons-material/Email";
 import PlaceIcon from "@mui/icons-material/Place";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import Skeleton from "@mui/material/Skeleton";
-import React from "react";
+import  {useState} from "react";
+import ManageBillingPartyComponent from "./ManageBillingPartyComponent";
+import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 
 function BillingPartyDetailsInfoCard({party}) {
+    const [openEditModal, setOpenEditModal] = useState(false);
 
-    if (!party) return <BillingPartyDetailsInfoCardSkeleton/>
+    if (!party) return <div>
+        Please select a billing party for info
+    </div>
 
     function getClassName() {
         if (party.balance === 0) return "bold"
@@ -27,10 +30,11 @@ function BillingPartyDetailsInfoCard({party}) {
     }
 
     function onEdit() {
-        toast.info(" Edit is not implemented yet", {
-            toastId: "edit-not-implemented",
-            autoClose: 5000
-        })
+       setOpenEditModal(true);
+    }
+
+    function handleClose(){
+        setOpenEditModal(false);
     }
 
 
@@ -42,8 +46,8 @@ function BillingPartyDetailsInfoCard({party}) {
                     {...stringAvatar(party.name)}
                     sx={
                         {
-                            width: "60px",
-                            height: "60px",
+                            width: "80px",
+                            height: "80px",
                             backgroundColor: getCurrentTheme().palette.primary.light
                         }}/>
 
@@ -56,6 +60,10 @@ function BillingPartyDetailsInfoCard({party}) {
                     <div className={"secondary-text"}>
                         <EmailIcon sx={{fontSize: "0.9rem"}}/>
                         {party.email || "Email not set"}
+                    </div>
+                    <div className={"secondary-text"}>
+                        <LocalPoliceIcon sx={{fontSize: "0.9rem"}}/>
+                        {party.vatNumber || "Vat Number not set"}
                     </div>
                 </div>
             </div>
@@ -82,43 +90,15 @@ function BillingPartyDetailsInfoCard({party}) {
                     startIcon={<EditIcon/>}>
                 Edit
             </Button>
+            {
+                openEditModal
+                &&
+                <ManageBillingPartyComponent open={openEditModal} handleClose={handleClose} mode={"edit"} billingParty={party}/>
 
+            }
         </div>
     </div>
 
-}
-
-
-function BillingPartyDetailsInfoCardSkeleton() {
-    return <div className={"bp-details-card"}>
-        <div className={"bp-details-card-info"}>
-            <div className={"bp-details-card-1"}>
-                <Skeleton animation="wave" variant="rounded" width={40} height={40}/>
-                <div className={"bp-details-card-avatar"}>
-                    <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
-
-                    <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
-
-                    <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
-
-                </div>
-            </div>
-
-            <div className={"bp-details-card-2"}>
-                <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
-
-                <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
-
-                <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
-            </div>
-        </div>
-
-        <div className={"bp-details-card-buttons"}>
-            <Skeleton animation="wave" variant="rounded" width={40} height={10}/>
-            <Skeleton animation="wave" variant="rounded" width={40} height={10}/>
-
-        </div>
-    </div>
 }
 
 export default BillingPartyDetailsInfoCard;

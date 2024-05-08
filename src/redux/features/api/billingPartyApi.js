@@ -27,10 +27,35 @@ const billingPartyApi = baseApi
             }),
 
             getBillingParties: builder.query({
-                query: () => "billingparty",
+                query: () => `billingparty`,
                 providesTags: ['BillingParty'],
+            }),
+            updateBillingParty: builder.mutation({
+                query: ({
+                            id,
+                            name,
+                            address,
+                            phoneNumber,
+                            email,
+                            vatNumber
+                        }) => ({
+                    url: `billingparty/${id}`,
+                    method: 'PUT',
+                    body: {
+                        name,
+                        address,
+                        phoneNumber,
+                        email,
+                        vatNumber
+                    }
+                }),
+                invalidatesTags: ['BillingParty']
             })
         })
     });
 
-export const {useCreateBillingPartyMutation, useGetBillingPartiesQuery} = billingPartyApi;
+export const {
+    useCreateBillingPartyMutation,
+    useGetBillingPartiesQuery,
+    useUpdateBillingPartyMutation
+} = billingPartyApi;

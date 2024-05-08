@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import "./BillingParty.css"
 import AddIcon from '@mui/icons-material/Add';
-import AddOrEditBillingPartyComponent from "../../components/BillingParty/AddOrEditBillingPartyComponent";
+import ManageBillingPartyComponent from "../../components/BillingParty/ManageBillingPartyComponent";
 import Button from "@mui/material/Button";
 import BillingPartyList from "../../components/BillingParty/BillingPartyList";
 import {useSelector} from "react-redux";
@@ -36,7 +36,7 @@ function BillingPartiesPage() {
                     startIcon={<AddIcon/>}>
                 Add Party
             </Button>
-            <AddOrEditBillingPartyComponent open={openAddModal} handleClose={handleClose}/>
+            <ManageBillingPartyComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
         </div>
 
         <div className={"bp-content"}>

@@ -96,7 +96,7 @@ function ItemList() {
                     }}
                     IconComponent={SortIcon}
                 >
-                    <MenuItem value="Latest"><em>Latest</em></MenuItem>
+                    <MenuItem value="Latest">Latest</MenuItem>
                     <MenuItem value="NameAsc">Name (A - Z)</MenuItem>
                     <MenuItem value="NameDesc">Name (Z - A)</MenuItem>
                     <MenuItem value="AmountAsc">Balance (High - Low)
