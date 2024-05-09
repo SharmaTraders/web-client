@@ -2,21 +2,26 @@ import { toast } from "react-toastify";
 import { Avatar } from "@mui/material";
 import stringAvatar from "../../../utils/stringAvatar";
 import { getCurrentTheme } from "../../themes/Theme";
-import React from "react";
+import React, {useState} from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
-import SearchIcon from "@mui/icons-material/Search";
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import ManageItemComponent from "./ManageItemComponent";
+import {useSelector} from "react-redux";
+import {selectSelectedItem} from "../../../redux/features/state/itemState";
 
-function ItemDetailsInfoCard({ item }) {
+function ItemDetailsInfoCard() {
+    const item = useSelector(selectSelectedItem);
+    const [openAddModal, setOpenAddModal] = useState(false);
     if (!item) return <ItemDetailsInfoCardSkeleton />
 
+    function handleClickOpen() {
+        setOpenAddModal(true)
+    }
 
-    function onEdit() {
-        toast.info("Edit is not implemented yet", {
-            toastId: "edit-not-implemented",
-            autoClose: 5000
-        });
+    function handleClose() {
+        setOpenAddModal(false)
     }
 
     function onShowHistory() {
@@ -60,18 +65,23 @@ function ItemDetailsInfoCard({ item }) {
                     onClick={onShowHistory}
                     size={"small"}
                     color="primary"
-                    startIcon={<SearchIcon/>}
+                    startIcon={<ManageSearchIcon />}
             >
                 Transaction History
             </Button>
 
             <Button variant="contained"
-                    onClick={onEdit}
-                    size={"small"}
                     color="primary"
+                    onClick={handleClickOpen}
+                    size={"small"}
                     startIcon={<EditIcon/>}>
-                Edit
+                Edit Item
             </Button>
+            {
+                openAddModal &&
+                <ManageItemComponent open={openAddModal} handleClose={handleClose} mode={"edit"}/>
+
+            }
         </div>
     </div>
 }

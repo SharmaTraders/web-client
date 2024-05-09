@@ -1,16 +1,13 @@
 import React, {useState} from "react";
 import AddIcon from '@mui/icons-material/Add';
 import Button from "@mui/material/Button";
-import {useSelector} from "react-redux";
-import AddItemComponent from "../../components/Item/AddItemComponent";
-import {selectSelectedItem} from "../../../redux/features/state/itemState";
+import ManageItemComponent from "../../components/Item/ManageItemComponent";
 import ItemInfoCard from "../../components/Item/ItemDetailsInfoCard";
 import ItemList from "../../components/Item/ItemList";
 import "./ItemsPage.css";
 
 function ItemsPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
-    const selectedItem = useSelector(selectSelectedItem);
     const isMobile = window.innerWidth < 768;
 
 
@@ -35,7 +32,7 @@ function ItemsPage() {
                     startIcon={<AddIcon/>}>
                 Add Item
             </Button>
-            <AddItemComponent open={openAddModal} handleClose={handleClose}/>
+            <ManageItemComponent open={openAddModal} handleClose={handleClose}/>
         </div>
 
         <div className={"item-content"}>
@@ -44,7 +41,7 @@ function ItemsPage() {
             </div>
             <div className={"item-details"}>
                 <div className={"item-details-info"}>
-                    <ItemInfoCard item={selectedItem}/>
+                    <ItemInfoCard/>
                 </div>
 
                 {!isMobile && (

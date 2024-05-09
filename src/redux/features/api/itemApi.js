@@ -19,8 +19,22 @@ const itemApi = baseApi
             getItems: builder.query({
                 query: () => "item",
                 providesTags: ['Items'],
+            }),
+
+            updateItem: builder.mutation({
+                query: ({
+                    itemId,
+                    itemName,
+                }) => ({
+                    url: `item/${itemId}`,
+                    method: "PUT",
+                    body: {
+                        name: itemName,
+                    },
+                }),
+                invalidatesTags: ['Items'],
             })
         })
     });
 
-export const {useAddItemMutation, useGetItemsQuery} = itemApi;
+export const {useAddItemMutation, useGetItemsQuery, useUpdateItemMutation} = itemApi;
