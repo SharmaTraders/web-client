@@ -1,9 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {
     selectSelectedItem,
-    selectSelectedItemIndex,
     setSelectedItem,
-    setSelectedItemIndex
 } from "../../../redux/features/state/itemState";
 import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
 import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
@@ -19,7 +17,6 @@ import SortIcon from '@mui/icons-material/Sort';
 function ItemList() {
     const [sort, setSort] = useState("");
     const dispatch = useDispatch()
-    const selectedIndex = useSelector(selectSelectedItemIndex)
     const selectedItem = useSelector(selectSelectedItem)
     const {data, isLoading, error} = useGetItemsQuery();
     const [searchQuery, setSearchQuery] = useState("");
@@ -34,7 +31,7 @@ function ItemList() {
 
 
     if (items.length > 0 && !selectedItem) {
-        dispatch(setSelectedItem(items[0]));
+        dispatch(setSelectedItem(data.items[0]));
     }
 
     if (error) {
@@ -45,9 +42,8 @@ function ItemList() {
         return <div>No items found. You can add a new item by clicking the Add Item button above.</div>
     }
 
-    function setSelected(index) {
-        dispatch(setSelectedItemIndex(index))
-        dispatch(setSelectedItem(items[index]));
+    function setSelected(item) {
+        dispatch(setSelectedItem(item));
     }
 
     let itemsToShow = items;
@@ -68,6 +64,11 @@ function ItemList() {
 
     if (searchQuery !== "") {
         itemsToShow = items.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+
+    function getClassName(item) {
+        if (!item) return "item-card";
+        return item.id === selectedItem.id ? "item-card item-selected" : "item-card";
     }
 
     return <>
@@ -108,18 +109,17 @@ function ItemList() {
 
         <div className={"item-list"}>
             {
-                itemsToShow.map((item, index) =>
-                    <div onClick={() => setSelected(index)} key={item.id}
-                         className={selectedIndex === index ? "item-card item-selected" : "item-card"}>
-                        <ItemCard
-                            item={item}
-                            isSelected={index === selectedIndex}
-                        />
+                itemsToShow.map((item) =>
+                    <div className={getClassName(item)}
+                         onClick={() => setSelected(item)}>
+                        <ItemCard key={item.id} item={item}/>
                     </div>
                 )
             }
         </div>
+
     </>
+
 }
 
 function ItemCard({item}) {
