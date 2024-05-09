@@ -1,5 +1,8 @@
 import React, {useState} from "react";
-import {useCreateBillingPartyMutation} from "../../../redux/features/api/billingPartyApi";
+import {
+    useCreateBillingPartyMutation,
+    useUpdateBillingPartyMutation
+} from "../../../redux/features/api/billingPartyApi";
 import {toast} from "react-toastify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -13,53 +16,56 @@ import Button from "@mui/material/Button";
 import {FormControl, MenuItem, Select, Slide} from "@mui/material";
 import "./AddBillingPartyComponent.css";
 import AddIcon from "@mui/icons-material/Add";
+import PropTypes from "prop-types";
+import EditIcon from "@mui/icons-material/Edit";
+import {useDispatch} from "react-redux";
+import {setSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) {
+function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
 
-    const [name, setName] = useState("");
+
+    const [name, setName] = useState(billingParty ? billingParty.name : null);
     const [nameError, setNameError] = useState(null);
 
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(billingParty ? billingParty.email : null);
     const [emailError, setEmailError] = useState(null);
 
-    const [vatNumber, setVatNumber] = useState("");
+    const [vatNumber, setVatNumber] = useState(billingParty ? billingParty.vatNumber : null);
     const [vatNumberError, setVatNumberError] = useState(null);
 
-    const [address, setAddress] = useState("");
+    const [address, setAddress] = useState(billingParty ? billingParty.address : null);
     const [addressError, setAddressError] = useState(null);
 
-    const [phoneNumber, setPhoneNumber] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState(billingParty ? billingParty.phoneNumber : null)
     const [phoneError, setPhoneError] = useState(null)
 
     const [openingBalance, setOpeningBalance] = useState("0")
     const [openingBalanceError, setOpeningBalanceError] = useState(null)
 
     const [toReceive, setToReceive] = useState(true);
-    const [createBillingParty, {isLoading}] = useCreateBillingPartyMutation();
-    if (mode === "edit") {
-        if (!billingParty) return;
-        const {name, email, vatNumber, address, phoneNumber, openingBalance} = billingParty;
-        setName(name);
-        setEmail(email);
-        setVatNumber(vatNumber);
-        setAddress(address);
-        setPhoneNumber(phoneNumber);
-        setOpeningBalance(openingBalance);
-    }
+    const [createBillingParty, {isLoading: isCreateLoading}] = useCreateBillingPartyMutation();
+    const [updateBillingParty, {isLoading: isUpdateLoading}] = useUpdateBillingPartyMutation();
+    const dispatch = useDispatch()
 
 
-    if (isLoading) {
+
+    if (isCreateLoading) {
         toast.loading("Adding billing party...", {
-            toastId: "loading-billingParty",
+            toastId: "loading-billingParty-create",
             autoClose: false
         })
-    } else {
-        toast.dismiss("loading-billingParty");
+
+    }
+    if (isUpdateLoading) {
+        toast.loading("Updating billing party...", {
+            toastId: "loading-billingParty-update",
+            autoClose: false
+        });
     }
 
 
@@ -67,7 +73,7 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
 
-        let  balance = parseFloat(openingBalance);
+        let balance = parseFloat(openingBalance);
         balance = toReceive ? balance : -balance;
 
         const body = {
@@ -81,11 +87,40 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
         const {error} = await createBillingParty(body);
 
         if (error) handleError(error)
-        else handleSuccess();
+        else handleAddSuccess();
+    }
+
+    async function onUpdateParty() {
+        const isValid = validateNonEmptyRequiredFields();
+        if (!isValid) return;
+
+        const params = {
+            id: billingParty.id,
+            name,
+            address,
+            phoneNumber,
+            email,
+            vatNumber
+        }
+        const {error} = await updateBillingParty(params);
+        if (error) handleError(error);
+        else handleUpdateSuccess();
     }
 
     function handleError(error) {
-        if (error.data) {
+        toast.dismiss("loading-billingParty-create");
+        toast.dismiss("loading-billingParty-update");
+
+        if (error.status && error.status ===500){
+            toast.error("Server error, Please contact support.", {
+                toastId: "billing-party",
+                autoClose: 7000
+            });
+            return;
+        }
+
+
+        if (error.data ) {
             let problemDetails = error.data;
             let errorMessage = problemDetails.detail;
             let problemType = problemDetails.type;
@@ -121,13 +156,30 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
 
     }
 
-    function handleSuccess() {
+    function handleAddSuccess() {
         toast.success("Billing party has been added.", {
             toastId: "billing-party"
         });
         // Close the dialogue
+        toast.dismiss("loading-billingParty-create");
         closeDialogue();
+    }
 
+    function handleUpdateSuccess() {
+        toast.success("Billing party has been updated", {
+            toastId: "billing-party"
+        });
+        toast.dismiss("loading-billingParty-update");
+        dispatch(setSelectedBillingParty({
+            id: billingParty.id,
+            name,
+            address,
+            phoneNumber,
+            balance : billingParty.balance,
+            vatNumber,
+            email
+        }));
+        closeDialogue();
     }
 
     function resetValues() {
@@ -170,10 +222,19 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
     return <Dialog
         open={open}
         TransitionComponent={Transition}>
-        <DialogTitle>Add New Billing Party</DialogTitle>
+        <DialogTitle>
+            {
+                mode === "add"
+                    ?
+                    "Add new billing party"
+                    :
+                    "Edit billing party"
+            }
+
+        </DialogTitle>
         <DialogContent>
             <DialogContentText>
-                Please fill in the following details to add a new billing party.
+                Please fill in the following details to {mode} a new billing party.
                 <br/>
                 The fields marked with * are mandatory
             </DialogContentText>
@@ -222,8 +283,7 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
                         setEmail(e.target.value)
                         setEmailError(null);
 
-                    }
-                    }
+                    }}
                     required={false}
                     fullWidth
                     className={emailError ? "error" : ""}
@@ -258,52 +318,60 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
 
 
             <div className={"textField-group"}>
-                <div className={"textField-connected"}>
-                    <TextField
-                        type={"text"}
-                        margin="dense"
-                        value={openingBalance}
-                        error={Boolean(openingBalanceError)}
-                        helperText={openingBalanceError}
-                        onChange={(e) => {
-                            const inputValue = e.target.value;
-                            // Regular expression to match float numbers
-                            const regex = /^\d*\.?\d{0,2}$/;
-                            // Check if input value matches the regex
-                            if (regex.test(inputValue) || inputValue === '') {
-                                setOpeningBalance(inputValue);
+                {
+                    mode === "add"
+                    &&
+                    <div className={"textField-connected"}>
+
+                        <TextField
+                            type={"text"}
+                            margin="dense"
+                            value={openingBalance}
+                            error={Boolean(openingBalanceError)}
+                            helperText={openingBalanceError}
+                            onChange={(e) => {
+                                const inputValue = e.target.value;
+                                // Regular expression to match float numbers
+                                const regex = /^\d*\.?\d{0,2}$/;
+                                // Check if input value matches the regex
+                                if (regex.test(inputValue) || inputValue === '') {
+                                    setOpeningBalance(inputValue);
+                                }
+                                setOpeningBalanceError(null);
+
                             }
-                            setOpeningBalanceError(null);
+                            }
+                            fullWidth
+                            label="Opening Balance"
+                            className={openingBalanceError ? "error" : ""}
 
-                        }
-                        }
-                        fullWidth
-                        label="Opening Balance"
-                        className={openingBalanceError ? "error" : ""}
+                            InputProps={{
+                                startAdornment:
+                                    <InputAdornment position="start">
+                                        <CurrencyRupeeIcon/>
+                                    </InputAdornment>,
+                            }}
+                        />
 
-                        InputProps={{
-                            startAdornment:
-                                <InputAdornment position="start">
-                                    <CurrencyRupeeIcon/>
-                                </InputAdornment>,
-                        }}
-                    />
+                        <FormControl sx={{m: 1, minWidth: 120, ml: -0.25}} size="medium">
+                            <Select
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={toReceive}
+                                onChange={(e) => {
+                                    setToReceive(e.target.value)
+                                }}
+                                sx = {{color : toReceive ?'green' : 'red', fontWeight: 'bold' }}
+                            >
+                                <MenuItem value={true} sx = {{color : 'green'}}>
+                                    To Receive
+                                </MenuItem>
+                                <MenuItem value={false} sx = {{color : 'red'}}>To Pay</MenuItem>
 
-                    <FormControl sx={{ m: 1, minWidth: 120 , ml: -0.25, borderRight: "none"}} size="medium">
-                        <Select
-                            labelId="demo-select-small-label"
-                            id="demo-select-small"
-                            value={toReceive}
-                            onChange={(e) => {setToReceive(e.target.value)}}
-                        >
-                            <MenuItem value={true}>
-                                To Receive
-                            </MenuItem>
-                            <MenuItem value={false}>To Pay</MenuItem>
-
-                        </Select>
-                    </FormControl>
-                </div>
+                            </Select>
+                        </FormControl>
+                    </div>
+                }
 
 
                 <TextField
@@ -318,6 +386,7 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
                     }
                     }
                     required={false}
+                    fullWidth={mode === "edit"}
                     label="VAT Number"
                     className={vatNumberError ? "error" : ""}
 
@@ -332,11 +401,23 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
                     size={"small"}
                     color={"error"}>Cancel
             </Button>
-            <Button onClick={onAddParty}
-                    endIcon={<AddIcon/>}
-                    variant={"contained"}
-                    size={"small"}>Add
-            </Button>
+            {
+                mode === "add"
+                    ?
+                    <Button onClick={onAddParty}
+                            endIcon={<AddIcon/>}
+                            variant={"contained"}
+                            size={"small"}>Add
+                    </Button>
+                    :
+                    <Button onClick={onUpdateParty}
+                            endIcon={<EditIcon/>}
+                            variant={"contained"}
+                            size={"small"}>Save
+                    </Button>
+
+            }
+
 
         </DialogActions>
 
@@ -344,4 +425,16 @@ function AddOrEditBillingPartyComponent({mode,billingParty, open, handleClose}) 
 
 }
 
-export default AddOrEditBillingPartyComponent;
+ManageBillingPartyComponent.propTypes = {
+    mode: PropTypes.oneOf(['edit', 'add']).isRequired,
+    item: function (props, propName, componentName) {
+        // Validate item prop only if mode is 'edit'
+        if (props.mode === 'edit' && !props[propName]) {
+            return new Error(
+                `The prop \`${propName}\` is required when mode is 'edit' in component \`${componentName}\`.`
+            );
+        }
+    }
+};
+
+export default ManageBillingPartyComponent;

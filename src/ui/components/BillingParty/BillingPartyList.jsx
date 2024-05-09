@@ -1,8 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {
-    selectSelectedBillingParty,
-    selectSelectedBillingPartyIndex, setSelectedBillingParty,
-    setSelectedBillingPartyIndex
+    selectSelectedBillingParty, setSelectedBillingParty
 } from "../../../redux/features/state/billingPartyState";
 import {useGetBillingPartiesQuery} from "../../../redux/features/api/billingPartyApi";
 import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
@@ -19,7 +17,6 @@ function BillingPartyList() {
     const [sort, setSort] = useState("");
     const [searchString, setSearchString] = useState("");
     const dispatch = useDispatch()
-    const selectedIndex = useSelector(selectSelectedBillingPartyIndex)
     const selectedBillingParty = useSelector(selectSelectedBillingParty)
     const {data, isLoading, error} = useGetBillingPartiesQuery();
 
@@ -29,19 +26,13 @@ function BillingPartyList() {
             <BillingPartyCardSkeleton key={index}/>
         ));
     }
-
-    const billingParties = data.billingParties;
-    if (billingParties.length > 0) {
-        if (!selectedBillingParty) {
-            dispatch(setSelectedBillingParty(billingParties[0]));
-        }
-    }
-
     if (error) {
         return <div> Something went wrong </div>
     }
-
     if (!data) return;
+
+    const billingParties = data.billingParties;
+
 
     if (billingParties.length === 0) {
         return <div>
@@ -49,16 +40,22 @@ function BillingPartyList() {
         </div>
     }
 
-    function getClassName(index) {
-        return index === selectedIndex ? "bp-card bp-selected" : "bp-card";
+    function getClassName(billingParty) {
+        if (!selectedBillingParty) return "bp-card";
+        return billingParty.id === selectedBillingParty.id ? "bp-card bp-selected" : "bp-card";
     }
 
 
     let billingPartiesToShow = [...billingParties];
 
-    if (sort === "name") {
+    if (sort === "name asc") {
         billingPartiesToShow = billingPartiesToShow.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === "balance desc") {
+    }
+    else if (sort === "name desc"){
+        billingPartiesToShow = billingPartiesToShow.sort((a, b) => b.name.localeCompare(a.name));
+
+    }
+    else if (sort === "balance desc") {
         billingPartiesToShow = billingPartiesToShow.sort((a, b) => b.balance - a.balance);
     } else if (sort === "balance asc") {
         billingPartiesToShow = billingPartiesToShow.sort((a, b) => a.balance - b.balance);
@@ -70,9 +67,8 @@ function BillingPartyList() {
     }
 
 
-    function setSelected(index) {
-        dispatch(setSelectedBillingPartyIndex(index))
-        dispatch(setSelectedBillingParty(billingPartiesToShow[index]));
+    function setSelected(billingParty) {
+        dispatch(setSelectedBillingParty(billingParty));
     }
 
     return <>
@@ -111,9 +107,14 @@ function BillingPartyList() {
                     <MenuItem value={"latest"}>
                         Latest
                     </MenuItem>
-                    <MenuItem value={"name"}>
-                        Name (Alphabetical)
+                    <MenuItem value={"name asc"}>
+                        Name (A - Z)
                     </MenuItem>
+
+                    <MenuItem value={"name desc"}>
+                        Name (Z - A)
+                    </MenuItem>
+
                     <MenuItem value={"balance desc"}>
                         Balance (High - Low)
                     </MenuItem>
@@ -128,12 +129,12 @@ function BillingPartyList() {
 
         <div className={"bp-list"}>
             {
-                billingPartiesToShow.map((billingParty, index) =>
-                    <div className={getClassName(index)}
-                         onClick={() => setSelected(index)}>
+                billingPartiesToShow.map((billingParty) =>
+                    <div className={getClassName(billingParty)}
+                         onClick={() => setSelected(billingParty)}>
                         <BillingPartyCard key={billingParty.id}
                                           party={billingParty}
-                                          isSelected={index === selectedIndex}/>
+                                          isSelected={selectedBillingParty && billingParty.id === selectedBillingParty.id}/>
                     </div>
                 )
             }
