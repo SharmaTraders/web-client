@@ -7,7 +7,6 @@ import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
 import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import React, {useState} from "react";
 import Skeleton from '@mui/material/Skeleton';
-import stringAvatar from "../../../utils/stringAvatar";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from '@mui/icons-material/Search';
@@ -27,12 +26,9 @@ function ItemList() {
             <ItemCardSkeleton key={index}/>
         ));
     }
+    if (!data) return;
     let items = [...data.items]; // Clone items to a new array for manipulation
 
-
-    if (items.length > 0 && !selectedItem) {
-        dispatch(setSelectedItem(data.items[0]));
-    }
 
     if (error) {
         return <div> Something went wrong </div>
@@ -67,7 +63,7 @@ function ItemList() {
     }
 
     function getClassName(item) {
-        if (!item) return "item-card";
+        if (!item || !selectedItem) return "item-card";
         return item.id === selectedItem.id ? "item-card item-selected" : "item-card";
     }
 
@@ -110,7 +106,7 @@ function ItemList() {
         <div className={"item-list"}>
             {
                 itemsToShow.map((item) =>
-                    <div className={getClassName(item)}
+                    <div key={item.id} className={getClassName(item)}
                          onClick={() => setSelected(item)}>
                         <ItemCard key={item.id} item={item}/>
                     </div>
@@ -126,19 +122,18 @@ function ItemCard({item}) {
     return <>
         <div className={"item-info"}>
             <Avatar
-                variant={"circular"}
-                {...stringAvatar(item.name)}/>
+                variant={"circular"}>
+                {item.name.charAt(0)}
+            </Avatar>
             <div> {item.name}</div>
         </div>
 
-        <div className={"item-details-card-2"}>
-            <div className={"item-balance"}>
-                {/*{item.quantity} kg*/}
-                10 Kg
+        <div className={"bp-balance"}>
+            <div className={"bold"}>
+                {item.stockWeight} kg
             </div>
-            <div className={"item-balance"}>
-                {/*Estimated Value: Rs. {item.estimatedValue}*/}
-                Rs. 1000
+            <div className={"secondary-text"}>
+                Rs. {item.estimatedPricePerKilo} /kg
             </div>
         </div>
     </>

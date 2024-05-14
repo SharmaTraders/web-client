@@ -11,11 +11,12 @@ import {Slide} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {useAddItemMutation, useUpdateItemMutation} from "../../../redux/features/api/itemApi";
 import InputAdornment from "@mui/material/InputAdornment";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import {useDispatch, useSelector} from "react-redux";
 import {selectSelectedItem, setSelectedItem} from "../../../redux/features/state/itemState";
 import SaveIcon from '@mui/icons-material/Save';
 import PropTypes from "prop-types";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -27,18 +28,27 @@ function ManageItemComponent({open, handleClose, mode}) {
     const [itemName, setItemName] = useState(selectedItem ? selectedItem.name : "");
     const [itemNameError, setItemNameError] = useState(null);
 
-    const [openingStockWeight, setOpeningStockWeight] = useState(selectedItem ? selectedItem.openingStockWeight : "");
+    const [stockWeight, setStockWeight] = useState(selectedItem ? selectedItem.openingStockWeight : "");
     const [openingStockWeightError, setOpeningStockWeightError] = useState(null);
 
-    const [openingStockValue, setOpeningStockValue] = useState(selectedItem ? selectedItem.openingStockValue : "");
-    const [openingStockValueError, setOpeningStockValueError] = useState(null);
+    const [estimatedPricePerKilo, setEstimatedPricePerKilo] = useState(selectedItem ? selectedItem.openingStockValue : "");
+    const [estimatedPricePerKiloError, setEstimatedPricePerKiloError] = useState(null);
 
     const [addItem, {isLoading}] = useAddItemMutation();
-    const [updateItem] = useUpdateItemMutation();
+    const [updateItem, {isLoading : isUpdateLoading}] = useUpdateItemMutation();
     const dispatch = useDispatch()
 
     if (isLoading) {
         toast.loading("Adding item...", {
+            toastId: "loading-item",
+            autoClose: false
+        })
+    } else {
+        toast.dismiss("loading-item");
+    }
+
+    if (isUpdateLoading) {
+        toast.loading("Updating item...", {
             toastId: "loading-item",
             autoClose: false
         })
@@ -68,10 +78,11 @@ function ManageItemComponent({open, handleClose, mode}) {
 
         } else {
             const body = {
-                itemName,
-                openingStockWeight: parseFloat(openingStockWeight),
-                openingStockValue: parseFloat(openingStockValue)
+                name : itemName,
+                stockWeight: parseFloat(stockWeight),
+                estimatedPricePerKilo: parseFloat(estimatedPricePerKilo)
             }
+            console.log(body);
             const {error} = await addItem(body);
 
             if (error) handleError(error)
@@ -96,8 +107,8 @@ function ManageItemComponent({open, handleClose, mode}) {
             if (problemType.toLowerCase() === "openingStockWeight") {
                 setOpeningStockWeightError(errorMessage);
             }
-            if (problemType.toLowerCase() === "openingStockValue") {
-                setOpeningStockValueError(errorMessage);
+            if (problemType.toLowerCase() === "estimatedValuePerKilo") {
+                setEstimatedPricePerKiloError(errorMessage);
             }
             return;
 
@@ -128,26 +139,10 @@ function ManageItemComponent({open, handleClose, mode}) {
 
     }
 
-    function resetValues() {
-        setItemName("");
-        setOpeningStockWeight("");
-        setOpeningStockValue("");
-    }
-
-    function resetErrors() {
-        setItemNameError("");
-        setOpeningStockWeightError("");
-        setOpeningStockValueError("");
-    }
-
     function validateNonEmptyRequiredFields() {
         let isValid = true;
         if (!itemName) {
             setItemNameError("Item Name is required");
-            isValid = false;
-        }
-        if(itemName < 3 || itemName.length > 20){
-            setItemNameError("Item Name must be between 3 and 20 characters");
             isValid = false;
         }
         return isValid;
@@ -155,8 +150,7 @@ function ManageItemComponent({open, handleClose, mode}) {
 
     function closeDialogue() {
         handleClose();
-        resetValues();
-        resetErrors();
+
     }
 
     return <Dialog
@@ -175,7 +169,6 @@ function ManageItemComponent({open, handleClose, mode}) {
                 error={Boolean(itemNameError)}
                 helperText={itemNameError}
                 onChange={(e) => {
-                    console.log(e.target.value); // Log the new value
                     setItemName(e.target.value);
                 }}
                 required
@@ -184,12 +177,12 @@ function ManageItemComponent({open, handleClose, mode}) {
                 label="Item name"
                 autoFocus
             />
-            {mode !== 'edit' && (
+            {mode === 'add' && (
                 <>
                     <TextField
                         type={"text"}
                         margin="dense"
-                        value={openingStockWeight}
+                        value={stockWeight}
                         error={Boolean(openingStockWeightError)}
                         helperText={openingStockWeightError}
                         onChange={(e) => {
@@ -198,7 +191,7 @@ function ManageItemComponent({open, handleClose, mode}) {
                             const regex = /^\d*\.?\d{0,2}$/;
                             // Check if input value matches the regex
                             if (regex.test(inputValue) || inputValue === '') {
-                                setOpeningStockWeight(inputValue);
+                                setStockWeight(inputValue);
                             }
                             setOpeningStockWeightError(null);
                         }}
@@ -210,26 +203,26 @@ function ManageItemComponent({open, handleClose, mode}) {
                     <TextField
                         type={"text"}
                         margin="dense"
-                        value={openingStockValue}
-                        error={Boolean(openingStockValueError)}
-                        helperText={openingStockValueError}
+                        value={estimatedPricePerKilo}
+                        error={Boolean(estimatedPricePerKiloError)}
+                        helperText={estimatedPricePerKiloError}
                         onChange={(e) => {
                             const inputValue = e.target.value;
                             // Regular expression to match float numbers
                             const regex = /^\d*\.?\d{0,2}$/;
                             // Check if input value matches the regex
                             if (regex.test(inputValue) || inputValue === '') {
-                                setOpeningStockValue(inputValue);
+                                setEstimatedPricePerKilo(inputValue);
                             }
-                            setOpeningStockValueError(null);
+                            setEstimatedPricePerKiloError(null);
                         }}
                         fullWidth
-                        label="Total Estimate Value "
-                        className={openingStockValueError ? "error" : ""}
+                        label="Estimated value per kilo (Rs)"
+                        className={estimatedPricePerKiloError ? "error" : ""}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <CurrencyRupeeIcon/>
+                                    <FontAwesomeIcon icon={faRupeeSign} />
                                 </InputAdornment>
                             )
                         }}
@@ -247,7 +240,7 @@ function ManageItemComponent({open, handleClose, mode}) {
                     color={"error"}>Cancel
             </Button>
             <Button onClick={handleItemSubmit}
-                    endIcon={mode === 'edit' ? <SaveIcon/> : <AddIcon/>}
+                    startIcon={mode === 'edit' ? <SaveIcon/> : <AddIcon/>}
                     variant="contained"
                     size="small">{mode === 'edit' ? 'Save Changes' : 'Add'}
             </Button>
@@ -258,14 +251,7 @@ function ManageItemComponent({open, handleClose, mode}) {
 
 ManageItemComponent.propTypes = {
     mode: PropTypes.oneOf(['edit', 'add']).isRequired,
-    item: function (props, propName, componentName) {
-        // Validate item prop only if mode is 'edit'
-        if (props.mode === 'edit' && !props[propName]) {
-            return new Error(
-                `The prop \`${propName}\` is required when mode is 'edit' in component \`${componentName}\`.`
-            );
-        }
-    }
+
 }
 
 

@@ -1,12 +1,10 @@
 import {Avatar} from "@mui/material";
-import stringAvatar from "../../../utils/stringAvatar";
-import {getCurrentTheme} from "../../themes/Theme";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import PlaceIcon from "@mui/icons-material/Place";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import  {useState} from "react";
+import {useState} from "react";
 import ManageBillingPartyComponent from "./ManageBillingPartyComponent";
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 
@@ -30,10 +28,10 @@ function BillingPartyDetailsInfoCard({party}) {
     }
 
     function onEdit() {
-       setOpenEditModal(true);
+        setOpenEditModal(true);
     }
 
-    function handleClose(){
+    function handleClose() {
         setOpenEditModal(false);
     }
 
@@ -42,14 +40,15 @@ function BillingPartyDetailsInfoCard({party}) {
         <div className={"bp-details-card-info"}>
             <div className={"bp-details-card-1"}>
                 <Avatar
-                    variant={"rounded"}
-                    {...stringAvatar(party.name)}
                     sx={
                         {
                             width: "80px",
                             height: "80px",
-                            backgroundColor: getCurrentTheme().palette.primary.light
-                        }}/>
+                        }}
+                    variant={"rounded"}>
+                    {party.name.charAt(0)}
+                </Avatar>
+
 
                 <div className={"bp-details-card-avatar"}>
                     <div className={"bold"}> {party.name}</div>
@@ -93,7 +92,8 @@ function BillingPartyDetailsInfoCard({party}) {
             {
                 openEditModal
                 &&
-                <ManageBillingPartyComponent open={openEditModal} handleClose={handleClose} mode={"edit"} billingParty={party}/>
+                <ManageBillingPartyComponent open={openEditModal} handleClose={handleClose} mode={"edit"}
+                                             billingParty={party}/>
 
             }
         </div>

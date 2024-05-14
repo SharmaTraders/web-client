@@ -15,7 +15,7 @@
 .bp-content {
     display: flex;
     height: 100%;
-    max-height: 74dvh;
+    max-height: 75dvh;
     gap: 1rem;
 }
 
@@ -116,11 +116,11 @@
     gap: 0.4rem;
 }
 
-.positive-balance {
+.primary-color {
     color: var(--primary);
 }
 
-.negative-balance{
+.error-color{
     color: var(--tertiary);
 }
 

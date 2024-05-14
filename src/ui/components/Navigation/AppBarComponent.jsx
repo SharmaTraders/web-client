@@ -40,6 +40,9 @@ function AppBarComponent({open, toggleDrawer}) {
                     easing: theme.transitions.easing.sharp,
                     duration: theme.transitions.duration.leavingScreen,
                 }),
+                backgroundColor: "white",
+                color: theme.palette.text.primary,
+
                 ...(open && {
                     marginLeft: drawerWidth,
                     width: `calc(100% - ${drawerWidth}px)`,
