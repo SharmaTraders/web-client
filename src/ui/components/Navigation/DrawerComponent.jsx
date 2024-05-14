@@ -6,7 +6,6 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import {MainListItems, SecondaryListItems} from "./NavigationItems";
 import {isMobile} from "../../../utils/SystemInfo";
 
