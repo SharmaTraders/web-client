@@ -18,6 +18,7 @@ import {
     TableRow
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import {getBsDateFromAdDate} from "../../../utils/dateConverters";
 
 
 
@@ -81,6 +82,7 @@ function StickyHeadTable({itemId}) {
 
         },
     ];
+
     const rows = data?.stocks || [];
 
     if (rows.length ===0) return  <div>
@@ -122,6 +124,13 @@ function StickyHeadTable({itemId}) {
                                             {value}
                                         </TableCell>
                                     }
+
+                                    if (column.id === "date"){
+                                        return <TableCell key={column.id} align={column.align}>
+                                            {getBsDateFromAdDate(value)}
+                                        </TableCell>
+                                    }
+
                                     return <TableCell key={column.id} align={column.align}>
                                         {value ?? '-'}
                                     </TableCell>
