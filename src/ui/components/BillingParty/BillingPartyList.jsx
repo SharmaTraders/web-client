@@ -6,7 +6,6 @@ import {useGetBillingPartiesQuery} from "../../../redux/features/api/billingPart
 import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import React, {useState} from "react";
 import Skeleton from '@mui/material/Skeleton';
-import stringAvatar from "../../../utils/stringAvatar";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from '@mui/icons-material/Search';
@@ -31,7 +30,7 @@ function BillingPartyList() {
     }
     if (!data) return;
 
-    const billingParties = data.billingParties;
+    const billingParties = data.parties;
 
 
     if (billingParties.length === 0) {
@@ -130,9 +129,9 @@ function BillingPartyList() {
         <div className={"bp-list"}>
             {
                 billingPartiesToShow.map((billingParty) =>
-                    <div className={getClassName(billingParty)}
+                    <div key={billingParty.id} className={getClassName(billingParty)}
                          onClick={() => setSelected(billingParty)}>
-                        <BillingPartyCard key={billingParty.id}
+                        <BillingPartyCard
                                           party={billingParty}
                                           isSelected={selectedBillingParty && billingParty.id === selectedBillingParty.id}/>
                     </div>
@@ -161,7 +160,9 @@ function BillingPartyCard({party}) {
         <div className={"bp-info"}>
             <Avatar
                 variant={"circular"}
-                {...stringAvatar(party.name)}/>
+                >
+                {party.name.charAt(0)}
+            </Avatar>
             <div> {party.name}</div>
         </div>
 
@@ -181,7 +182,6 @@ function BillingPartyCard({party}) {
 function BillingPartyCardSkeleton() {
     return <>
         <div className={"bp-info"}>
-
             <Skeleton animation="wave" variant="circular" width={40} height={40}/>
             <Skeleton animation="wave" variant="rounded" width={40} height={10}/>
         </div>

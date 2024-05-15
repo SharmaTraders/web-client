@@ -10,16 +10,20 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {FormControl, MenuItem, Select, Slide} from "@mui/material";
-import "./AddBillingPartyComponent.css";
+import "./BillingPartyComponent.css";
 import AddIcon from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
-import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from '@mui/icons-material/Save';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+
+
 import {useDispatch} from "react-redux";
 import {setSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
+import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -29,25 +33,25 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
 
 
-    const [name, setName] = useState(billingParty ? billingParty.name : null);
-    const [nameError, setNameError] = useState(null);
+    const [name, setName] = useState(billingParty ? billingParty.name : "");
+    const [nameError, setNameError] = useState("");
 
-    const [email, setEmail] = useState(billingParty ? billingParty.email : null);
-    const [emailError, setEmailError] = useState(null);
+    const [email, setEmail] = useState(billingParty ? billingParty.email : "");
+    const [emailError, setEmailError] = useState("");
 
-    const [vatNumber, setVatNumber] = useState(billingParty ? billingParty.vatNumber : null);
-    const [vatNumberError, setVatNumberError] = useState(null);
+    const [vatNumber, setVatNumber] = useState(billingParty ? billingParty.vatNumber : "");
+    const [vatNumberError, setVatNumberError] = useState("");
 
-    const [address, setAddress] = useState(billingParty ? billingParty.address : null);
-    const [addressError, setAddressError] = useState(null);
+    const [address, setAddress] = useState(billingParty ? billingParty.address : "");
+    const [addressError, setAddressError] = useState("");
 
-    const [phoneNumber, setPhoneNumber] = useState(billingParty ? billingParty.phoneNumber : null)
-    const [phoneError, setPhoneError] = useState(null)
+    const [phoneNumber, setPhoneNumber] = useState(billingParty ? billingParty.phoneNumber : "")
+    const [phoneError, setPhoneError] = useState("")
 
     const [openingBalance, setOpeningBalance] = useState("0")
-    const [openingBalanceError, setOpeningBalanceError] = useState(null)
+    const [openingBalanceError, setOpeningBalanceError] = useState("")
 
-    const [toReceive, setToReceive] = useState(true);
+    const [toReceive, setToReceive] = useState("");
     const [createBillingParty, {isLoading: isCreateLoading}] = useCreateBillingPartyMutation();
     const [updateBillingParty, {isLoading: isUpdateLoading}] = useUpdateBillingPartyMutation();
     const dispatch = useDispatch()
@@ -182,23 +186,6 @@ function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
         closeDialogue();
     }
 
-    function resetValues() {
-        setName("");
-        setAddress("");
-        setPhoneNumber("");
-        setOpeningBalance("");
-        setVatNumber("");
-        setEmail("");
-    }
-
-    function resetErrors() {
-        setNameError("")
-        setAddressError("");
-        setPhoneError("");
-        setOpeningBalanceError("");
-        setVatNumberError("");
-        setEmailError("");
-    }
 
     function validateNonEmptyRequiredFields() {
         let isValid = true;
@@ -215,8 +202,6 @@ function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
 
     function closeDialogue() {
         handleClose();
-        resetValues();
-        resetErrors();
     }
 
     return <Dialog
@@ -301,7 +286,7 @@ function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
                         const inputValue = e.target.value;
                         const regex = /^\d*\.?\d*$/;
                         // Check if input value matches the regex
-                        if (regex.test(inputValue) || inputValue === '') {
+                        if (regex.test(inputValue)) {
                             setPhoneNumber(inputValue);
                         }
                         setPhoneError(null);
@@ -348,7 +333,7 @@ function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
                             InputProps={{
                                 startAdornment:
                                     <InputAdornment position="start">
-                                        <CurrencyRupeeIcon/>
+                                        <FontAwesomeIcon icon={faRupeeSign} />
                                     </InputAdornment>,
                             }}
                         />
@@ -411,9 +396,9 @@ function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
                     </Button>
                     :
                     <Button onClick={onUpdateParty}
-                            endIcon={<EditIcon/>}
+                            endIcon={<SaveIcon/>}
                             variant={"contained"}
-                            size={"small"}>Save
+                            size={"small"}>Save changes
                     </Button>
 
             }

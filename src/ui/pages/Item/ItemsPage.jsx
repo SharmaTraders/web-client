@@ -5,10 +5,11 @@ import ManageItemComponent from "../../components/Item/ManageItemComponent";
 import ItemInfoCard from "../../components/Item/ItemDetailsInfoCard";
 import ItemList from "../../components/Item/ItemList";
 import "./ItemsPage.css";
+import ItemActivityComponent from "../../components/Item/ItemActivityComponent";
+import {isMobile} from "../../../utils/SystemInfo";
 
 function ItemsPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
-    const isMobile = window.innerWidth < 768;
 
 
     function handleClickOpen() {
@@ -32,7 +33,11 @@ function ItemsPage() {
                     startIcon={<AddIcon/>}>
                 Add Item
             </Button>
-            <ManageItemComponent open={openAddModal} handleClose={handleClose}/>
+            {
+                openAddModal &&
+                <ManageItemComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
+
+            }
         </div>
 
         <div className={"item-content"}>
@@ -41,14 +46,12 @@ function ItemsPage() {
             </div>
             <div className={"item-details"}>
                 <div className={"item-details-info"}>
-                    <ItemInfoCard/>
+                    <ItemInfoCard />
                 </div>
 
-                {!isMobile && (
+                {!isMobile() && (
                     <div className={"item-details-history"}>
-                        <p>
-                            Item transaction list is not implemented yet...
-                        </p>
+                       <ItemActivityComponent/>
                     </div>
                 )}
             </div>
