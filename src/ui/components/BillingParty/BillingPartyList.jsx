@@ -31,7 +31,7 @@ function BillingPartyList() {
     }
     if (!data) return;
 
-    const billingParties = data.billingParties;
+    const billingParties = data.parties;
 
 
     if (billingParties.length === 0) {
