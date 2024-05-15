@@ -7,4 +7,9 @@ function getBsDateFromAdDate(adDate) {
 
 }
 
-export { getBsDateFromAdDate };
+function getBsToday(){
+    const date = new NepaliDate(new Date().setDate(new Date().getDate()+1));
+    return date.format('YYYY-MM-DD') // '2078-07-07'
+}
+
+export { getBsDateFromAdDate , getBsToday};

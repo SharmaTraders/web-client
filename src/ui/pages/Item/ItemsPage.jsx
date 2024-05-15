@@ -33,7 +33,11 @@ function ItemsPage() {
                     startIcon={<AddIcon/>}>
                 Add Item
             </Button>
-            <ManageItemComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
+            {
+                openAddModal &&
+                <ManageItemComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
+
+            }
         </div>
 
         <div className={"item-content"}>

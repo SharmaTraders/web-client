@@ -50,9 +50,9 @@ function ItemList() {
     } else if (sort === "NameDesc") {
         items.sort((a, b) => b.name.localeCompare(a.name));
     } else if (sort === "AmountAsc") {
-        items.sort((a, b) => a.amount - b.amount);
+        items.sort((a, b) => a.stockWeight - b.stockWeight);
     } else if (sort === "AmountDesc") {
-        items.sort((a, b) => b.amount - a.amount);
+        items.sort((a, b) => b.stockWeight - a.stockWeight);
     }
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -96,9 +96,9 @@ function ItemList() {
                     <MenuItem value="Latest">Latest</MenuItem>
                     <MenuItem value="NameAsc">Name (A - Z)</MenuItem>
                     <MenuItem value="NameDesc">Name (Z - A)</MenuItem>
-                    <MenuItem value="AmountAsc">Balance (High - Low)
+                    <MenuItem value="AmountAsc">Stock (Low - High)
                     </MenuItem>
-                    <MenuItem value="AmountDesc">Balance (Low - High)</MenuItem>
+                    <MenuItem value="AmountDesc">Stock (High - Low)</MenuItem>
                 </Select>
             </FormControl>
         </div>

@@ -19,6 +19,7 @@ import {useAddStockMutation, useReduceStockMutation} from "../../../redux/featur
 import {toast} from "react-toastify";
 import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
 import "@sbmdkl/nepali-datepicker-reactjs/dist/index.css";
+import { getBsToday} from "../../../utils/dateConverters";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props}/>;
@@ -29,8 +30,8 @@ function ManageStockComponent({open, handleClose, mode}) {
     const dispatch = useDispatch();
 
 
-    const [weight, setWeight] = useState(null);
-    const [weightError, setWeightError] = useState(null);
+    const [weight, setWeight] = useState("");
+    const [weightError, setWeightError] = useState("");
 
     const [expectedValuePerKilo, setExpectedValuePerKilo] = useState(selectedItem ? selectedItem.estimatedPricePerKilo : "");
     const [expectedValuePerKiloError, setExpectedValuePerKiloError] = useState(null);
@@ -41,9 +42,10 @@ function ManageStockComponent({open, handleClose, mode}) {
     const currentDate = new Date().toISOString().split('T')[0];
 
     const [date, setDate] = useState(currentDate);
+    const [dateError, setDateError] = useState("");
 
-    const [remarks, setRemarks] = useState(null);
-    const [remarksError, setRemarksError] = useState(null);
+    const [remarks, setRemarks] = useState("");
+    const [remarksError, setRemarksError] = useState("");
 
     if (addLoading) {
         toast.loading("Adding stock..", {
@@ -140,6 +142,9 @@ function ManageStockComponent({open, handleClose, mode}) {
             if (problemType.toLowerCase() === "remarks") {
                 setRemarksError(errorMessage);
             }
+            if (problemType.toLowerCase() === "date") {
+                setDateError(errorMessage);
+            }
             return;
 
         }
@@ -174,6 +179,7 @@ function ManageStockComponent({open, handleClose, mode}) {
 
     function onDateChange({adDate}) {
         setDate(adDate);
+        setDateError("");
     }
 
     return <Dialog
@@ -188,9 +194,10 @@ function ManageStockComponent({open, handleClose, mode}) {
                 The fields marked with * are mandatory
             </DialogContentText>
 
-            <Calendar className="calendar"
+            <Calendar className={dateError ? "calendar error" : "calendar"}
                       theme="green"
                       language="en"
+                      maxDate = {getBsToday()}
                       placeholder={"Select Date"}
                       onChange={onDateChange}/>
 
@@ -202,10 +209,13 @@ function ManageStockComponent({open, handleClose, mode}) {
                 helperText={weightError}
                 onChange={(e) => {
                     const inputValue = e.target.value;
+                    console.log("Got weight >" + inputValue);
+
                     // Regular expression to match float numbers
                     const regex = /^\d*\.?\d{0,2}$/;
                     // Check if input value matches the regex
-                    if (regex.test(inputValue) || inputValue === '') {
+                    if (regex.test(inputValue)){
+                        console.log("Setting weight >" + inputValue);
                         setWeight(inputValue);
                     }
                     setWeightError(null);

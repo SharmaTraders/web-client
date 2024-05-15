@@ -33,25 +33,25 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
 
 
-    const [name, setName] = useState(billingParty ? billingParty.name : null);
-    const [nameError, setNameError] = useState(null);
+    const [name, setName] = useState(billingParty ? billingParty.name : "");
+    const [nameError, setNameError] = useState("");
 
-    const [email, setEmail] = useState(billingParty ? billingParty.email : null);
-    const [emailError, setEmailError] = useState(null);
+    const [email, setEmail] = useState(billingParty ? billingParty.email : "");
+    const [emailError, setEmailError] = useState("");
 
-    const [vatNumber, setVatNumber] = useState(billingParty ? billingParty.vatNumber : null);
-    const [vatNumberError, setVatNumberError] = useState(null);
+    const [vatNumber, setVatNumber] = useState(billingParty ? billingParty.vatNumber : "");
+    const [vatNumberError, setVatNumberError] = useState("");
 
-    const [address, setAddress] = useState(billingParty ? billingParty.address : null);
-    const [addressError, setAddressError] = useState(null);
+    const [address, setAddress] = useState(billingParty ? billingParty.address : "");
+    const [addressError, setAddressError] = useState("");
 
-    const [phoneNumber, setPhoneNumber] = useState(billingParty ? billingParty.phoneNumber : null)
-    const [phoneError, setPhoneError] = useState(null)
+    const [phoneNumber, setPhoneNumber] = useState(billingParty ? billingParty.phoneNumber : "")
+    const [phoneError, setPhoneError] = useState("")
 
     const [openingBalance, setOpeningBalance] = useState("0")
-    const [openingBalanceError, setOpeningBalanceError] = useState(null)
+    const [openingBalanceError, setOpeningBalanceError] = useState("")
 
-    const [toReceive, setToReceive] = useState(true);
+    const [toReceive, setToReceive] = useState("");
     const [createBillingParty, {isLoading: isCreateLoading}] = useCreateBillingPartyMutation();
     const [updateBillingParty, {isLoading: isUpdateLoading}] = useUpdateBillingPartyMutation();
     const dispatch = useDispatch()

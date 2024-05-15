@@ -129,9 +129,9 @@ function BillingPartyList() {
         <div className={"bp-list"}>
             {
                 billingPartiesToShow.map((billingParty) =>
-                    <div className={getClassName(billingParty)}
+                    <div key={billingParty.id} className={getClassName(billingParty)}
                          onClick={() => setSelected(billingParty)}>
-                        <BillingPartyCard key={billingParty.id}
+                        <BillingPartyCard
                                           party={billingParty}
                                           isSelected={selectedBillingParty && billingParty.id === selectedBillingParty.id}/>
                     </div>

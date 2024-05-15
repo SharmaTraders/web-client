@@ -24,15 +24,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function ManageItemComponent({open, handleClose, mode}) {
 
-    const selectedItem = useSelector(selectSelectedItem);
+    let selectedItem = useSelector(selectSelectedItem);
+    if (mode === "add") selectedItem = {}
+
+
     const [itemName, setItemName] = useState(selectedItem ? selectedItem.name : "");
-    const [itemNameError, setItemNameError] = useState(null);
+    const [itemNameError, setItemNameError] = useState("");
 
     const [stockWeight, setStockWeight] = useState(selectedItem ? selectedItem.openingStockWeight : "");
-    const [openingStockWeightError, setOpeningStockWeightError] = useState(null);
+    const [openingStockWeightError, setOpeningStockWeightError] = useState("");
 
     const [estimatedPricePerKilo, setEstimatedPricePerKilo] = useState(selectedItem ? selectedItem.openingStockValue : "");
-    const [estimatedPricePerKiloError, setEstimatedPricePerKiloError] = useState(null);
+    const [estimatedPricePerKiloError, setEstimatedPricePerKiloError] = useState("");
 
     const [addItem, {isLoading}] = useAddItemMutation();
     const [updateItem, {isLoading : isUpdateLoading}] = useUpdateItemMutation();
@@ -43,8 +46,6 @@ function ManageItemComponent({open, handleClose, mode}) {
             toastId: "loading-item",
             autoClose: false
         })
-    } else {
-        toast.dismiss("loading-item");
     }
 
     if (isUpdateLoading) {
@@ -52,8 +53,6 @@ function ManageItemComponent({open, handleClose, mode}) {
             toastId: "loading-item",
             autoClose: false
         })
-    } else {
-        toast.dismiss("loading-item");
     }
 
     async function handleItemSubmit() {
@@ -91,6 +90,8 @@ function ManageItemComponent({open, handleClose, mode}) {
     }
 
     function handleError(error) {
+        toast.dismiss("loading-item");
+
         if (error.data) {
             let problemDetails = error.data;
             let errorMessage = problemDetails.detail;
@@ -124,6 +125,8 @@ function ManageItemComponent({open, handleClose, mode}) {
     }
 
     function handleSuccess() {
+        toast.dismiss("loading-item");
+
         if (mode === 'edit'){
             toast.success("Item has been updated.", {
                 toastId: "edit-item-success",
