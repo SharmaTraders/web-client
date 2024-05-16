@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
     TextField,
     Button,
@@ -72,15 +72,8 @@ function InvoicePage() {
     const [selectedBillingPartyError, setSelectedBillingPartyError] = useState('');
     const [addPurchase, {isLoading : isAddLoading}] = useAddPurchaseMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [print, setPrint] = useState(false);
 
     let vatPercentage = 13;
-
-    useEffect(() => {
-        if (print) {
-            handleSavePurchase();
-        }
-    }, [print]);
 
     if (isItemLoading){
         toast.loading("Loading items...", {
@@ -287,45 +280,12 @@ function InvoicePage() {
         }
     }
 
-    //
-    // function resetValues() {
-    //     // // if there are multiple items remove all of them and add one
-    //     setInvoiceItems([initialInvoiceItem]);
-    //     setItemReset(true);
-    //     console.log(invoiceItems.length);
-    //     setInvoiceNumber('');
-    //     setShowVAT(false);
-    //     setVatAmount(0);
-    //     setShowTransportFees(false);
-    //     setTransportFees('');
-    //     setPaidAmount(0);
-    //     setChecked(false);
-    //     setRemarks('');
-    //     setPrint(false);
-    // }
-
-    // function resetErrors() {
-    //     setSelectedBillingPartyError('');
-    //     setInvoiceDateError('');
-    //     setInvoiceNumberError('');
-    //     setTransportFeesError('');
-    //     setPaidAmountError('');
-    //     setRemarksError('');
-    //     setItemErrors([{
-    //         itemIdError: '',
-    //         quantityError: '',
-    //         rateError: ''
-    //     }]);
-    // }
-
     function handleSuccess() {
         toast.dismiss("add-purchase-loading");
         toast.success("Purchase invoice has been added print", {
             toastId: "add-purchase-success",
             autoClose: 5000
         });
-        // resetValues();
-        // resetErrors();
     }
 
     function validateNonEmptyRequiredFields() {
@@ -382,13 +342,19 @@ function InvoicePage() {
 
             return {itemIdError, quantityError, rateError};
         });
-
         setItemErrors(newErrors);
-
         return isValid;
     }
 
-    async function handleSavePurchase() {
+    function handleSaveAndPrint() {
+        handleSavePurchase(true)
+    }
+
+    function handleSaveAndWithoutPrint(){
+        handleSavePurchase(false)
+    }
+
+    async function handleSavePurchase(print) {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
 
@@ -417,7 +383,6 @@ function InvoicePage() {
         } catch (error) {
             handleError(error);
         } finally {
-            console.log(print)
             if (print) {
                 console.log("Print dialog opened")
                 // Set up the event listener before calling window.print()
@@ -433,13 +398,10 @@ function InvoicePage() {
             }
             setIsSubmitting(false);
             toast.dismiss("add-purchase-loading");
-            setPrint(false);
             navigate('/');
 
         }
     }
-
-
 
     const handleRemarkChange = (value) => {
         setRemarks(value);
@@ -487,12 +449,6 @@ function InvoicePage() {
 
     const totalAmount = calculateTotalAmount(invoiceItems, vatAmount, transportFees);
     const remainingAmount = totalAmount - paidAmount;
-
-    function handleSaveAndPrint() {
-        setPrint(true);
-        console.log(print)
-        handleSavePurchase();
-    }
 
     return (
         <Box sx={{margin: 2}}>
@@ -804,7 +760,7 @@ function InvoicePage() {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                    <Button variant="contained" color="primary" onClick={handleSavePurchase}>
+                    <Button variant="contained" color="primary" onClick={handleSaveAndWithoutPrint}>
                         {isSubmitting ? "Saving..." : "Save Purchase Invoice"}
                     </Button>
                 </Grid>
