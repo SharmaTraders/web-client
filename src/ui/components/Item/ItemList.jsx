@@ -26,16 +26,21 @@ function ItemList() {
             <ItemCardSkeleton key={index}/>
         ));
     }
+
     if (!data) return;
-    let items = [...data.items]; // Clone items to a new array for manipulation
-
-
+  
     if (error) {
         return <div> Something went wrong </div>
     }
 
+    let items = data.items; // Clone items to a new array for manipulation
+
     if (items.length === 0) {
         return <div>No items found. You can add a new item by clicking the Add Item button above.</div>
+    }
+
+    if (items.length > 0 && !selectedItem) {
+        dispatch(setSelectedItem(data.items[0]));
     }
 
     function setSelected(item) {

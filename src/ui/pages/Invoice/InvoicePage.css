@@ -1,0 +1,20 @@
+.add-new-button {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    color: #1976d2;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.add-new-button:hover {
+    background-color: #f5f5f5;
+}
+
+.remaining-Amount {
+    color: #0b4e20;
+}
+
+.delete-icon:hover {
+    color:red;
+}

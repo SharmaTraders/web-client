@@ -52,7 +52,7 @@ function MainListItems() {
                 <ListItemIcon>
                     <ShoppingCartIcon/>
                 </ListItemIcon>
-                <ListItemText primary="Purchase"/>
+                <ListItemText primary="PurchasePage"/>
             </ListItemButton>
             </Tooltip>
 
@@ -108,7 +108,7 @@ function SecondaryListItems() {
                 <ListItemIcon>
                     <AssignmentIcon/>
                 </ListItemIcon>
-                <ListItemText primary="Purchase Reports"/>
+                <ListItemText primary="PurchasePage Reports"/>
             </ListItemButton>
 
             <ListItemButton>
