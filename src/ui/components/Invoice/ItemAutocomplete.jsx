@@ -38,7 +38,7 @@ function ItemAutoComplete({ itemsData, onItemSelected }) {
                 id="item-autocomplete"
                 options={options}
                 getOptionLabel={(option) => option ? option.name : ""}
-                renderInput={(params) => <TextField {...params} label="Item" />}
+                renderInput={(params) => <TextField {...params} label="Item" required/>}
                 onChange={handleSelect}
                 renderOption={(props, option) => (
                     option.id === "add_new_item" ? (

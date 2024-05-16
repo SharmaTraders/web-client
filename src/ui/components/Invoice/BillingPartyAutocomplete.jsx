@@ -37,7 +37,7 @@ function BillingPartyAutocomplete({billingPartiesData}) {
                 id="billing-party-autocomplete"
                 options={options}
                 getOptionLabel={(option) => option ? option.name : ""}
-                renderInput={(params) => <TextField {...params} label="Billing Party" />}
+                renderInput={(params) => <TextField {...params} label="Billing Party" required/>}
                 onChange={handleSelect}
                 renderOption={(props, option) => (
                     option.id === "add_new_party" ? (

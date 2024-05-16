@@ -25,6 +25,7 @@ import {selectSelectedBillingParty} from "../../../redux/features/state/billingP
 import {useSelector} from "react-redux";
 import "./InvoicePage.css";
 import {useNavigate} from "react-router-dom";
+import {getBsToday} from "../../../utils/dateConverters";
 
 function InvoicePage() {
 
@@ -52,8 +53,9 @@ function InvoicePage() {
     }]);
 
     const navigate = useNavigate();
-    const [invoiceDate, setInvoiceDate] = useState('');
-    const [invoiceDateError, setInvoiceDateError] = useState('');
+    const currentDate = new Date().toISOString().split('T')[0];
+    const [date, setDate] = useState(currentDate);
+    const [dateError, setDateError] = useState('');
     const [invoiceNumber, setInvoiceNumber] = useState('');
     const [invoiceNumberError, setInvoiceNumberError] = useState('');
     const [showVAT, setShowVAT] = useState(false);
@@ -137,7 +139,8 @@ function InvoicePage() {
     };
 
     const handleDateChange = ({ adDate}) => {
-        setInvoiceDate(adDate);
+        setDate(adDate);
+        setDateError("");
     };
 
     const addItem = () => {
@@ -242,7 +245,7 @@ function InvoicePage() {
                 const errorMessage = value.join(' ');
 
                 if (key.startsWith("RequestBody.PurchaseLines")) {
-                    const match = key.match(/RequestBody\.PurchaseLines\[(\d+)\]\.(\w+)/);
+                    const match = key.match(/RequestBody\.PurchaseLines\[(\d+)]\.(\w+)/);
                     if (match) {
                         const index = parseInt(match[1], 10);
                         const field = match[2];
@@ -276,7 +279,7 @@ function InvoicePage() {
 
             // Set new error states
             setSelectedBillingPartyError(newSelectedBillingPartyError);
-            setInvoiceDateError(newInvoiceDateError);
+            setDateError(newInvoiceDateError);
             setTransportFeesError(newTransportFeesError);
             setPaidAmountError(newPaidAmountError);
             setRemarksError(newRemarksError);
@@ -335,11 +338,11 @@ function InvoicePage() {
             setSelectedBillingPartyError("");
         }
 
-        if (!invoiceDate) {
-            setInvoiceDateError("Invoice date is required");
+        if (!date) {
+            setDateError("Invoice date is required");
             isValid = false;
         } else {
-            setInvoiceDateError("");
+            setDateError("");
         }
 
         if (invoiceNumber) {
@@ -400,7 +403,7 @@ function InvoicePage() {
         const data = {
             billingPartyId: selectedBillingParty.id,
             purchaseLines: purchaseLines,
-            date: invoiceDate,
+            date: date,
             remarks: remarks,
             vatAmount: vatAmount ? vatAmount : 0,
             transportFee: transportFees ? transportFees : 0,
@@ -494,6 +497,7 @@ function InvoicePage() {
     return (
         <Box sx={{margin: 2}}>
             <Typography variant="h5" gutterBottom mb={2}>Create Purchase Invoice</Typography>
+            <Typography  gutterBottom mb={2}>The fields marked with * are mandatory </Typography>
             <Grid container spacing={2}>
                 <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
                     <Grid item xs={12} md={4}>
@@ -518,10 +522,15 @@ function InvoicePage() {
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Calendar onChange={handleDateChange} theme='#123421'/>
-                            {invoiceDateError && (
+                            <Calendar className={dateError ? "calendar error" : "calendar"}
+                                      theme="green"
+                                      language="en"
+                                      maxDate = {getBsToday()}
+                                      placeholder={"Select Date"}
+                                      onChange={handleDateChange}/>
+                            {dateError && (
                                 <Typography color="error" variant="body2">
-                                    {invoiceDateError}
+                                    {dateError}
                                 </Typography>
                             )}
                         </Grid>
@@ -563,6 +572,7 @@ function InvoicePage() {
 
                         <Grid item xs={12} sm={4} md={2}>
                             <TextField
+                                required
                                 fullWidth
                                 label="Quantity"
                                 type="number"
@@ -577,6 +587,7 @@ function InvoicePage() {
 
                         <Grid item xs={12} sm={4} md={2}>
                             <TextField
+                                required
                                 fullWidth
                                 label="Rate"
                                 type="number"
