@@ -7,13 +7,12 @@ import BillingPartyList from "../../components/BillingParty/BillingPartyList";
 import {useSelector} from "react-redux";
 import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 import BillingPartyDetailsInfoCard from "../../components/BillingParty/BillingPartyInfoCard";
+import {isMobile} from "../../../utils/SystemInfo";
 
 
 function BillingPartiesPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
     const selectedBillingParty = useSelector(selectSelectedBillingParty);
-
-    let isMobile = window.innerWidth < 768;
 
     function handleClickOpen() {
         setOpenAddModal(true)
@@ -49,7 +48,7 @@ function BillingPartiesPage() {
 
                 </div>
 
-                {!isMobile && (
+                {!isMobile() && (
                     <div className={"bp-details-history"}>
                         <p>
                             Party transaction list is not implemented yet...

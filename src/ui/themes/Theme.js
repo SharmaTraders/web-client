@@ -23,7 +23,7 @@ function getCurrentTheme(){
                 secondary: '#3f3c3c'
             },
             error:{
-                main : "#fe5e41"
+                main : "#e3526e"
             },
             warning:{
                 main: "#f3c178"

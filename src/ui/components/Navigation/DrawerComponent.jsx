@@ -6,14 +6,13 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import {MainListItems, SecondaryListItems} from "./NavigationItems";
+import {isMobile} from "../../../utils/SystemInfo";
 
 function DrawerComponent({open, toggleDrawer}) {
 
     const drawerWidth = 190;
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <MuiDrawer
@@ -29,6 +28,7 @@ function DrawerComponent({open, toggleDrawer}) {
                         easing: theme.transitions.easing.sharp,
                         duration: theme.transitions.duration.enteringScreen,
                     }),
+
                     boxSizing: 'border-box',
                     ...(!open && {
                         overflowX: 'hidden',
@@ -49,8 +49,9 @@ function DrawerComponent({open, toggleDrawer}) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-end',
+                    backgroundColor: "white",
+                    color: theme.palette.text.primary,
                     px: [1],
-                    backgroundColor: theme.palette.primary.main,
                 }}
 
             >
@@ -62,13 +63,13 @@ function DrawerComponent({open, toggleDrawer}) {
             <Divider/>
 
             {/* Applying conditional style based on `open` state and `isMobile` */}
-            <List sx={{...(isMobile && !open && {display: 'none'})}}>
+            <List sx={{...(isMobile() && !open && {display: 'none'})}}>
                 <MainListItems/>
             </List>
 
             <Divider/>
 
-            <List sx={{...(isMobile && !open && {display: 'none'})}}>
+            <List sx={{...(isMobile() && !open && {display: 'none'})}}>
                 <SecondaryListItems/>
             </List>
 

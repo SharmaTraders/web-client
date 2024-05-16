@@ -7,7 +7,6 @@ import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
 import {Avatar, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import React, {useState} from "react";
 import Skeleton from '@mui/material/Skeleton';
-import stringAvatar from "../../../utils/stringAvatar";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from '@mui/icons-material/Search';
@@ -28,6 +27,8 @@ function ItemList() {
         ));
     }
 
+    if (!data) return;
+  
     if (error) {
         return <div> Something went wrong </div>
     }
@@ -54,9 +55,9 @@ function ItemList() {
     } else if (sort === "NameDesc") {
         items.sort((a, b) => b.name.localeCompare(a.name));
     } else if (sort === "AmountAsc") {
-        items.sort((a, b) => a.amount - b.amount);
+        items.sort((a, b) => a.stockWeight - b.stockWeight);
     } else if (sort === "AmountDesc") {
-        items.sort((a, b) => b.amount - a.amount);
+        items.sort((a, b) => b.stockWeight - a.stockWeight);
     }
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -67,7 +68,7 @@ function ItemList() {
     }
 
     function getClassName(item) {
-        if (!item) return "item-card";
+        if (!item || !selectedItem) return "item-card";
         return item.id === selectedItem.id ? "item-card item-selected" : "item-card";
     }
 
@@ -100,9 +101,9 @@ function ItemList() {
                     <MenuItem value="Latest">Latest</MenuItem>
                     <MenuItem value="NameAsc">Name (A - Z)</MenuItem>
                     <MenuItem value="NameDesc">Name (Z - A)</MenuItem>
-                    <MenuItem value="AmountAsc">Balance (High - Low)
+                    <MenuItem value="AmountAsc">Stock (Low - High)
                     </MenuItem>
-                    <MenuItem value="AmountDesc">Balance (Low - High)</MenuItem>
+                    <MenuItem value="AmountDesc">Stock (High - Low)</MenuItem>
                 </Select>
             </FormControl>
         </div>
@@ -110,7 +111,7 @@ function ItemList() {
         <div className={"item-list"}>
             {
                 itemsToShow.map((item) =>
-                    <div className={getClassName(item)}
+                    <div key={item.id} className={getClassName(item)}
                          onClick={() => setSelected(item)}>
                         <ItemCard key={item.id} item={item}/>
                     </div>
@@ -126,19 +127,18 @@ function ItemCard({item}) {
     return <>
         <div className={"item-info"}>
             <Avatar
-                variant={"circular"}
-                {...stringAvatar(item.name)}/>
+                variant={"circular"}>
+                {item.name.charAt(0)}
+            </Avatar>
             <div> {item.name}</div>
         </div>
 
-        <div className={"item-details-card-2"}>
-            <div className={"item-balance"}>
-                {/*{item.quantity} kg*/}
-                10 Kg
+        <div className={"bp-balance"}>
+            <div className={"bold"}>
+                {item.stockWeight} kg
             </div>
-            <div className={"item-balance"}>
-                {/*Estimated Value: Rs. {item.estimatedValue}*/}
-                Rs. 1000
+            <div className={"secondary-text"}>
+                Rs. {item.estimatedPricePerKilo} /kg
             </div>
         </div>
     </>

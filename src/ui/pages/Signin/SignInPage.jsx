@@ -92,6 +92,7 @@ function SignInPage() {
     }
 
     function handleError(error) {
+        toast.dismiss(loadingToastId);
         if (error.data) {
             let problemDetails = error.data;
             let errorMessage = problemDetails.detail;
@@ -117,7 +118,6 @@ function SignInPage() {
             })
         }
 
-        toast.dismiss(loadingToastId);
     }
 
     function handleSuccess(data) {
