@@ -14,3 +14,7 @@
 .remaining-Amount {
     color: #0b4e20;
 }
+
+.delete-icon:hover {
+    color:red;
+}

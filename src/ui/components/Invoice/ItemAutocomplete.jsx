@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Autocomplete, TextField, ListItem, ListItemText, Box, Typography } from '@mui/material';
 import ManageItemComponent from "../Item/ManageItemComponent";
-import { setSelectedItem } from "../../../redux/features/state/itemState";
-import { useDispatch } from "react-redux";
 
-function ItemAutoComplete({ itemsData, addNewItem, onItemSelected }) {
+function ItemAutoComplete({ itemsData, onItemSelected }) {
     const [openAddModal, setOpenAddModal] = useState(false);
-    const dispatch = useDispatch();
 
     function handleClickOpen() {
         setOpenAddModal(true);
@@ -22,12 +19,16 @@ function ItemAutoComplete({ itemsData, addNewItem, onItemSelected }) {
     ];
 
     const handleSelect = (event, value) => {
-        if (value && value.id === "add_new_item") {
-            handleClickOpen();
-        } else {
-            dispatch(setSelectedItem(value));
-            onItemSelected(value);
+        if(value){
+            if (value.id === "add_new_item") {
+                handleClickOpen();
+            } else {
+                onItemSelected(value);
+            }
+        }else {
+            onItemSelected([]);
         }
+
     };
 
     return (
@@ -36,7 +37,7 @@ function ItemAutoComplete({ itemsData, addNewItem, onItemSelected }) {
                 disablePortal
                 id="item-autocomplete"
                 options={options}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option ? option.name : ""}
                 renderInput={(params) => <TextField {...params} label="Item" />}
                 onChange={handleSelect}
                 renderOption={(props, option) => (
@@ -60,5 +61,4 @@ function ItemAutoComplete({ itemsData, addNewItem, onItemSelected }) {
         </>
     );
 }
-
 export default ItemAutoComplete;

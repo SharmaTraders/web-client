@@ -4,7 +4,7 @@ import ManageBillingPartyComponent from "../BillingParty/ManageBillingPartyCompo
 import { setSelectedBillingParty } from "../../../redux/features/state/billingPartyState";
 import { useDispatch } from "react-redux";
 
-function BillingPartyAutocomplete({ billingPartiesData, setSelectedBillingPartyFromInvoice, addNewParty }) {
+function BillingPartyAutocomplete({billingPartiesData}) {
     const [openAddModal, setOpenAddModal] = useState(false);
     const dispatch = useDispatch();
 
@@ -36,7 +36,7 @@ function BillingPartyAutocomplete({ billingPartiesData, setSelectedBillingPartyF
                 disablePortal
                 id="billing-party-autocomplete"
                 options={options}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option ? option.name : ""}
                 renderInput={(params) => <TextField {...params} label="Billing Party" />}
                 onChange={handleSelect}
                 renderOption={(props, option) => (

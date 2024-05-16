@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     TextField,
     Button,
@@ -11,7 +11,6 @@ import {
     FormControlLabel
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import {useGetBillingPartiesQuery} from "../../../redux/features/api/billingPartyApi";
 import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
 import BillingPartyAutocomplete from "../../components/Invoice/BillingPartyAutocomplete";
@@ -25,28 +24,34 @@ import {useAddPurchaseMutation} from "../../../redux/features/api/purchase";
 import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 import {useSelector} from "react-redux";
 import "./InvoicePage.css";
+import {useNavigate} from "react-router-dom";
 
 function InvoicePage() {
-    const {
-        data: billingPartiesDatas,
-        isLoading: isLoadingBillingParties,
-        error: billingPartiesError
-    } = useGetBillingPartiesQuery();
-    const {data: itemsDatas, isLoading: isLoadingItems, error: itemsError} = useGetItemsQuery();
 
-    const [invoiceItems, setInvoiceItems] = useState([{
+    // Fetch billing parties and items
+    const {data: billingParties, isLoading: isLoadingBillingParties, error: billingPartiesError } = useGetBillingPartiesQuery();
+    const {data: items, isLoading: isItemLoading, error: itemsError} = useGetItemsQuery();
+
+    // Initialize states
+    const initialInvoiceItem = {
         itemId: '',
         itemName: '',
         quantity: '',
         rate: '',
         report: '',
         amount: ''
-    }]);
+    };
+
+    const [invoiceItems, setInvoiceItems] = useState([
+        initialInvoiceItem]);
+
     const [itemErrors, setItemErrors] = useState([{
         itemIdError: '',
         quantityError: '',
         rateError: ''
     }]);
+
+    const navigate = useNavigate();
     const [invoiceDate, setInvoiceDate] = useState('');
     const [invoiceDateError, setInvoiceDateError] = useState('');
     const [invoiceNumber, setInvoiceNumber] = useState('');
@@ -63,9 +68,35 @@ function InvoicePage() {
     const [remarksError, setRemarksError] = useState('');
     const selectedBillingParty = useSelector(selectSelectedBillingParty);
     const [selectedBillingPartyError, setSelectedBillingPartyError] = useState('');
-    const [addPurchase, isLoading] = useAddPurchaseMutation();
-    let vatPercentage = 13;
+    const [addPurchase, {isLoading : isAddLoading}] = useAddPurchaseMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [print, setPrint] = useState(false);
+
+    let vatPercentage = 13;
+
+    useEffect(() => {
+        if (print) {
+            handleSavePurchase();
+        }
+    }, [print]);
+
+    if (isItemLoading){
+        toast.loading("Loading items...", {
+            toastId: "loading-items",
+            autoClose: false
+        })
+    } else {
+        toast.dismiss("loading-items");
+    }
+
+    if (isAddLoading) {
+        toast.loading("Adding purchase invoice...", {
+            toastId: "add-purchase-loading",
+            autoClose: false
+        });
+    } else {
+        toast.dismiss("add-purchase-loading");
+    }
 
     const calculateSubtotal = (items) => {
         return items.reduce((total, item) => total + (item.amount || 0), 0);
@@ -75,7 +106,14 @@ function InvoicePage() {
         return calculateSubtotal(items) + vatAmount + (parseFloat(transportFees) || 0);
     };
 
+    function updateState(newItems, newVatAmount, newTotalAmount) {
+        setInvoiceItems(newItems);
+        setVatAmount(newVatAmount);
+        setPaidAmount(checked ? newTotalAmount : paidAmount);
+    }
+
     const handleItemChange = (index, field, value) => {
+        // Updating the specific field of an item in the invoiceItems array.
         const newItems = invoiceItems.map((item, idx) => {
             if (idx === index) {
                 const updatedItem = {...item, [field]: value};
@@ -89,21 +127,21 @@ function InvoicePage() {
             return item;
         });
 
+        // Calculate the new subtotal, VAT amount, and total amount
         const newSubtotal = calculateSubtotal(newItems);
         const newVatAmount = showVAT ? newSubtotal * 0.13 : 0;
         const newTotalAmount = calculateTotalAmount(newItems, newVatAmount, transportFees);
 
-        setInvoiceItems(newItems);
-        setVatAmount(newVatAmount);
-        setPaidAmount(checked ? newTotalAmount : paidAmount);
+        // Update the state with the new values
+        updateState(newItems, newVatAmount, newTotalAmount);
     };
 
-    const handleDateChange = ({bsDate, adDate}) => {
+    const handleDateChange = ({ adDate}) => {
         setInvoiceDate(adDate);
     };
 
     const addItem = () => {
-        setInvoiceItems([...invoiceItems, {itemName: '', quantity: '', rate: '', report: '', amount: ''}]);
+        setInvoiceItems([...invoiceItems,initialInvoiceItem]);
         setItemErrors([...itemErrors, {itemIdError: '', quantityError: '', rateError: ''}]);
     };
 
@@ -116,10 +154,8 @@ function InvoicePage() {
         const newVatAmount = showVAT ? newSubtotal * 0.13 : 0;
         const newTotalAmount = calculateTotalAmount(newItems, newVatAmount, transportFees);
 
-        setInvoiceItems(newItems);
         setItemErrors(newErrors);
-        setVatAmount(newVatAmount);
-        setPaidAmount(checked ? newTotalAmount : paidAmount);
+        updateState(newItems, newVatAmount, newTotalAmount);
     };
 
     const handleAddVATClick = () => {
@@ -127,8 +163,8 @@ function InvoicePage() {
         const newVatAmount = newSubtotal * 0.13;
         const newTotalAmount = calculateTotalAmount(invoiceItems, newVatAmount, transportFees);
 
-        setVatAmount(newVatAmount);
         setShowVAT(true);
+        setVatAmount(newVatAmount);
         setPaidAmount(checked ? newTotalAmount : paidAmount);
     };
 
@@ -172,6 +208,7 @@ function InvoicePage() {
     };
 
     function handleError(error) {
+        toast.dismiss("add-purchase-loading");
         if (error.status && error.status === 500) {
             toast.error("Server error, Please contact support.", {
                 toastId: "add-purchase-error",
@@ -182,80 +219,110 @@ function InvoicePage() {
 
         if (error.data) {
             let problemDetails = error.data;
-            let errorMessage = problemDetails.detail;
-            let problemType = problemDetails.type;
+            let errorMessage = problemDetails.title;
+            let errorDetails = problemDetails.errors;
 
+            // Show a general error toast
             toast.error(errorMessage, {
                 toastId: "add-purchase-party",
                 autoClose: 7000
             });
 
-            if (problemType.toLowerCase() === "billingparty") {
-                setSelectedBillingPartyError(errorMessage);
-            } else if (problemType.toLowerCase() === "date") {
-                setInvoiceDateError(errorMessage);
-            } else if (problemType.toLowerCase() === "transportfee") {
-                setTransportFeesError(errorMessage);
-            } else if (problemType.toLowerCase() === "paidamount") {
-                setPaidAmountError(errorMessage);
-            } else if (problemType.toLowerCase() === "remarks") {
-                setRemarksError(errorMessage);
-            } else if (problemType.toLowerCase === "quantity") {
-                // TODO :  Handle quantity error for each item
-                const newErrors = itemErrors.map((error, index) => {
-                    const item = invoiceItems[index];
-                    let quantityError = '';
+            // Initialize new error states
+            let newSelectedBillingPartyError = '';
+            let newInvoiceDateError = '';
+            let newTransportFeesError = '';
+            let newPaidAmountError = '';
+            let newRemarksError = '';
+            let newItemErrors = [...itemErrors];
 
-                    if (!item.quantity || item.quantity <= 0) {
-                        quantityError = errorMessage;
+
+            // Map server errors to the corresponding form fields
+            for (const [key, value] of Object.entries(errorDetails)) {
+                const errorMessage = value.join(' ');
+
+                if (key.startsWith("RequestBody.PurchaseLines")) {
+                    const match = key.match(/RequestBody\.PurchaseLines\[(\d+)\]\.(\w+)/);
+                    if (match) {
+                        const index = parseInt(match[1], 10);
+                        const field = match[2];
+
+                        if (field === "ItemId") {
+                            newItemErrors[index].itemIdError = errorMessage;
+                        } else if (field === "Quantity") {
+                            newItemErrors[index].quantityError = errorMessage;
+                        } else if (field === "UnitPrice") {
+                            newItemErrors[index].rateError = errorMessage;
+                        }
                     }
+                } else if (key === "RequestBody.BillingPartyId") {
+                    newSelectedBillingPartyError = errorMessage;
+                } else if (key === "RequestBody.Date") {
+                    newInvoiceDateError = errorMessage;
+                } else if (key === "RequestBody.TransportFee") {
+                    newTransportFeesError = errorMessage;
+                } else if (key === "RequestBody.PaidAmount") {
+                    newPaidAmountError = errorMessage;
+                } else if (key === "RequestBody.Remarks") {
+                    newRemarksError = errorMessage;
+                }
+            }
 
-                    return {quantityError};
-                });
-
-                setItemErrors(newErrors);
-            } else if (problemType.toLowerCase === "rate") {
-                // TODO : Handle rate error for each item
-                const newErrors = itemErrors.map((error, index) => {
-                    const item = invoiceItems[index];
-                    let rateError = '';
-
-                    if (!item.rate || item.rate <= 0) {
-                        rateError = errorMessage;
-                    }
-
-                    return {rateError};
-                });
-
-                setItemErrors(newErrors);
-            } else if (problemType.toLowerCase() === "item") {
-                // TODO : Handle item error for each item
-                const newErrors = itemErrors.map((error, index) => {
-                    const item = invoiceItems[index];
-                    let itemIdError = '';
-
-                    if (!item.itemId) {
-                        itemIdError = errorMessage;
-                    }
-
-                    return {itemIdError};
-                });
-
-                setItemErrors(newErrors);
-            } else {
-                toast.error(errorMessage, {
-                    toastId: "add-purchase-error",
-                    autoClose: 7000
+            if (problemDetails.type === "ItemId") {
+                newItemErrors.forEach((itemError) => {
+                    itemError.itemIdError = errorMessage;
                 });
             }
+
+            // Set new error states
+            setSelectedBillingPartyError(newSelectedBillingPartyError);
+            setInvoiceDateError(newInvoiceDateError);
+            setTransportFeesError(newTransportFeesError);
+            setPaidAmountError(newPaidAmountError);
+            setRemarksError(newRemarksError);
+            setItemErrors(newItemErrors);
         }
     }
 
+    //
+    // function resetValues() {
+    //     // // if there are multiple items remove all of them and add one
+    //     setInvoiceItems([initialInvoiceItem]);
+    //     setItemReset(true);
+    //     console.log(invoiceItems.length);
+    //     setInvoiceNumber('');
+    //     setShowVAT(false);
+    //     setVatAmount(0);
+    //     setShowTransportFees(false);
+    //     setTransportFees('');
+    //     setPaidAmount(0);
+    //     setChecked(false);
+    //     setRemarks('');
+    //     setPrint(false);
+    // }
+
+    // function resetErrors() {
+    //     setSelectedBillingPartyError('');
+    //     setInvoiceDateError('');
+    //     setInvoiceNumberError('');
+    //     setTransportFeesError('');
+    //     setPaidAmountError('');
+    //     setRemarksError('');
+    //     setItemErrors([{
+    //         itemIdError: '',
+    //         quantityError: '',
+    //         rateError: ''
+    //     }]);
+    // }
+
     function handleSuccess() {
-        toast.success("Purchase invoice has been added successfully", {
+        toast.dismiss("add-purchase-loading");
+        toast.success("Purchase invoice has been added print", {
             toastId: "add-purchase-success",
             autoClose: 5000
         });
+        // resetValues();
+        // resetErrors();
     }
 
     function validateNonEmptyRequiredFields() {
@@ -275,13 +342,6 @@ function InvoicePage() {
             setInvoiceDateError("");
         }
 
-        if (showTransportFees && !transportFees) {
-            setTransportFeesError("Transport fees is required");
-            isValid = false;
-        } else {
-            setTransportFeesError("");
-        }
-
         if (invoiceNumber) {
             if (isNaN(invoiceNumber)) {
                 setInvoiceNumberError("Invoice number must be a number");
@@ -291,6 +351,13 @@ function InvoicePage() {
             }
         }
 
+        if (invoiceItems.length === 0) {
+            toast.error("Please add at least one item", {
+                toastId: "add-purchase-item",
+                autoClose: 7000
+            });
+            isValid = false;
+        }
         const newErrors = itemErrors.map((error, index) => {
             const item = invoiceItems[index];
             let itemIdError = '', quantityError = '', rateError = '';
@@ -323,11 +390,6 @@ function InvoicePage() {
         if (!isValid) return;
 
         setIsSubmitting(true);
-        toast.loading("Adding purchase invoice...", {
-            toastId: "add-purchase-loading",
-            autoClose: false
-        });
-
         const purchaseLines = invoiceItems.map(item => ({
             itemId: item.itemId,
             quantity: item.quantity,
@@ -352,10 +414,28 @@ function InvoicePage() {
         } catch (error) {
             handleError(error);
         } finally {
+            console.log(print)
+            if (print) {
+                console.log("Print dialog opened")
+                // Set up the event listener before calling window.print()
+                const handleAfterPrint = () => {
+                    console.log('Print dialog closed');
+                    // Redirect to another page after print dialog is closed
+                    navigate('/');
+                    window.removeEventListener('afterprint', handleAfterPrint); // Clean up the event listener
+                };
+
+                window.addEventListener('afterprint', handleAfterPrint);
+                window.print();
+            }
             setIsSubmitting(false);
             toast.dismiss("add-purchase-loading");
+            setPrint(false);
+            navigate('/');
+
         }
     }
+
 
 
     const handleRemarkChange = (value) => {
@@ -367,27 +447,27 @@ function InvoicePage() {
     };
 
     const handleItemSelected = (index, item) => {
-        const newItems = invoiceItems.map((invoiceItem, idx) => {
-            if (idx === index) {
-                return {...invoiceItem, itemName: item.name, itemId: item.id};
-            }
-            return invoiceItem;
-        });
+            const newItems = invoiceItems.map((invoiceItem, idx) => {
+                if (idx === index) {
+                    return item ? {...invoiceItem, itemName: item.name, itemId: item.id} : {...invoiceItem, itemName: '', itemId: ''};
+                }
+                return invoiceItem;
+            });
 
-        const newSubtotal = calculateSubtotal(newItems);
-        const newVatAmount = showVAT ? newSubtotal * 0.13 : 0;
-        const newTotalAmount = calculateTotalAmount(newItems, newVatAmount, transportFees);
+            const newSubtotal = calculateSubtotal(newItems);
+            const newVatAmount = showVAT ? newSubtotal * 0.13 : 0;
+            const newTotalAmount = calculateTotalAmount(newItems, newVatAmount, transportFees);
 
-        setInvoiceItems(newItems);
-        setVatAmount(newVatAmount);
-        setPaidAmount(checked ? newTotalAmount : paidAmount);
+            setInvoiceItems(newItems);
+            setVatAmount(newVatAmount);
+            setPaidAmount(checked ? newTotalAmount : paidAmount);
 
-        const newErrors = [...itemErrors];
-        newErrors[index].itemIdError = '';
-        setItemErrors(newErrors);
-    };
+            const newErrors = [...itemErrors];
+            newErrors[index].itemIdError = '';
+            setItemErrors(newErrors);
+    }
 
-    if (isLoadingBillingParties || isLoadingItems) {
+    if (isLoadingBillingParties || isItemLoading) {
         return <div>Loading...</div>
     }
 
@@ -399,11 +479,17 @@ function InvoicePage() {
         return <div> Something went wrong while getting items</div>
     }
 
-    const billingPartiesData = billingPartiesDatas.parties;
-    let itemsData = [...itemsDatas.items];
+    const billingPartiesData = billingParties.parties;
+    let itemsData = [...items.items];
 
     const totalAmount = calculateTotalAmount(invoiceItems, vatAmount, transportFees);
     const remainingAmount = totalAmount - paidAmount;
+
+    function handleSaveAndPrint() {
+        setPrint(true);
+        console.log(print)
+        handleSavePurchase();
+    }
 
     return (
         <Box sx={{margin: 2}}>
@@ -428,10 +514,16 @@ function InvoicePage() {
                                 }}
                                 error={Boolean(invoiceNumberError)}
                                 helperText={invoiceNumberError}
+                                value={invoiceNumber}
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Calendar onChange={handleDateChange} theme='#123421'/>
+                            {invoiceDateError && (
+                                <Typography color="error" variant="body2">
+                                    {invoiceDateError}
+                                </Typography>
+                            )}
                         </Grid>
                     </Grid>
                 </Grid>
@@ -447,8 +539,9 @@ function InvoicePage() {
                                     readOnly: true,
                                     endAdornment: (
                                         <InputAdornment position="end">
-                                            <IconButton onClick={() => removeItem(index)}>
-                                                <RemoveCircleOutlineIcon/>
+                                            <IconButton
+                                                onClick={() => removeItem(index)} className={"delete-icon"}>
+                                                <DeleteIcon/>
                                             </IconButton>
                                         </InputAdornment>
                                     )
@@ -525,7 +618,7 @@ function InvoicePage() {
                 <Grid container item spacing={2} xs={12} justifyContent="space-between" alignItems="center">
                     <Grid item spacing={2}>
                         <Button
-                            variant="contained"
+                            variant="text"
                             onClick={addItem}
                             startIcon={<AddCircleOutlineIcon/>}
                         >
@@ -548,6 +641,7 @@ function InvoicePage() {
                             label="Remarks"
                             variant="outlined"
                             onChange={event => handleRemarkChange(event.target.value)}
+                            error={Boolean(remarksError)}
                         />
                     </Grid>
 
@@ -555,7 +649,7 @@ function InvoicePage() {
                         <Grid container item xs={12} sm={12} md={12}>
                             {!showVAT && (
                                 <Button
-                                    variant="contained"
+                                    variant="text"
                                     color="primary"
                                     startIcon={<AddIcon/>}
                                     onClick={handleAddVATClick}
@@ -590,7 +684,7 @@ function InvoicePage() {
                                         />
                                     </Grid>
                                     <Grid item xs sm={6} md={2}>
-                                        <DeleteIcon onClick={handleRemoveVAT}/>
+                                        <DeleteIcon onClick={handleRemoveVAT} className={"delete-icon"}/>
                                     </Grid>
                                 </Grid>
                             )}
@@ -599,7 +693,7 @@ function InvoicePage() {
                         <Grid container item xs={12} sm={12} md={12}>
                             {!showTransportFees && (
                                 <Button
-                                    variant="contained"
+                                    variant="text"
                                     color="primary"
                                     startIcon={<AddIcon/>}
                                     onClick={handleAddTransportFeesClick}
@@ -621,12 +715,13 @@ function InvoicePage() {
                                             value={transportFees}
                                             onChange={(e) => handleTransportFeesChange(e.target.value)}
                                             variant="outlined"
+                                            error={Boolean(transportFeesError)}
                                         />
 
                                     </Grid>
                                     <Grid item xs sm={6} md={2}>
                                         <DeleteIcon
-                                            onClick={handleRemoveTransportFee}/>
+                                            onClick={handleRemoveTransportFee} className={"delete-icon"}/>
                                     </Grid>
                                 </Grid>
                             )}
@@ -656,9 +751,10 @@ function InvoicePage() {
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
                                     }}
-                                    value={paidAmount}
+                                    value={paidAmount.toFixed(2)}
                                     onChange={handlePaidAmountChange}
                                     variant="outlined"
+                                    error={Boolean(paidAmountError)}
                                 />
                             </Grid>
                             <Grid item md={6}>
@@ -691,11 +787,13 @@ function InvoicePage() {
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                    <Button variant="contained" color="primary">Save and Print</Button>
+                    <Button variant="contained" color="primary" onClick={handleSaveAndPrint}>
+                        {isSubmitting ? "Saving..." : "Save and Print"}
+                    </Button>
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                    <Button variant="contained" color="secondary" onClick={handleSavePurchase}>
+                    <Button variant="contained" color="primary" onClick={handleSavePurchase}>
                         {isSubmitting ? "Saving..." : "Save Purchase Invoice"}
                     </Button>
                 </Grid>
