@@ -16,11 +16,10 @@ function BillingPartyAutocomplete({billingPartiesData}) {
         setOpenAddModal(false);
     }
 
-    const options = [
-        { name: "Add New Party", id: "add_new_party" },
-        { name: "Cash Purchase", id: "cash_purchase" },
-        ...billingPartiesData
-    ];
+    const cash = billingPartiesData.filter(party => party.name.toLowerCase() === "cash");
+    const otherParties = billingPartiesData.filter(party => party.name.toLowerCase() !== "cash");
+
+    const options = [...cash, ...otherParties];
 
     const handleSelect = (event, value) => {
         if (value && value.id === "add_new_party") {

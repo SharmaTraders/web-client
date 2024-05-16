@@ -28,7 +28,7 @@ const purchaseApi = baseApi.injectEndpoints({
                 }
             }),
 
-            invalidatesTags: ['Purchases']
+            invalidatesTags: ['Purchases', 'BillingParty', 'Items']
         }),
 
         getPurchases: builder.query({

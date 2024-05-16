@@ -35,7 +35,11 @@ function BillingPartiesPage() {
                     startIcon={<AddIcon/>}>
                 Add Party
             </Button>
-            <ManageBillingPartyComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
+            {
+                openAddModal &&
+                <ManageBillingPartyComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
+
+            }
         </div>
 
         <div className={"bp-content"}>

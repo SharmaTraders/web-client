@@ -199,7 +199,7 @@ function InvoicePage() {
 
     const handlePaidAmountChange = (event) => {
         const amount = event.target.value;
-        setPaidAmount(amount);
+        setPaidAmount(parseFloat(amount) || "");
         setChecked(parseFloat(amount) === calculateTotalAmount(invoiceItems, vatAmount, transportFees));
     };
 
@@ -718,7 +718,7 @@ function InvoicePage() {
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
                                     }}
-                                    value={paidAmount.toFixed(2)}
+                                    value={paidAmount}
                                     onChange={handlePaidAmountChange}
                                     variant="outlined"
                                     error={Boolean(paidAmountError)}

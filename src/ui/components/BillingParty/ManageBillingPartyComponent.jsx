@@ -51,7 +51,7 @@ function ManageBillingPartyComponent({mode, billingParty, open, handleClose}) {
     const [openingBalance, setOpeningBalance] = useState("0")
     const [openingBalanceError, setOpeningBalanceError] = useState("")
 
-    const [toReceive, setToReceive] = useState("");
+    const [toReceive, setToReceive] = useState(true);
     const [createBillingParty, {isLoading: isCreateLoading}] = useCreateBillingPartyMutation();
     const [updateBillingParty, {isLoading: isUpdateLoading}] = useUpdateBillingPartyMutation();
     const dispatch = useDispatch()
