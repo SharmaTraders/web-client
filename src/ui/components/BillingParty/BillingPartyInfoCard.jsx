@@ -17,8 +17,8 @@ function BillingPartyDetailsInfoCard({party}) {
 
     function getClassName() {
         if (party.balance === 0) return "bold"
-        if (party.balance < 0) return "negative-balance bold"
-        return "positive-balance bold"
+        if (party.balance < 0) return "error-color bold"
+        return "primary-color bold"
     }
 
     function getStatus() {
@@ -82,13 +82,17 @@ function BillingPartyDetailsInfoCard({party}) {
         </div>
 
         <div className={"bp-details-card-buttons"}>
-            <Button variant="contained"
-                    onClick={onEdit}
-                    size={"small"}
-                    color="primary"
-                    startIcon={<EditIcon/>}>
-                Edit
-            </Button>
+            {
+                party.name.toLowerCase() !== "cash" &&
+                <Button variant="contained"
+                        onClick={onEdit}
+                        size={"small"}
+                        color="primary"
+                        startIcon={<EditIcon/>}>
+                    Edit
+                </Button>
+            }
+
             {
                 openEditModal
                 &&

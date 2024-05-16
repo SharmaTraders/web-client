@@ -30,7 +30,7 @@ function BillingPartyList() {
     }
     if (!data) return;
 
-    const billingParties = data.parties;
+    const billingParties = data.parties || [];
 
 
     if (billingParties.length === 0) {
@@ -44,8 +44,10 @@ function BillingPartyList() {
         return billingParty.id === selectedBillingParty.id ? "bp-card bp-selected" : "bp-card";
     }
 
+    const cashParty = billingParties.filter(party => party.name.toLowerCase() === "cash");
+    const otherParties = billingParties.filter(party => party.name.toLowerCase() !== "cash");
 
-    let billingPartiesToShow = [...billingParties];
+    let billingPartiesToShow = [...otherParties];
 
     if (sort === "name asc") {
         billingPartiesToShow = billingPartiesToShow.sort((a, b) => a.name.localeCompare(b.name));
@@ -64,6 +66,7 @@ function BillingPartyList() {
             party => party.name.toLowerCase().includes(searchString.toLowerCase())
         )
     }
+    billingPartiesToShow = [...cashParty, ...billingPartiesToShow];
 
 
     function setSelected(billingParty) {
@@ -146,8 +149,8 @@ function BillingPartyCard({party}) {
 
     function getClassName() {
         if (party.balance === 0) return ""
-        if (party.balance < 0) return "negative-balance "
-        return "positive-balance "
+        if (party.balance < 0) return "error-color "
+        return "primary-color "
     }
 
     function getStatus() {

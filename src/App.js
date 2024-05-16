@@ -12,6 +12,7 @@ import {Root} from "./ui/pages/Root/Root";
 import {useSelector} from "react-redux";
 import {selectIsLoggedIn} from "./redux/features/state/authstate";
 import ItemsPage from "./ui/pages/Item/ItemsPage";
+import InvoicePage from "./ui/pages/Invoice/InvoicePage";
 
 const RequireAuth = ({children}) => {
     const userIsLogged = useSelector(selectIsLoggedIn);
@@ -50,6 +51,7 @@ function App() {
                         <Route path={"/"} element={<HomePage/>}/>
                         <Route path={"/parties"} element={<BillingPartiesPage/>}/>
                         <Route path={"/items"} element = {<ItemsPage/>}/>
+                        <Route path={"/purchase"} element = {<InvoicePage/>}/>
                     </Route>
                 </Routes>
             </ThemeProvider>

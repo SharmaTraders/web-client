@@ -138,6 +138,7 @@ function ManageItemComponent({open, handleClose, mode}) {
                 toastId: "add-item-success",
             });
 
+        toast.dismiss("loading-item");
         closeDialogue();
 
     }

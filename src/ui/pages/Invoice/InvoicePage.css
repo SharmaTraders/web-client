@@ -1,0 +1,40 @@
+.add-new-button {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    color: #1976d2;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.add-new-button:hover {
+    background-color: #f5f5f5;
+}
+
+.remaining-Amount {
+    color: #0b4e20;
+}
+
+.delete-icon:hover {
+    color:red;
+}
+
+.calendar {
+    display: flex;
+    width: 100%;
+    height: 56px;
+    align-items: center;
+    border: 1px solid #c4c4c4;
+    border-radius: 4px;
+    padding: 0 14px;
+    font-size: 16px;
+    background-color: whitesmoke;
+    transition: border-color 0.2s;
+}
+
+.calendar:hover {
+    border-color: #2af46c;
+}
+
+
+
