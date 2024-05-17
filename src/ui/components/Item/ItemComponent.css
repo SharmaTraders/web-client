@@ -31,7 +31,10 @@
     border: 1px solid black;
 }
 
-
+.calendar-container{
+    margin-top: 2dvh;
+    margin-bottom: 2dvh;
+}
 
 .item-activity-content{
     display: flex;

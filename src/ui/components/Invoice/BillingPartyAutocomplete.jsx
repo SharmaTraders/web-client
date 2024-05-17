@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Autocomplete, TextField, ListItem, ListItemText, Box, Typography } from '@mui/material';
 import ManageBillingPartyComponent from "../BillingParty/ManageBillingPartyComponent";
-import { setSelectedBillingParty } from "../../../redux/features/state/billingPartyState";
-import { useDispatch } from "react-redux";
+import {useGetBillingPartiesQuery} from "../../../redux/features/api/billingPartyApi";
 
-function BillingPartyAutocomplete({billingPartiesData}) {
+function BillingPartyAutocomplete({onChange}) {
     const [openAddModal, setOpenAddModal] = useState(false);
-    const dispatch = useDispatch();
+
+    const {data} = useGetBillingPartiesQuery();
+
+    const billingPartiesData = data ? [...data.parties] : [];
 
     function handleClickOpen() {
         setOpenAddModal(true);
@@ -19,13 +21,13 @@ function BillingPartyAutocomplete({billingPartiesData}) {
     const cash = billingPartiesData.filter(party => party.name.toLowerCase() === "cash");
     const otherParties = billingPartiesData.filter(party => party.name.toLowerCase() !== "cash");
 
-    const options = [...cash, ...otherParties];
+    const options = [{id: "add_new_party", name: "Add Party"},...cash, ...otherParties];
 
     const handleSelect = (event, value) => {
         if (value && value.id === "add_new_party") {
             handleClickOpen();
         } else {
-            dispatch(setSelectedBillingParty(value));
+            onChange(value);
         }
     };
 

@@ -7,9 +7,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import {useState} from "react";
 import ManageBillingPartyComponent from "./ManageBillingPartyComponent";
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
+import {useSelector} from "react-redux";
+import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 
-function BillingPartyDetailsInfoCard({party}) {
+function BillingPartyDetailsInfoCard() {
     const [openEditModal, setOpenEditModal] = useState(false);
+    const party = useSelector(selectSelectedBillingParty);
 
     if (!party) return <div>
         Please select a billing party for info

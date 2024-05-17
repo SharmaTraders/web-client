@@ -108,7 +108,7 @@ function ItemList() {
             </FormControl>
         </div>
 
-        <div className={"item-list"}>
+        <div className={"page-list"}>
             {
                 itemsToShow.map((item) =>
                     <div key={item.id} className={getClassName(item)}
@@ -151,7 +151,7 @@ function ItemCardSkeleton() {
             <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
         </div>
 
-        <div className={"item-details"}>
+        <div className={"page-details"}>
             <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
             <Skeleton animation="wave" variant="rounded" width={100} height={10}/>
         </div>

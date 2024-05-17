@@ -81,7 +81,6 @@ function ManageItemComponent({open, handleClose, mode}) {
                 stockWeight: parseFloat(stockWeight),
                 estimatedPricePerKilo: parseFloat(estimatedPricePerKilo)
             }
-            console.log(body);
             const {error} = await addItem(body);
 
             if (error) handleError(error)
