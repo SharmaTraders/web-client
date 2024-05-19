@@ -47,18 +47,17 @@ function MainListItems() {
             </Tooltip>
 
 
-            <Tooltip title={"Purchase"} placement={"right-end"}>
+            <Tooltip title={"Purchase Invoice"} placement={"right-end"}>
             <ListItemButton component={Link} to={"/purchase"}>
                 <ListItemIcon>
                     <ShoppingCartIcon/>
                 </ListItemIcon>
-                <ListItemText primary="PurchasePage"/>
+                <ListItemText primary="Purchases"/>
             </ListItemButton>
             </Tooltip>
 
-            <Tooltip title={"Sales"} placement={"right-end"}>
-
-            <ListItemButton component={Link} to={"/sales"}>
+            <Tooltip title={"Sale Invoice"} placement={"right-end"}>
+            <ListItemButton component={Link} to={"/sale"}>
                 <ListItemIcon>
                     <ReceiptIcon/>
                 </ListItemIcon>
