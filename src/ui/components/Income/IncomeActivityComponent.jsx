@@ -3,11 +3,23 @@ import {selectSelectedBillingParty} from "../../../redux/features/state/billingP
 import React, {useState} from "react";
 import {useGetIncomesByBillingPartyQuery} from "../../../redux/features/api/income";
 import {StickyHeadTableSkeleton} from "../Item/ItemActivityComponent";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {
+    Fade,
+    Modal,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow
+} from "@mui/material";
+import {getBsDateFromAdDate} from "../../../utils/dateConverters";
+import Box from "@mui/material/Box";
 
 function IncomeActivityComponent() {
     const selectedBillingParty = useSelector(selectSelectedBillingParty);
-    if (!selectedBillingParty) return <div> Please select a billing party to view income activity</div>
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
@@ -21,7 +33,12 @@ function IncomeActivityComponent() {
         </div>
 
         <div className={"item-activity-content"}>
-
+            {
+                selectedBillingParty ?
+                    <StickyHeadIncomeTable billingPartyId={selectedBillingParty.id}/>
+                    :
+                    <div style={{padding: '1rem'}}> Please select a billing party to view income activity</div>
+            }
         </div>
 
     </div>
@@ -58,8 +75,8 @@ function StickyHeadIncomeTable({billingPartyId}) {
         }
     ]
 
-    const row = data?.incomes || [];
-    if (row.length === 0) return <div>
+    const rows = data?.incomes || [];
+    if (rows.length === 0) return <div>
         No income records for the party yet..
     </div>
 
@@ -84,11 +101,72 @@ function StickyHeadIncomeTable({billingPartyId}) {
                 </TableHead>
 
                 <TableBody>
+                    {
+                        rows.map(income => {
+                            return <TableRow hover role="checkbox" tabIndex={-1} key={income.id}>
+                                {columns.map((column) => {
+                                    const value = income[column.id];
+                                    if (column.id === "date") {
+                                        return <TableCell key={column.id} align={column.align}>
+                                            {getBsDateFromAdDate(value)}
+                                        </TableCell>
+                                    }
+                                    return <TableCell key={column.id} align={column.align}>
+                                        {value || '-'}
+                                    </TableCell>
+                                })
+                                }
+                            </TableRow>
+                        })
+                    }
 
                 </TableBody>
             </Table>
-
         </TableContainer>
+
+        <TablePagination
+            labelRowsPerPage=''
+            rowsPerPageOptions={[]}
+            component="div"
+            count={data.totalCount}
+            page={pageNumber - 1}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handlePageChange}
+        />
+
     </Paper>
+}
+
+function IncomesTableModal({open, handleClose}) {
+    const selectedBillingParty = useSelector(selectSelectedBillingParty);
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    return <Modal open={open}
+                  onClose={handleClose}
+                  closeAfterTransition>
+        <Fade in={open}>
+            <Box sx={style}>
+                {
+                    selectedBillingParty ?
+                        <StickyHeadIncomeTable billingPartyId={selectedBillingParty.id}/>
+                        :
+                        <div style={{padding: '1rem'}}> Please select a billing party to view income activity</div>
+                }
+            </Box>
+        </Fade>
+    </Modal>
 
 }
+
+export default IncomeActivityComponent;
+export {IncomesTableModal, StickyHeadTableSkeleton};
