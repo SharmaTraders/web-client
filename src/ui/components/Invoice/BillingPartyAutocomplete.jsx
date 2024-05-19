@@ -24,6 +24,7 @@ function BillingPartyAutocomplete({onChange}) {
     const options = [{id: "add_new_party", name: "Add Party"},...cash, ...otherParties];
 
     const handleSelect = (event, value) => {
+        if (!value) onChange({});
         if (value && value.id === "add_new_party") {
             handleClickOpen();
         } else {

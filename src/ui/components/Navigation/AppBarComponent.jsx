@@ -18,7 +18,14 @@ function getTitle(pathname) {
             return 'Parties';
         case '/items':
             return 'Items';
-        // Add more cases for different paths
+        case '/purchase':
+            return 'Purchase Invoice';
+        case '/sale':
+            return 'Sale Invoice';
+        case '/expenses':
+            return 'Expenses';
+        case 'income':
+            return 'Income';
         default:
             return 'Dashboard'; // default title
     }

@@ -74,7 +74,7 @@ function RegisterIncomeComponent({open, handleClose}) {
             setAmountError("Amount is required");
             isValid = false;
         }
-        if (selectedBillingParty && !selectedBillingParty.id) {
+        if (!selectedBillingParty || !selectedBillingParty.id) {
             toast.error("Please select a billing party");
             isValid = false;
         }

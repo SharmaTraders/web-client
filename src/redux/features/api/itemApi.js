@@ -5,9 +5,9 @@ const itemApi = baseApi
         endpoints: (builder) => ({
             addItem: builder.mutation({
                 query: ({
-                name,
+                    name,
                     stockWeight,
-                     estimatedPricePerKilo
+                    estimatedPricePerKilo
                 }) => ({
                     url: "item",
                     method: "POST",
