@@ -36,7 +36,6 @@ function BillingPartiesPage() {
             {
                 openAddModal &&
                 <ManageBillingPartyComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
-
             }
         </div>
 

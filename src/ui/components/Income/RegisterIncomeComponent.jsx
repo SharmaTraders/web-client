@@ -55,9 +55,9 @@ function RegisterIncomeComponent({open, handleClose}) {
         else {
             toast.dismiss("income-loading");
             toast.success("Income registered successfully", {
-                toastId: "add-item-success",
                 autoClose: 7000
             });
+            console.log("Successs");
             handleClose();
         }
     }
@@ -75,6 +75,7 @@ function RegisterIncomeComponent({open, handleClose}) {
             isValid = false;
         }
         if (selectedBillingParty && !selectedBillingParty.id) {
+            toast.error("Please select a billing party");
             isValid = false;
         }
 
@@ -83,6 +84,8 @@ function RegisterIncomeComponent({open, handleClose}) {
 
     function handleError(error) {
         toast.dismiss("income-loading");
+        console.log("error");
+        console.log(error);
 
         if (error.data) {
             let problemDetails = error.data;
@@ -163,7 +166,7 @@ function RegisterIncomeComponent({open, handleClose}) {
                     const regex = /^\d*\.?\d{0,2}$/;
                     // Check if input value matches the regex
                     if (regex.test(inputValue)) {
-                        setAmount(parseFloat(inputValue) || "");
+                        setAmount(inputValue);
                     }
                     setAmountError(null);
                 }}
