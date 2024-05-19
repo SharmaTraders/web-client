@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     TextField,
     Button,
@@ -11,24 +11,24 @@ import {
     FormControlLabel
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { useGetItemsQuery } from "../../../redux/features/api/itemApi";
+import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
 import BillingPartyAutocomplete from "../../components/Invoice/BillingPartyAutocomplete";
 import ItemAutocomplete from "../../components/Invoice/ItemAutocomplete";
 import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
 import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { toast } from "react-toastify";
-import { useAddPurchaseMutation } from "../../../redux/features/api/purchase";
-import { useAddSaleMutation } from "../../../redux/features/api/sale"; // Import the sale mutation
+import {toast} from "react-toastify";
+import {useAddPurchaseMutation} from "../../../redux/features/api/purchase";
+import {useAddSaleMutation} from "../../../redux/features/api/sale"; // Import the sale mutation
 import "./InvoicePage.css";
-import { useNavigate } from "react-router-dom";
-import { getBsToday } from "../../../utils/dateConverters";
+import {useNavigate} from "react-router-dom";
+import {getBsToday} from "../../../utils/dateConverters";
 import PropTypes from "prop-types";
 
 function InvoicePage({mode}) {
     // Fetch billing parties and items
-    const { data: items, isLoading: isItemLoading, error: itemsError } = useGetItemsQuery();
+    const {data: items, isLoading: isItemLoading, error: itemsError} = useGetItemsQuery();
 
     // Initialize states
     const initialInvoiceItem = {
@@ -65,8 +65,8 @@ function InvoicePage({mode}) {
     const [remarks, setRemarks] = useState('');
     const [remarksError, setRemarksError] = useState('');
     const [selectedBillingPartyError, setSelectedBillingPartyError] = useState('');
-    const [addPurchase, { isLoading: isAddLoading }] = useAddPurchaseMutation();
-    const [addSale, { isLoading: isAddSaleLoading }] = useAddSaleMutation();
+    const [addPurchase, {isLoading: isAddLoading}] = useAddPurchaseMutation();
+    const [addSale, {isLoading: isAddSaleLoading}] = useAddSaleMutation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedBillingParty, setSelectedBillingParty] = useState({});
 
@@ -108,9 +108,9 @@ function InvoicePage({mode}) {
         // Updating the specific field of an item in the invoiceItems array.
         const newItems = invoiceItems.map((item, idx) => {
             if (idx === index) {
-                const updatedItem = { ...item, [field]: value };
+                const updatedItem = {...item, [field]: value};
 
-                const { quantity, rate, report } = updatedItem;
+                const {quantity, rate, report} = updatedItem;
                 const effectiveReport = report || 0;
                 updatedItem.amount = quantity && rate ? (quantity * rate) - effectiveReport : '';
 
@@ -128,14 +128,14 @@ function InvoicePage({mode}) {
         updateState(newItems, newVatAmount, newTotalAmount);
     };
 
-    const handleDateChange = ({ adDate }) => {
+    const handleDateChange = ({adDate}) => {
         setDate(adDate);
         setDateError("");
     };
 
     const addItem = () => {
         setInvoiceItems([...invoiceItems, initialInvoiceItem]);
-        setItemErrors([...itemErrors, { itemIdError: '', quantityError: '', rateError: '' }]);
+        setItemErrors([...itemErrors, {itemIdError: '', quantityError: '', rateError: ''}]);
     };
 
     const removeItem = (index) => {
@@ -178,6 +178,7 @@ function InvoicePage({mode}) {
         const newTotalAmount = calculateTotalAmount(invoiceItems, vatAmount, newTransportFees);
 
         setTransportFees(newTransportFees);
+        setTransportFeesError("");
         setAmountFromOrToParty(checked ? newTotalAmount : amountFromOrToParty);
     };
 
@@ -198,11 +199,14 @@ function InvoicePage({mode}) {
     const handlePaidAmountChange = (event) => {
         const amount = event.target.value;
         setAmountFromOrToParty(parseFloat(amount) || "");
+        setPaidAmountError("");
         setChecked(parseFloat(amount) === calculateTotalAmount(invoiceItems, vatAmount, transportFees));
     };
 
     function handleError(error) {
         toast.dismiss("add-invoice-loading");
+
+        // Handle server errors globally
         if (error.status && error.status === 500) {
             toast.error("Server error, Please contact support.", {
                 toastId: "add-invoice-error",
@@ -213,87 +217,73 @@ function InvoicePage({mode}) {
 
         if (error.data) {
             let problemDetails = error.data;
-            let errorMessage = problemDetails.title;
-            let errorDetails = problemDetails.errors;
+            let errorMessage = problemDetails.detail;
 
-            // Show a general error toast
             toast.error(errorMessage, {
-                toastId: "add-invoice-party",
+                toastId: "add-invoice-error",
                 autoClose: 7000
             });
+            if (problemDetails.type) {
+                let problemType = problemDetails.type;
 
-            // Initialize new error states
-            let newSelectedBillingPartyError = '';
-            let newInvoiceDateError = '';
-            let newTransportFeesError = '';
-            let newPaidAmountError = '';
-            let newRemarksError = '';
-            let newItemErrors = [...itemErrors];
-
-            // Map server errors to the corresponding form fields
-            for (const [key, value] of Object.entries(errorDetails)) {
-                const errorMessage = value.join(' ');
-
-                if (key.startsWith("RequestBody.PurchaseLines") || key.startsWith("RequestBody.SaleLines")) {
-                    if (value instanceof Array && value[0] === "The SaleLines field is required.") {
-                        toast.error(value[0]);
-                        return;
-                    } else {
-                        const match = key.match(/RequestBody\.(PurchaseLines|SaleLines)\[(\d+)]\.(\w+)/);
-                        if (match) {
-                            const index = parseInt(match[2], 10);
-                            const field = match[3];
-
-                            if (field === "ItemId") {
-                                newItemErrors[index].itemIdError = errorMessage;
-                            } else if (field === "Quantity") {
-                                newItemErrors[index].quantityError = errorMessage;
-                            } else if (field === "UnitPrice") {
-                                newItemErrors[index].rateError = errorMessage;
-                            }
-                        }
-                    }
-                } else if (key === "RequestBody.BillingPartyId") {
-                    newSelectedBillingPartyError = errorMessage;
-                } else if (key === "RequestBody.Date") {
-                    newInvoiceDateError = errorMessage;
-                } else if (key === "RequestBody.TransportFee") {
-                    newTransportFeesError = errorMessage;
-                } else if (key === "RequestBody.PaidAmount") {
-                    newPaidAmountError = errorMessage;
-                } else if (key === "RequestBody.Remarks") {
-                    newRemarksError = errorMessage;
+                if (problemType.toLowerCase() === "paidamount" || problemType.toLowerCase() === "receivedamount") {
+                    setPaidAmountError(errorMessage);
+                } else if (problemType.toLowerCase() === "date") {
+                    setDateError(errorMessage);
+                } else if (problemType.toLowerCase() === "remarks") {
+                    setRemarksError(errorMessage);
+                } else if (problemType.toLowerCase() === "transportfee") {
+                    setTransportFeesError(errorMessage);
+                }else if (problemType.toLowerCase() === "invoicenumber") {
+                    setInvoiceNumberError(errorMessage);
+                }
+                else if (problemType.toLowerCase() === "sales"|| problemType.toLowerCase() === "purchases") {
+                    toast.error(errorMessage, {
+                        toastId: "add-invoice-error",
+                        autoClose: 7000
+                    });
                 }
             }
-
-            if (problemDetails.type === "ItemId") {
-                newItemErrors.forEach((itemError) => {
-                    itemError.itemIdError = errorMessage;
+            if (problemDetails.errors){
+                toast.error(problemDetails.title, {
+                    toastId: "add-invoice-error",
+                    autoClose: 7000
+                });
+            } else {
+                toast.error(problemDetails.detail, {
+                    toastId: "add-invoice-error",
+                    autoClose: 7000
                 });
             }
-
-            // Set new error states
-            setSelectedBillingPartyError(newSelectedBillingPartyError);
-            setDateError(newInvoiceDateError);
-            setTransportFeesError(newTransportFeesError);
-            setPaidAmountError(newPaidAmountError);
-            setRemarksError(newRemarksError);
-            setItemErrors(newItemErrors);
         }
     }
 
-    function handleSuccess() {
+
+    function handleSuccess(print) {
         toast.dismiss("add-invoice-loading");
         toast.success("Invoice has been added", {
             toastId: "add-invoice-success",
             autoClose: 5000
         });
+        if (print) {
+            toast.dismiss("add-invoice-loading");
+            // Set up the event listener before calling window.print()
+            const handleAfterPrint = () => {
+                // Redirect to another page after print dialog is closed
+                window.removeEventListener('afterprint', handleAfterPrint); // Clean up the event listener
+            };
+            window.addEventListener('afterprint', handleAfterPrint);
+            window.print();
+            navigate("/");
+        }
+        navigate("/");
+
     }
 
     function validateNonEmptyRequiredFields() {
         let isValid = true;
 
-        if (!selectedBillingParty) {
+        if (!selectedBillingParty || !selectedBillingParty.id) {
             setSelectedBillingPartyError("Billing party is required");
             isValid = false;
         } else {
@@ -306,13 +296,34 @@ function InvoicePage({mode}) {
         } else {
             setDateError("");
         }
-
         if (invoiceNumber) {
             if (isNaN(invoiceNumber)) {
                 setInvoiceNumberError("Invoice number must be a number");
                 isValid = false;
             } else {
                 setInvoiceNumberError("");
+            }
+        }
+        if (transportFees) {
+            if (isNaN(transportFees)) {
+                setTransportFeesError("Transport fees must be a number");
+                isValid = false;
+            } else {
+                setTransportFeesError("");
+            }
+        }
+        if (amountFromOrToParty) {
+            if (isNaN(amountFromOrToParty)) {
+                setPaidAmountError("Amount must be a number");
+                isValid = false;
+            } else {
+                setPaidAmountError("");
+            }
+        }
+        if (remarks) {
+            if (remarks.length > 500) {
+                setRemarksError("Remarks must be less than 500 characters");
+                isValid = false;
             }
         }
 
@@ -342,7 +353,7 @@ function InvoicePage({mode}) {
                 isValid = false;
             }
 
-            return { itemIdError, quantityError, rateError };
+            return {itemIdError, quantityError, rateError};
         });
         setItemErrors(newErrors);
         return isValid;
@@ -380,12 +391,10 @@ function InvoicePage({mode}) {
         if (mode === 'purchase') {
             data.paidAmount = amountFromOrToParty || 0;
             data.purchaseLines = invoiceLines;
-        }else {
+        } else {
             data.receivedAmount = amountFromOrToParty || 0;
             data.saleLines = invoiceLines;
         }
-
-        console.log(data);
 
         try {
             if (mode === 'purchase') {
@@ -393,42 +402,33 @@ function InvoicePage({mode}) {
             } else {
                 await addSale(data).unwrap();
             }
-            handleSuccess();
+            handleSuccess(print);
         } catch (error) {
             handleError(error);
         } finally {
-            if (print) {
-                console.log("Print dialog opened")
-                // Set up the event listener before calling window.print()
-                const handleAfterPrint = () => {
-                    console.log('Print dialog closed');
-                    // Redirect to another page after print dialog is closed
-                    navigate('/');
-                    window.removeEventListener('afterprint', handleAfterPrint); // Clean up the event listener
-                };
-
-                window.addEventListener('afterprint', handleAfterPrint);
-                window.print();
-            }
             setIsSubmitting(false);
             toast.dismiss("add-invoice-loading");
-            navigate('/');
-
         }
     }
 
     const handleRemarkChange = (value) => {
         setRemarks(value);
+        setRemarksError("");
     };
 
     const handleInvoiceNumberChange = (value) => {
         setInvoiceNumber(value);
+        setInvoiceNumberError("");
     };
 
     const handleItemSelected = (index, item) => {
         const newItems = invoiceItems.map((invoiceItem, idx) => {
             if (idx === index) {
-                return item ? { ...invoiceItem, itemName: item.name, itemId: item.id } : { ...invoiceItem, itemName: '', itemId: '' };
+                return item ? {...invoiceItem, itemName: item.name, itemId: item.id} : {
+                    ...invoiceItem,
+                    itemName: '',
+                    itemId: ''
+                };
             }
             return invoiceItem;
         });
@@ -461,10 +461,11 @@ function InvoicePage({mode}) {
 
     function onSelectedParty(party) {
         setSelectedBillingParty(party);
+        setSelectedBillingPartyError("");
     }
 
     return (
-        <Box sx={{ margin: 2 }}>
+        <Box sx={{margin: 2}}>
             <Typography variant="h5" gutterBottom mb={2}>
                 Create {mode === 'purchase' ? 'Purchase' : 'Sales'} Invoice
             </Typography>
@@ -472,12 +473,13 @@ function InvoicePage({mode}) {
             <Grid container spacing={2}>
                 <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
                     <Grid item xs={12} md={4}>
-                        <BillingPartyAutocomplete onChange={onSelectedParty} />
+                        <BillingPartyAutocomplete onChange={onSelectedParty}/>
                         {selectedBillingPartyError && (
                             <Typography color="error">{selectedBillingPartyError}</Typography>
                         )}
                     </Grid>
-                    <Grid item xs={12} md={6} container spacing={2} justifyContent="space-between" alignItems="center">
+                    <Grid item xs={12} md={6} container spacing={2} justifyContent="space-between"
+                          alignItems="center">
                         <Grid item xs={12} md={6}>
                             <TextField
                                 fullWidth
@@ -498,7 +500,7 @@ function InvoicePage({mode}) {
                                       language="en"
                                       maxDate={getBsToday()}
                                       placeholder={"Select Date"}
-                                      onChange={handleDateChange} />
+                                      onChange={handleDateChange}/>
                             {dateError && (
                                 <Typography color="error" variant="body2">
                                     {dateError}
@@ -521,7 +523,7 @@ function InvoicePage({mode}) {
                                         <InputAdornment position="end">
                                             <IconButton
                                                 onClick={() => removeItem(index)} className={"delete-icon"}>
-                                                <DeleteIcon />
+                                                <DeleteIcon/>
                                             </IconButton>
                                         </InputAdornment>
                                     )
@@ -547,7 +549,9 @@ function InvoicePage({mode}) {
                                 fullWidth
                                 label="Quantity"
                                 type="number"
-                                InputProps={{ endAdornment: <InputAdornment position="start">Kg</InputAdornment> }}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="start">Kg</InputAdornment>
+                                }}
                                 value={item.quantity}
                                 onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
                                 variant="outlined"
@@ -562,7 +566,9 @@ function InvoicePage({mode}) {
                                 fullWidth
                                 label="Rate"
                                 type="number"
-                                InputProps={{ startAdornment: <InputAdornment position="start">Rs.</InputAdornment> }}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">Rs.</InputAdornment>
+                                }}
                                 value={item.rate}
                                 onChange={(e) => handleItemChange(index, 'rate', e.target.value)}
                                 variant="outlined"
@@ -602,7 +608,7 @@ function InvoicePage({mode}) {
                         <Button
                             variant="text"
                             onClick={addItem}
-                            startIcon={<AddCircleOutlineIcon />}
+                            startIcon={<AddCircleOutlineIcon/>}
                         >
                             Add Billing Item
                         </Button>
@@ -633,7 +639,7 @@ function InvoicePage({mode}) {
                                 <Button
                                     variant="text"
                                     color="primary"
-                                    startIcon={<AddIcon />}
+                                    startIcon={<AddIcon/>}
                                     onClick={handleAddVATClick}
                                 >
                                     Add VAT
@@ -641,7 +647,8 @@ function InvoicePage({mode}) {
                             )}
 
                             {showVAT && (
-                                <Grid container spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+                                <Grid container spacing={2} justifyContent={"space-between"}
+                                      alignItems={"center"}>
                                     <Grid item xs sm={6} md={4}>
                                         <TextField
                                             label="VAT (%)"
@@ -660,13 +667,14 @@ function InvoicePage({mode}) {
                                             value={`${vatAmount.toFixed(2)}`}
                                             InputProps={{
                                                 readOnly: true,
-                                                startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
+                                                startAdornment: <InputAdornment
+                                                    position="start">Rs.</InputAdornment>,
                                             }}
                                             fullWidth
                                         />
                                     </Grid>
                                     <Grid item xs sm={6} md={2}>
-                                        <DeleteIcon onClick={handleRemoveVAT} className={"delete-icon"} />
+                                        <DeleteIcon onClick={handleRemoveVAT} className={"delete-icon"}/>
                                     </Grid>
                                 </Grid>
                             )}
@@ -677,7 +685,7 @@ function InvoicePage({mode}) {
                                 <Button
                                     variant="text"
                                     color="primary"
-                                    startIcon={<AddIcon />}
+                                    startIcon={<AddIcon/>}
                                     onClick={handleAddTransportFeesClick}
                                 >
                                     Add Transport Fees
@@ -692,7 +700,8 @@ function InvoicePage({mode}) {
                                             label="Transport Fees"
                                             type="number"
                                             InputProps={{
-                                                startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
+                                                startAdornment: <InputAdornment
+                                                    position="start">Rs.</InputAdornment>,
                                             }}
                                             value={transportFees}
                                             onChange={(e) => handleTransportFeesChange(e.target.value)}
@@ -703,7 +712,7 @@ function InvoicePage({mode}) {
                                     </Grid>
                                     <Grid item xs sm={6} md={2}>
                                         <DeleteIcon
-                                            onClick={handleRemoveTransportFee} className={"delete-icon"} />
+                                            onClick={handleRemoveTransportFee} className={"delete-icon"}/>
                                     </Grid>
                                 </Grid>
                             )}
@@ -717,7 +726,7 @@ function InvoicePage({mode}) {
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
                                     readOnly: true,
-                                    style: { color: 'black' },
+                                    style: {color: 'black'},
                                 }}
                                 value={totalAmount.toFixed(2)}
                                 variant="outlined"
