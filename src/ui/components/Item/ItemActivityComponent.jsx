@@ -24,7 +24,7 @@ import {getBsDateFromAdDate} from "../../../utils/dateConverters";
 
 function ItemActivityComponent() {
     const selectedItem = useSelector(selectSelectedItem);
-    if (!selectedItem) return <div> Please select an item to view activity</div>
+    if (!selectedItem) return <div className={"item-activity"}> Please select an item to view activity</div>
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
@@ -132,7 +132,7 @@ function StickyHeadStocksTable({itemId}) {
                                     }
 
                                     return <TableCell key={column.id} align={column.align}>
-                                        {value ?? '-'}
+                                        {value || '-'}
                                     </TableCell>
 
                                 })
