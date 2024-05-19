@@ -346,12 +346,12 @@ function InvoicePage() {
         return isValid;
     }
 
-    function handleSaveAndPrint() {
-        handleSavePurchase(true)
+     async function handleSaveAndPrint() {
+        await handleSavePurchase(true)
     }
 
-    function handleSaveAndWithoutPrint(){
-        handleSavePurchase(false)
+    async function handleSaveAndWithoutPrint(){
+        await handleSavePurchase(false)
     }
 
     async function handleSavePurchase(print) {
@@ -384,10 +384,8 @@ function InvoicePage() {
             handleError(error);
         } finally {
             if (print) {
-                console.log("Print dialog opened")
                 // Set up the event listener before calling window.print()
                 const handleAfterPrint = () => {
-                    console.log('Print dialog closed');
                     // Redirect to another page after print dialog is closed
                     navigate('/');
                     window.removeEventListener('afterprint', handleAfterPrint); // Clean up the event listener

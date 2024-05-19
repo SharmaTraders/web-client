@@ -38,14 +38,14 @@ function ItemActivityComponent() {
         </div>
 
         <div className={"item-activity-content"}>
-            <StickyHeadTable itemId={selectedItem.id}/>
+            <StickyHeadStocksTable itemId={selectedItem.id}/>
         </div>
 
     </div>
 
 
 }
-function StickyHeadTable({itemId}) {
+function StickyHeadStocksTable({itemId}) {
     const [pageNumber, setPageNumber] = useState(1);
     const rowsPerPage = 8;
 
@@ -91,7 +91,7 @@ function StickyHeadTable({itemId}) {
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>
-            <Table stickyHeader aria-label="sticky table">
+            <Table stickyHeader aria-label="All item stocks">
                 <TableHead>
                     <TableRow>
                         {columns.map((column) => (
@@ -211,7 +211,7 @@ function StocksTableModal({open, handleClose}){
                   closeAfterTransition>
         <Fade in = {open}>
             <Box sx ={style}>
-                <StickyHeadTable itemId={selectedItem.id}/>
+                <StickyHeadStocksTable itemId={selectedItem.id}/>
 
             </Box>
         </Fade>
@@ -220,4 +220,4 @@ function StocksTableModal({open, handleClose}){
 }
 
 export default ItemActivityComponent;
-export {StocksTableModal} ;
+export {StocksTableModal, StickyHeadTableSkeleton} ;

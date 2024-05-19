@@ -4,15 +4,13 @@ import AddIcon from '@mui/icons-material/Add';
 import ManageBillingPartyComponent from "../../components/BillingParty/ManageBillingPartyComponent";
 import Button from "@mui/material/Button";
 import BillingPartyList from "../../components/BillingParty/BillingPartyList";
-import {useSelector} from "react-redux";
-import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 import BillingPartyDetailsInfoCard from "../../components/BillingParty/BillingPartyInfoCard";
 import {isMobile} from "../../../utils/SystemInfo";
 
 
 function BillingPartiesPage() {
     const [openAddModal, setOpenAddModal] = useState(false);
-    const selectedBillingParty = useSelector(selectSelectedBillingParty);
+
 
     function handleClickOpen() {
         setOpenAddModal(true)
@@ -22,8 +20,8 @@ function BillingPartiesPage() {
         setOpenAddModal(false)
     }
 
-    return <div className={"billing-party-page"}>
-        <div className={"bp-header"}>
+    return <div className={"page"}>
+        <div className={"page-header"}>
             <h3>
                 All Parties
             </h3>
@@ -31,24 +29,23 @@ function BillingPartiesPage() {
             <Button variant="contained"
                     color="primary"
                     onClick={handleClickOpen}
-                    size={"small"}
+                    size="small"
                     startIcon={<AddIcon/>}>
                 Add Party
             </Button>
             {
                 openAddModal &&
                 <ManageBillingPartyComponent open={openAddModal} handleClose={handleClose} mode={"add"}/>
-
             }
         </div>
 
-        <div className={"bp-content"}>
-            <div className={"bp-list"}>
+        <div className={"page-content"}>
+            <div className={"page-list"}>
                 <BillingPartyList/>
             </div>
-            <div className={"bp-details"}>
-                <div className={"bp-details-info"}>
-                    <BillingPartyDetailsInfoCard party={selectedBillingParty}/>
+            <div className={"page-details"}>
+                <div className={"page-details-info"}>
+                    <BillingPartyDetailsInfoCard/>
 
                 </div>
 

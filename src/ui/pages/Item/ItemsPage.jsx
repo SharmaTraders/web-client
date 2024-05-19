@@ -20,8 +20,8 @@ function ItemsPage() {
         setOpenAddModal(false)
     }
 
-    return <div className={"items-page"}>
-        <div className={"item-header"}>
+    return <div className={"page"}>
+        <div className={"page-header"}>
             <h3>
                 All Items
             </h3>
@@ -40,12 +40,12 @@ function ItemsPage() {
             }
         </div>
 
-        <div className={"item-content"}>
-            <div className={"item-list"}>
+        <div className={"page-content"}>
+            <div className={"page-list"}>
                 <ItemList/>
             </div>
-            <div className={"item-details"}>
-                <div className={"item-details-info"}>
+            <div className={"page-details"}>
+                <div className={"page-details-info"}>
                     <ItemInfoCard />
                 </div>
 

@@ -129,7 +129,7 @@ function BillingPartyList() {
             </FormControl>
         </div>
 
-        <div className={"bp-list"}>
+        <div className={"page-list"}>
             {
                 billingPartiesToShow.map((billingParty) =>
                     <div key={billingParty.id} className={getClassName(billingParty)}

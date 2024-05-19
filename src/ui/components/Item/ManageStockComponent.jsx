@@ -88,7 +88,6 @@ function ManageStockComponent({open, handleClose, mode}) {
                 stockWeight: +weight + selectedItem.stockWeight
             };
             updateSelectedItem(updatedItem);
-
             handleClose();
         }
     }
@@ -209,13 +208,10 @@ function ManageStockComponent({open, handleClose, mode}) {
                 helperText={weightError}
                 onChange={(e) => {
                     const inputValue = e.target.value;
-                    console.log("Got weight >" + inputValue);
-
                     // Regular expression to match float numbers
                     const regex = /^\d*\.?\d{0,2}$/;
                     // Check if input value matches the regex
                     if (regex.test(inputValue)){
-                        console.log("Setting weight >" + inputValue);
                         setWeight(inputValue);
                     }
                     setWeightError(null);
