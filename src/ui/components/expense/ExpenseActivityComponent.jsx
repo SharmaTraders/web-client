@@ -1,7 +1,7 @@
+import {selectSelectedCategory} from "../../../redux/features/state/expenseCategoryState";
 import {useSelector} from "react-redux";
-import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 import React, {useState} from "react";
-import {useGetIncomesByBillingPartyQuery} from "../../../redux/features/api/incomeApi";
+import {useGetExpenseByCategoryQuery} from "../../../redux/features/api/expenseApi";
 import {StickyHeadTableSkeleton} from "../Item/ItemActivityComponent";
 import {
     Fade,
@@ -18,38 +18,37 @@ import {
 import {getBsDateFromAdDate} from "../../../utils/dateConverters";
 import Box from "@mui/material/Box";
 
-function IncomeActivityComponent() {
-    const selectedBillingParty = useSelector(selectSelectedBillingParty);
+function ExpenseActivityComponent() {
+    const selectedCategory = useSelector(selectSelectedCategory)
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
             <div className={"bold"}>
-                Income Activity
+                Expense Activity
             </div>
             <div className={"item-activity-buttons"}>
                 {/* Button */}
             </div>
-
         </div>
-
         <div className={"item-activity-content"}>
             {
-                selectedBillingParty ?
-                    <StickyHeadIncomeTable billingPartyId={selectedBillingParty.id}/>
+                selectedCategory ?
+                    <StickyHeadExpenseTable category={selectedCategory}/>
                     :
-                    <div style={{padding: '1rem'}}> Please select a billing party to view income activity</div>
+                    <div style={{padding: '1rem'}}> Please select a category to view expense activity</div>
             }
         </div>
-
     </div>
+
 }
 
-function StickyHeadIncomeTable({billingPartyId}) {
+
+function StickyHeadExpenseTable({category}) {
     const [pageNumber, setPageNumber] = useState(1);
     const rowsPerPage = 8;
 
-    const {data, isLoading} = useGetIncomesByBillingPartyQuery({
-        billingPartyId,
+    const {data, isLoading} = useGetExpenseByCategoryQuery({
+        categoryName: category,
         pageNumber,
         pageSize: rowsPerPage
     });
@@ -60,29 +59,28 @@ function StickyHeadIncomeTable({billingPartyId}) {
         setPageNumber(newPage + 1);
     }
 
-    const columns = [
-        {
-            id: 'date',
-            label: 'Date'
-        },
+    const columns = [{
+        id: 'date',
+        label: 'Date',
+    },
         {
             id: 'amount',
-            label: 'Amount'
-        },
-        {
+            label: 'Amount',
+        }, {
             id: 'remarks',
-            label: 'Remarks'
-        }
-    ]
+            label: 'Remarks',
 
-    const rows = data?.incomes || [];
+        }];
+
+    console.log(data);
+    const rows = data?.expenses || [];
     if (rows.length === 0) return <div>
-        No income records for the party yet..
+        No expense records for the category yet..
     </div>
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>
-            <Table stickyHeader aria-label="All incomes by party">
+            <Table stickyHeader aria-label="All expenses by category">
                 <TableHead>
                     <TableRow>
                         {columns.map((column) => (
@@ -102,10 +100,10 @@ function StickyHeadIncomeTable({billingPartyId}) {
 
                 <TableBody>
                     {
-                        rows.map(income => {
-                            return <TableRow hover role="checkbox" tabIndex={-1} key={income.id}>
+                        rows.map(expense => {
+                            return <TableRow hover role="checkbox" tabIndex={-1} key={expense.id}>
                                 {columns.map((column) => {
-                                    const value = income[column.id];
+                                    const value = expense[column.id];
                                     if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
                                             {getBsDateFromAdDate(value)}
@@ -137,8 +135,8 @@ function StickyHeadIncomeTable({billingPartyId}) {
     </Paper>
 }
 
-function IncomesTableModal({open, handleClose}) {
-    const selectedBillingParty = useSelector(selectSelectedBillingParty);
+function ExpenseTableModal({open, handleClose}) {
+    const selectedCategory = useSelector(selectSelectedCategory);
     const style = {
         position: 'absolute',
         top: '50%',
@@ -157,8 +155,8 @@ function IncomesTableModal({open, handleClose}) {
         <Fade in={open}>
             <Box sx={style}>
                 {
-                    selectedBillingParty ?
-                        <StickyHeadIncomeTable billingPartyId={selectedBillingParty.id}/>
+                    selectedCategory ?
+                        <StickyHeadExpenseTable category={selectedCategory}/>
                         :
                         <div style={{padding: '1rem'}}> Please select a billing party to view income activity</div>
                 }
@@ -168,5 +166,6 @@ function IncomesTableModal({open, handleClose}) {
 
 }
 
-export default IncomeActivityComponent;
-export {IncomesTableModal, StickyHeadTableSkeleton};
+
+export default ExpenseActivityComponent;
+export {ExpenseTableModal};

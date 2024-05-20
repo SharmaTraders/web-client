@@ -1,28 +1,30 @@
 import React, {useState} from "react";
 import {Slide} from "@mui/material";
-import {useRegisterIncomeMutation} from "../../../redux/features/api/incomeApi";
+import {useRegisterExpenseMutation} from "../../../redux/features/api/expenseApi";
 import {toast} from "react-toastify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
 import {getBsToday} from "../../../utils/dateConverters";
-import TextField from "@mui/material/TextField";
+import CategoryAutoComplete from "./CategoryAutoComplete";
 import BillingPartyAutocomplete from "../BillingParty/BillingPartyAutocomplete";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function RegisterIncomeComponent({open, handleClose}) {
+function RegisterExpenseComponent({open, handleClose}) {
     const currentDate = new Date().toISOString().split('T')[0];
+
     const [date, setDate] = useState(currentDate)
     const [dateError, setDateError] = useState("");
 
@@ -32,60 +34,41 @@ function RegisterIncomeComponent({open, handleClose}) {
     const [remarks, setRemarks] = useState("");
     const [remarksError, setRemarksError] = useState("");
 
-    const [selectedBillingParty, setSelectedBillingParty] = useState({});
+    const [selectedBillingPartyId, setSelectedBillingPartyId] = useState("");
 
-    const [registerIncome, {isLoading}] = useRegisterIncomeMutation();
+    const [selectedCategory, setSelectedCategory] = useState("");
 
+    const [registerExpense, {isLoading}] = useRegisterExpenseMutation();
 
-    if (isLoading) toast.loading("Registering income...", {
-        toastId: "income-loading",
+    if (isLoading) toast.loading("Registering expense...", {
+        toastId: "expense-loading",
         autoClose: false
-
     });
 
-
-    async function onRegisterIncomeClick() {
+    async function onRegisterExpenseClick(){
         if (!validateNonEmptyRequiredFields()) return;
 
-        const {error} = await registerIncome({
-            billingPartyId: selectedBillingParty.id,
+        const {error} = await registerExpense({
+            billingPartyId: selectedBillingPartyId || null,
             date,
             remarks,
-            amount
+            amount,
+            categoryName: selectedCategory
         });
 
         if (error) handleError(error);
         else {
-            toast.dismiss("income-loading");
-            toast.success("Income registered successfully", {
+            toast.dismiss("expense-loading");
+            toast.success("Expense registered successfully", {
                 autoClose: 7000
             });
             handleClose();
         }
     }
 
-    function validateNonEmptyRequiredFields() {
-        let isValid = true;
-
-        if (date === "") {
-            setDateError("Date is required");
-            isValid = false;
-        }
-
-        if (!amount) {
-            setAmountError("Amount is required");
-            isValid = false;
-        }
-        if (!selectedBillingParty || !selectedBillingParty.id) {
-            toast.error("Please select a billing party");
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
     function handleError(error) {
-        toast.dismiss("income-loading");
+        toast.dismiss("expense-loading");
+        console.log(error);
 
         if (error.data) {
             let problemDetails = error.data;
@@ -118,25 +101,49 @@ function RegisterIncomeComponent({open, handleClose}) {
         }
     }
 
+    function validateNonEmptyRequiredFields() {
+        let isValid = true;
+
+        if (date === "") {
+            setDateError("Date is required");
+            isValid = false;
+        }
+
+        if (!amount) {
+            setAmountError("Amount is required");
+            isValid = false;
+        }
+        if (!selectedCategory && !selectedBillingPartyId){
+            toast.error("One of billing party or category is required")
+            isValid = false;
+        }
+        return isValid;
+    }
+
     function onDateChange({adDate}) {
         setDate(adDate);
         setDateError("")
     }
 
     function onSelectedParty(party) {
-        setSelectedBillingParty(party);
+        setSelectedBillingPartyId(party.id);
+    }
+
+    function onCategoryChange(category){
+        setSelectedCategory(category);
     }
 
     return <Dialog
         fullWidth
         open={open}
-        TransitionComponent={Transition}>
+        TransitionComponent = {Transition}>
         <DialogTitle>
-            Register Income
+            Register Expense
         </DialogTitle>
+
         <DialogContent>
             <DialogContentText>
-                Please fill in the following details to register an income.
+                Please fill in the following details to register an expense.
                 <br/>
                 The fields marked with * are mandatory
             </DialogContentText>
@@ -150,13 +157,18 @@ function RegisterIncomeComponent({open, handleClose}) {
                           onChange={onDateChange}/>
             </div>
 
+            <CategoryAutoComplete onChange={onCategoryChange}/>
 
-            <BillingPartyAutocomplete onChange={onSelectedParty}/>
-
+            {
+                selectedCategory &&
+                selectedCategory.toLowerCase() === "billing party"
+                &&
+                <BillingPartyAutocomplete onChange={onSelectedParty}/>
+            }
 
             <TextField
                 type={"text"}
-                margin="normal"
+                margin="dense"
                 value={amount}
                 error={Boolean(amountError)}
                 helperText={amountError}
@@ -185,7 +197,7 @@ function RegisterIncomeComponent({open, handleClose}) {
 
             <TextField
                 type={"text"}
-                margin="normal"
+                margin="dense"
                 multiline
                 fullWidth
                 rows={4}
@@ -208,14 +220,15 @@ function RegisterIncomeComponent({open, handleClose}) {
             </Button>
 
             <Button variant="contained"
-                    onClick={onRegisterIncomeClick}
+                    onClick={onRegisterExpenseClick}
                     color="primary"
                     size="small"
                     startIcon={<AddIcon/>}>
                 Add
             </Button>
+
         </DialogActions>
     </Dialog>
 }
 
-export default RegisterIncomeComponent;
+export default RegisterExpenseComponent;

@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {useGetSaleQuery} from "../../../redux/features/api/sale";
 import Skeleton from "@mui/material/Skeleton";
 import {
     Paper,
@@ -12,10 +11,11 @@ import {
     TableRow,
 } from "@mui/material";
 import {getBsDateFromAdDate} from "../../../utils/dateConverters";
-import {useGetPurchasesQuery} from "../../../redux/features/api/purchase";
 import PropTypes from "prop-types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
+import {useGetPurchasesQuery} from "../../../redux/features/api/purchaseApi";
+import {useGetSaleQuery} from "../../../redux/features/api/saleApi";
 
 function InvoiceActivityComponent({mode}) {
     const [pageNumber, setPageNumber] = useState(1);

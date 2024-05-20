@@ -137,7 +137,6 @@ function ManageItemComponent({open, handleClose, mode}) {
                 toastId: "add-item-success",
             });
 
-        toast.dismiss("loading-item");
         closeDialogue();
 
     }
@@ -153,7 +152,6 @@ function ManageItemComponent({open, handleClose, mode}) {
 
     function closeDialogue() {
         handleClose();
-
     }
 
     return <Dialog
@@ -238,9 +236,9 @@ function ManageItemComponent({open, handleClose, mode}) {
 
         <DialogActions>
             <Button onClick={closeDialogue}
-                    variant={"contained"}
-                    size={"small"}
-                    color={"error"}>Cancel
+                    variant="contained"
+                    size="small"
+                    color="error">Cancel
             </Button>
             <Button onClick={handleItemSubmit}
                     startIcon={mode === 'edit' ? <SaveIcon/> : <AddIcon/>}

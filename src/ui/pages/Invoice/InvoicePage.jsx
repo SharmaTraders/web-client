@@ -1,7 +1,15 @@
-import React from "react";
-import {Grid, Typography} from "@mui/material";
+import React from 'react';
+import {
+    Button,
+    Grid,
+    Typography,
+
+} from '@mui/material';
+
+import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
+
+import "./InvoicePage.css";
 import {InvoiceActivityComponent} from "../../components/Invoice/InvoiceActivityComponent";
-import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 
 function InvoicePage({mode}) {

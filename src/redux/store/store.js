@@ -2,6 +2,7 @@ import storage from 'redux-persist/lib/storage'
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {baseApi} from "../features/api/setup";
 import authReducer from "../features/state/authstate";
+import categoryReducer from "../features/state/expenseCategoryState";
 import billingPartyReducer from "../features/state/billingPartyState";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {persistReducer} from "redux-persist";
@@ -21,7 +22,7 @@ const rootReducer = combineReducers({
     auth: authReducer,
     item: itemReducer,
     billingParty: billingPartyReducer,
-
+    category: categoryReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
