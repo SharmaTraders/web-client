@@ -13,7 +13,7 @@ import SortIcon from '@mui/icons-material/Sort';
 
 
 function BillingPartyList() {
-    const [sort, setSort] = useState("");
+    const [sort, setSort] = useState("balance desc");
     const [searchString, setSearchString] = useState("");
     const dispatch = useDispatch()
     const selectedBillingParty = useSelector(selectSelectedBillingParty)
@@ -106,9 +106,6 @@ function BillingPartyList() {
                     }}
                     IconComponent={SortIcon}
                 >
-                    <MenuItem value={"latest"}>
-                        Latest
-                    </MenuItem>
                     <MenuItem value={"name asc"}>
                         Name (A - Z)
                     </MenuItem>
@@ -117,7 +114,7 @@ function BillingPartyList() {
                         Name (Z - A)
                     </MenuItem>
 
-                    <MenuItem value={"balance desc"}>
+                    <MenuItem value={"balance desc"} selected>
                         Balance (High - Low)
                     </MenuItem>
 
@@ -162,7 +159,7 @@ function BillingPartyCard({party}) {
     return <>
         <div className={"bp-info"}>
             <Avatar
-                variant={"circular"}
+                variant="circular"
                 >
                 {party.name.charAt(0)}
             </Avatar>

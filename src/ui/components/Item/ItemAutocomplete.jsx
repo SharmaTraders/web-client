@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Autocomplete, TextField, ListItem, ListItemText, Box, Typography } from '@mui/material';
-import ManageBillingPartyComponent from "../BillingParty/ManageBillingPartyComponent";
-import {useGetBillingPartiesQuery} from "../../../redux/features/api/billingPartyApi";
+import ManageItemComponent from "./ManageItemComponent";
 
-function BillingPartyAutocomplete({onChange}) {
+function ItemAutoComplete({ itemsData, onItemSelected }) {
     const [openAddModal, setOpenAddModal] = useState(false);
-
-    const {data} = useGetBillingPartiesQuery();
-
-    const billingPartiesData = data ? [...data.parties] : [];
 
     function handleClickOpen() {
         setOpenAddModal(true);
@@ -18,34 +13,38 @@ function BillingPartyAutocomplete({onChange}) {
         setOpenAddModal(false);
     }
 
-    const cash = billingPartiesData.filter(party => party.name.toLowerCase() === "cash");
-    const otherParties = billingPartiesData.filter(party => party.name.toLowerCase() !== "cash");
-
-    const options = [{id: "add_new_party", name: "Add Party"},...cash, ...otherParties];
+    const options = [
+        { name: "Add New Item", id: "add_new_item" },
+        ...itemsData
+    ];
 
     const handleSelect = (event, value) => {
-        if (!value) onChange({});
-        if (value && value.id === "add_new_party") {
-            handleClickOpen();
-        } else {
-            onChange(value);
+        if(value){
+            if (value.id === "add_new_item") {
+                handleClickOpen();
+            } else {
+                onItemSelected(value);
+            }
+        }else {
+            onItemSelected([]);
         }
+
     };
 
     return (
         <>
             <Autocomplete
                 disablePortal
-                id="billing-party-autocomplete"
+                id="item-autocomplete"
                 options={options}
                 getOptionLabel={(option) => option ? option.name : ""}
-                renderInput={(params) => <TextField {...params} label="Billing Party" required/>}
+                renderInput={(params) => <TextField {...params} label="Item" required/>}
                 onChange={handleSelect}
                 renderOption={(props, option) => (
-                    option.id === "add_new_party" ? (
+                    option.id === "add_new_item" ? (
                         <Box {...props} className="add-new-button" onClick={handleClickOpen} key={option.id}>
                             <Typography variant="body2" color="primary">
-                                + Add New Party
+                                + Add New Item
                             </Typography>
                         </Box>
                     ) : (
@@ -57,10 +56,9 @@ function BillingPartyAutocomplete({onChange}) {
                 sx={{ width: '100%' }}
             />
             {openAddModal && (
-                <ManageBillingPartyComponent open={openAddModal} handleClose={handleClose} mode={"add"} />
+                <ManageItemComponent open={openAddModal} handleClose={handleClose} mode={"add"} />
             )}
         </>
     );
 }
-
-export default BillingPartyAutocomplete;
+export default ItemAutoComplete;

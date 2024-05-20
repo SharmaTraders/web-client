@@ -12,15 +12,15 @@ import {
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {useGetItemsQuery} from "../../../redux/features/api/itemApi";
-import BillingPartyAutocomplete from "../../components/Invoice/BillingPartyAutocomplete";
-import ItemAutocomplete from "../../components/Invoice/ItemAutocomplete";
+import BillingPartyAutocomplete from "../../components/BillingParty/BillingPartyAutocomplete";
+import ItemAutocomplete from "../../components/Item/ItemAutocomplete";
 import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
 import '@sbmdkl/nepali-datepicker-reactjs/dist/index.css';
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {toast} from "react-toastify";
-import {useAddPurchaseMutation} from "../../../redux/features/api/purchase";
-import {useAddSaleMutation} from "../../../redux/features/api/sale"; // Import the sale mutation
+import {useAddPurchaseMutation} from "../../../redux/features/api/purchaseApi";
+import {useAddSaleMutation} from "../../../redux/features/api/saleApi"; // Import the sale mutation
 import "./InvoicePage.css";
 import {useNavigate} from "react-router-dom";
 import {getBsToday} from "../../../utils/dateConverters";

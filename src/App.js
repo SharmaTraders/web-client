@@ -15,6 +15,7 @@ import ItemsPage from "./ui/pages/Item/ItemsPage";
 import IncomePage from "./ui/pages/Income/IncomePage";
 import React from "react";
 import InvoicePage from "./ui/pages/Invoice/InvoicePage";
+import ExpensePage from "./ui/pages/expense/ExpensePage";
 
 const RequireAuth = ({children}) => {
     const userIsLogged = useSelector(selectIsLoggedIn);
@@ -55,7 +56,8 @@ function App() {
                         <Route path={"/items"} element = {<ItemsPage/>}/>
                         <Route path={"/purchase"} element = {<InvoicePage mode={"purchase"}/>}/>
                         <Route path={"/sale"} element = {<InvoicePage mode={"sale"}/>}/>
-                        <Route path={"/income"} element = {<IncomePage/>}/>
+                        <Route path={"/incomes"} element = {<IncomePage/>}/>
+                        <Route path={"/expenses"} element = {<ExpensePage/>}/>
                     </Route>
                 </Routes>
             </ThemeProvider>

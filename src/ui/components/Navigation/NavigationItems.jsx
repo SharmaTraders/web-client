@@ -77,7 +77,7 @@ function MainListItems() {
 
 
             <Tooltip title={"Income"} placement={"right-end"}>
-            <ListItemButton component={Link} to={"/income"}>
+            <ListItemButton component={Link} to={"/incomes"}>
                 <ListItemIcon>
                     <CurrencyRupeeIcon/>
                 </ListItemIcon>
