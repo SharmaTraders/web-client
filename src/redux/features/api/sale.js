@@ -1,4 +1,4 @@
-import { baseApi } from "./setup";
+import {baseApi} from "./setup";
 
 const saleApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -32,10 +32,16 @@ const saleApi = baseApi.injectEndpoints({
         }),
 
         getSale: builder.query({
-            query: () => "sale",
-            providesTags: ['Sales'],
+            query: ({
+                        pageNumber,
+                        pageSize
+                    }) => `sale?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+            forceRefetch: ({currentArg, previousArg}) => currentArg !== previousArg,
+            providesTags: (result, error, arg) => {
+                return [{type: 'Sales', pageNumber: arg.pageNumber}];
+            }
         })
     })
 });
 
-export const { useAddSaleMutation, useGetSaleMutation } = saleApi;
+export const {useAddSaleMutation, useGetSaleQuery} = saleApi;
