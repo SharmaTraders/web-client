@@ -14,6 +14,7 @@ import {selectIsLoggedIn} from "./redux/features/state/authstate";
 import ItemsPage from "./ui/pages/Item/ItemsPage";
 import IncomePage from "./ui/pages/Income/IncomePage";
 import React from "react";
+import AddInvoice from "./ui/components/Invoice/AddInvoice";
 import InvoicePage from "./ui/pages/Invoice/InvoicePage";
 
 const RequireAuth = ({children}) => {
@@ -53,8 +54,10 @@ function App() {
                         <Route path={"/"} element={<HomePage/>}/>
                         <Route path={"/parties"} element={<BillingPartiesPage/>}/>
                         <Route path={"/items"} element = {<ItemsPage/>}/>
+                        <Route path={"/purchaseInvoice"} element = {<AddInvoice mode={"purchase"}/>}/>
                         <Route path={"/purchase"} element = {<InvoicePage mode={"purchase"}/>}/>
                         <Route path={"/sale"} element = {<InvoicePage mode={"sale"}/>}/>
+                        <Route path={"/saleInvoice"} element = {<AddInvoice mode={"sale"}/>}/>
                         <Route path={"/income"} element = {<IncomePage/>}/>
                     </Route>
                 </Routes>
