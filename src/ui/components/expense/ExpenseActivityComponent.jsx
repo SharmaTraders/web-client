@@ -15,7 +15,7 @@ import {
     TablePagination,
     TableRow
 } from "@mui/material";
-import {getBsDateFromAdDate} from "../../../utils/dateConverters";
+import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import Box from "@mui/material/Box";
 
 function ExpenseActivityComponent() {
@@ -35,7 +35,7 @@ function ExpenseActivityComponent() {
                 selectedCategory ?
                     <StickyHeadExpenseTable category={selectedCategory}/>
                     :
-                    <div style={{padding: '1rem'}}> Please select a category to view expense activity</div>
+                    <div className={"center"}> Please select a category to view expense activity</div>
             }
         </div>
     </div>
@@ -74,7 +74,7 @@ function StickyHeadExpenseTable({category}) {
 
     console.log(data);
     const rows = data?.expenses || [];
-    if (rows.length === 0) return <div>
+    if (rows.length === 0) return <div className={"center"}>
         No expense records for the category yet..
     </div>
 
@@ -106,7 +106,7 @@ function StickyHeadExpenseTable({category}) {
                                     const value = expense[column.id];
                                     if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
-                                            {getBsDateFromAdDate(value)}
+                                            {getFormattedBsDateFromAdDate(value)}
                                         </TableCell>
                                     }
                                     return <TableCell key={column.id} align={column.align}>

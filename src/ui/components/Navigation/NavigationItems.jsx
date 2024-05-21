@@ -91,32 +91,28 @@ function MainListItems() {
 function SecondaryListItems() {
     return (
         <Fragment>
-
             <ListSubheader component="div" inset>
                 Reports
             </ListSubheader>
 
-            <ListItemButton>
+            <Tooltip title={"All Transactions"} placement={"right-end"}>
+            <ListItemButton component = {Link} to = {"/reports/all-transactions"}>
                 <ListItemIcon>
                     <AssignmentIcon/>
                 </ListItemIcon>
-                <ListItemText primary="Day Book"/>
+                <ListItemText primary="All transactions"/>
             </ListItemButton>
+            </Tooltip>
 
-            <ListItemButton>
-                <ListItemIcon>
-                    <AssignmentIcon/>
-                </ListItemIcon>
-                <ListItemText primary="PurchasePage Reports"/>
-            </ListItemButton>
+            <Tooltip title={"Expenses by category"} placement={"right-end"}>
+                <ListItemButton component = {Link} to = {"/reports/all-transactions"}>
+                    <ListItemIcon>
+                        <AssignmentIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Expense by category"/>
+                </ListItemButton>
+            </Tooltip>
 
-            <ListItemButton>
-                <ListItemIcon>
-                    <AssignmentIcon/>
-                </ListItemIcon>
-                <ListItemText primary="Sell Reports"/>
-
-            </ListItemButton>
         </Fragment>
     )
 }

@@ -15,7 +15,7 @@ import {
     TablePagination,
     TableRow
 } from "@mui/material";
-import {getBsDateFromAdDate} from "../../../utils/dateConverters";
+import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import Box from "@mui/material/Box";
 
 function IncomeActivityComponent() {
@@ -37,7 +37,7 @@ function IncomeActivityComponent() {
                 selectedBillingParty ?
                     <StickyHeadIncomeTable billingPartyId={selectedBillingParty.id}/>
                     :
-                    <div style={{padding: '1rem'}}> Please select a billing party to view income activity</div>
+                    <div className={"center"}> Please select a billing party to view income activity</div>
             }
         </div>
 
@@ -76,7 +76,7 @@ function StickyHeadIncomeTable({billingPartyId}) {
     ]
 
     const rows = data?.incomes || [];
-    if (rows.length === 0) return <div>
+    if (rows.length === 0) return <div className={"center"}>
         No income records for the party yet..
     </div>
 
@@ -88,9 +88,7 @@ function StickyHeadIncomeTable({billingPartyId}) {
                         {columns.map((column) => (
                             <TableCell
                                 key={column.id}
-                                align={column.align}
                                 style={{
-                                    minWidth: column.minWidth,
                                     fontWeight: 'bold',
                                 }}
                             >
@@ -108,7 +106,7 @@ function StickyHeadIncomeTable({billingPartyId}) {
                                     const value = income[column.id];
                                     if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
-                                            {getBsDateFromAdDate(value)}
+                                            {getFormattedBsDateFromAdDate(value)}
                                         </TableCell>
                                     }
                                     return <TableCell key={column.id} align={column.align}>

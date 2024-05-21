@@ -16,7 +16,7 @@ function ItemDetailsInfoCard() {
     const item = useSelector(selectSelectedItem);
     const [openAddModal, setOpenAddModal] = useState(false);
 
-    if (!item) return <div> Please select an item to view details</div>
+    if (!item) return <div className={"center"}> Please select an item to view details</div>
 
 
     function handleClickOpen() {
