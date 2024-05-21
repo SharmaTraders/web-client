@@ -10,7 +10,7 @@ import {
     TablePagination,
     TableRow,
 } from "@mui/material";
-import {getBsDateFromAdDate} from "../../../utils/dateConverters";
+import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import PropTypes from "prop-types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
@@ -111,7 +111,7 @@ function InvoiceActivityComponent({mode}) {
                                         if (column.id === "date") {
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
-                                                    {getBsDateFromAdDate(value)}
+                                                    {getFormattedBsDateFromAdDate(value)}
                                                 </TableCell>
                                             );
                                         }

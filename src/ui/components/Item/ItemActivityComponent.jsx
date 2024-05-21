@@ -18,7 +18,7 @@ import {
     TableRow
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import {getBsDateFromAdDate} from "../../../utils/dateConverters";
+import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 
 
 
@@ -117,7 +117,7 @@ function StickyHeadStocksTable({itemId}) {
                                     if (column.id === "weightChange" || column.id === "entryCategory") {
                                         let color = '#00a878';
                                         if (stock.entryCategory.toLowerCase() === 'reduce stock' || stock.entryCategory.toLowerCase() === "sales") {
-                                            color = 'red';
+                                            color = '#e3526e';
                                         }
 
                                         return <TableCell key={column.id} align={column.align} sx={{color: color}}>
@@ -127,7 +127,7 @@ function StickyHeadStocksTable({itemId}) {
 
                                     if (column.id === "date"){
                                         return <TableCell key={column.id} align={column.align}>
-                                            {getBsDateFromAdDate(value)}
+                                            {getFormattedBsDateFromAdDate(value)}
                                         </TableCell>
                                     }
 

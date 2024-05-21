@@ -30,6 +30,8 @@ function getTitle(pathname) {
             return 'Sale Invoice';
         case '/incomes':
             return 'Income';
+        case '/reports':
+            return 'Reports';
         default:
             return 'Dashboard'; // default title
     }
@@ -90,7 +92,7 @@ function AppBarComponent({open, toggleDrawer}) {
                     <Avatar
                         imgProps={{loading: "lazy"}}
                         src="https://scontent-cph2-1.xx.fbcdn.net/v/t39.30808-6/419252439_1463196244596538_4842537556956711715_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=5-aKC6YJtp4AX_90WTL&_nc_ht=scontent-cph2-1.xx&oh=00_AfBvRtJAgdQ8-A_NCJufe_M7oocG270mZwJrkANeB2zP8A&oe=6608D37B"
-                        alt = {"Profile picture"}
+                        alt={"Profile picture"}
                         sx={{marginRight: 2}}/>
                     {isDesktop &&
                         <Typography variant="subtitle1" noWrap>
