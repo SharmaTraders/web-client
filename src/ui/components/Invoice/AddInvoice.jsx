@@ -107,7 +107,7 @@ function AddInvoice({mode}) {
         // Updating the specific field of an item in the invoiceItems array.
         const newItems = invoiceItems.map((item, idx) => {
             if (idx === index) {
-                const updatedItem = {...item, [field]: value};
+                const updatedItem = {...item, [field]: value, itemId: item.itemId};
 
                 const {quantity, rate, report} = updatedItem;
                 const effectiveReport = report || 0;
@@ -420,9 +420,11 @@ function AddInvoice({mode}) {
     };
 
     const handleItemSelected = (index, item) => {
+
+        // item.rate = item.estimatedPricePerKilo;
         const newItems = invoiceItems.map((invoiceItem, idx) => {
             if (idx === index) {
-                return item ? {...invoiceItem, itemName: item.name, itemId: item.id} : {
+                return item ? {...invoiceItem, itemName: item.name, itemId: item.id, rate: item.estimatedPricePerKilo} : {
                     ...invoiceItem,
                     itemName: '',
                     itemId: ''
@@ -430,7 +432,6 @@ function AddInvoice({mode}) {
             }
             return invoiceItem;
         });
-
         const newSubtotal = calculateSubtotal(newItems);
         const newVatAmount = showVAT ? newSubtotal * 0.13 : 0;
         const newTotalAmount = calculateTotalAmount(newItems, newVatAmount, transportFees);
@@ -534,7 +535,11 @@ function AddInvoice({mode}) {
                             <ItemAutocomplete
                                 key={index}
                                 itemsData={itemsData}
-                                onItemSelected={(item) => handleItemSelected(index, item)}
+                                onItemSelected={(item) =>{
+                                    handleItemSelected(index, item);
+                                }
+                            }
+
                             />
                             {itemErrors[index]?.itemIdError && (
                                 <Typography color="error">{itemErrors[index].itemIdError}</Typography>
