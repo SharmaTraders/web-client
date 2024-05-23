@@ -2,7 +2,6 @@ import {baseApi} from "./setup";
 
 const reportsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-
         getAllTransactionsReport: builder.query({
             query: ({
                         dateFrom,
@@ -10,10 +9,19 @@ const reportsApi = baseApi.injectEndpoints({
                     }) => `reports/all-transactions?dateFrom=${dateFrom}&dateTo=${dateTo}`,
 
             // Always refetch the data because this is the report...
-            forceRefetch: ({currentArg, previousArg}) => true,
+            forceRefetch: (params) => true,
+        }),
+
+        getStocksSummaryReport: builder.query({
+            query: ({
+                dateFrom,
+                dateTo
+            }) => `reports/stock-summary?fromDate=${dateFrom}&toDate=${dateTo}`,
+
+            forceRefetch:(params) => true,
         })
     })
 
 });
 
-export const {useGetAllTransactionsReportQuery} = reportsApi;
+export const {useGetAllTransactionsReportQuery, useGetStocksSummaryReportQuery} = reportsApi;

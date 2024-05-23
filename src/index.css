@@ -1,6 +1,7 @@
 :root {
     --primary: #00a878;
     --secondary: #d8f1a0;
+    --primary-secondary-gradient :linear-gradient(90deg, rgba(0,168,120,1) 0%, rgba(216,241,160,1) 35%, rgba(254,94,65,1) 100%);
     --tertiary: #fe5e41;
     --quaternary: #f3c178;
     --quinary: #0b0500;

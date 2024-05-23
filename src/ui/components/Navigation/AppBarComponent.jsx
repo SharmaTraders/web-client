@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import {useLocation} from 'react-router-dom';
+import {NavLink, useLocation} from 'react-router-dom';
 import {Avatar} from "@mui/material";
 
 function getTitle(pathname) {
@@ -30,8 +30,10 @@ function getTitle(pathname) {
             return 'Sale Invoice';
         case '/incomes':
             return 'Income';
-        case '/reports':
-            return 'Reports';
+        case '/reports/all-transactions':
+            return 'All Transactions';
+        case '/reports/stock-summary':
+            return 'All Transactions';
         default:
             return 'Dashboard'; // default title
     }
@@ -90,14 +92,17 @@ function AppBarComponent({open, toggleDrawer}) {
                 {/* User Profile Section */}
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                     <Avatar
-                        imgProps={{loading: "lazy"}}
-                        src="https://scontent-cph2-1.xx.fbcdn.net/v/t39.30808-6/419252439_1463196244596538_4842537556956711715_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=5-aKC6YJtp4AX_90WTL&_nc_ht=scontent-cph2-1.xx&oh=00_AfBvRtJAgdQ8-A_NCJufe_M7oocG270mZwJrkANeB2zP8A&oe=6608D37B"
                         alt={"Profile picture"}
-                        sx={{marginRight: 2}}/>
+                        sx={{marginRight: 2}}>
+                        ST
+                    </Avatar>
                     {isDesktop &&
-                        <Typography variant="subtitle1" noWrap>
-                            Sharma Traders
-                        </Typography>
+                        <NavLink to={"/"}>
+                            <div id={"logo"} className={"hard-title animate-text"}>
+                                Sharma Traders
+                            </div>
+                        </NavLink>
+
                     }
 
                 </Box>
