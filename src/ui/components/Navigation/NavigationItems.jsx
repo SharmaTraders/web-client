@@ -113,6 +113,14 @@ function SecondaryListItems() {
                 </ListItemButton>
             </Tooltip>
 
+            <Tooltip title={"Expense category"} placement={"right-end"}>
+                <ListItemButton component = {Link} to = {"/reports/expense-by-category"}>
+                    <ListItemIcon>
+                        <AssignmentIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Expense category"/>
+                </ListItemButton>
+            </Tooltip>
         </Fragment>
     )
 }

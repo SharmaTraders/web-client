@@ -19,9 +19,19 @@ const reportsApi = baseApi.injectEndpoints({
             }) => `reports/stock-summary?fromDate=${dateFrom}&toDate=${dateTo}`,
 
             forceRefetch:(params) => true,
+        }),
+
+        getExpenseByCategoryReport: builder.query({
+            query: ({
+                dateFrom,
+                dateTo
+            }) => `reports/expense-by-category?dateFrom=${dateFrom}&dateTo=${dateTo}`,
+
+            forceRefetch:(params) => true,
+
         })
     })
 
 });
 
-export const {useGetAllTransactionsReportQuery, useGetStocksSummaryReportQuery} = reportsApi;
+export const {useGetAllTransactionsReportQuery, useGetStocksSummaryReportQuery, useGetExpenseByCategoryReportQuery} = reportsApi;
