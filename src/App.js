@@ -19,6 +19,7 @@ import InvoicePage from "./ui/pages/Invoice/InvoicePage";
 import ExpensePage from "./ui/pages/expense/ExpensePage";
 import AllTransactionsReportPage from "./ui/pages/reports/AllTransactionsReportPage";
 import StocksSummaryReportsPage from "./ui/pages/reports/StocksSummaryReportsPage";
+import ExpenseByCategoryReport from "./ui/pages/reports/ExpenseByCategoryReport";
 
 const RequireAuth = ({children}) => {
     const userIsLogged = useSelector(selectIsLoggedIn);
@@ -65,6 +66,7 @@ function App() {
                         <Route path={"/saleInvoice"} element = {<AddInvoice mode={"sale"}/>}/>
                         <Route path={"/reports/all-transactions"} element = {<AllTransactionsReportPage/>}/>
                         <Route path={"/reports/stock-summary"} element = {<StocksSummaryReportsPage/>}/>
+                        <Route path={"/reports/expense-by-category"} element = {<ExpenseByCategoryReport/>}/>
                     </Route>
                 </Routes>
             </ThemeProvider>
