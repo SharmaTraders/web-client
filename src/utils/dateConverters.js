@@ -1,15 +1,23 @@
-import NepaliDate from "nepali-date-converter";
+import NepaliDate from "nepali-datetime";
 
-function getBsDateFromAdDate(adDate) {
+function getFormattedBsDateFromAdDate(adDate) {
   // Convert AD date to BS date
   const date = new NepaliDate(new Date(adDate));
-  return date.format('ddd, DD MMMM YYYY') // 'Monday, 24 Aswin 2051'
-
+  return date.format('dddd, DD MMMM YYYY') // 'Monday, 24 Aswin 2051'
 }
 
 function getBsToday(){
-    const date = new NepaliDate(new Date().setDate(new Date().getDate()+1));
+    const date = new NepaliDate();
     return date.format('YYYY-MM-DD') // '2078-07-07'
 }
 
-export { getBsDateFromAdDate , getBsToday};
+function getBsFromAdDate(adDate){
+    console.log(adDate);
+    const [year, month, day] = adDate.split('-').map(Number);
+    const date = NepaliDate.fromEnglishDate(year, month-1 , day);
+    console.log("returning ---")
+    console.log(date.format('YYYY-MM-DD'));
+    return date.format('YYYY-MM-DD') // '2078-07-07'
+}
+
+export { getFormattedBsDateFromAdDate , getBsToday, getBsFromAdDate};

@@ -10,7 +10,7 @@ import {
     TablePagination,
     TableRow,
 } from "@mui/material";
-import {getBsDateFromAdDate} from "../../../utils/dateConverters";
+import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import PropTypes from "prop-types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
@@ -36,7 +36,7 @@ function InvoiceActivityComponent({mode}) {
     const {data, isLoading} = mode === "purchase" ? purchaseQuery : saleQuery;
 
     if (isLoading) return <StickyHeadTableSkeleton count={6}/>;
-    if (!data) return;
+    if (!data) return <div>Something went wrong or there is no data</div>;
 
     function handlePageChange(event, newPage) {
         setPageNumber(newPage + 1);
@@ -112,7 +112,7 @@ function InvoiceActivityComponent({mode}) {
                                         if (column.id === "date") {
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
-                                                    {getBsDateFromAdDate(value)}
+                                                    {getFormattedBsDateFromAdDate(value)}
                                                 </TableCell>
                                             );
                                         }

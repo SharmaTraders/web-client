@@ -14,7 +14,7 @@ function BillingPartyDetailsInfoCard() {
     const [openEditModal, setOpenEditModal] = useState(false);
     const party = useSelector(selectSelectedBillingParty);
 
-    if (!party) return <div>
+    if (!party) return <div className={"center"}>
         Please select a billing party for info
     </div>
 
