@@ -7,17 +7,17 @@ import DialogContentText from "@mui/material/DialogContentText";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import {Grid, Slide} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from '@mui/icons-material/Save';
 import {useAddEmployeeMutation} from "../../../redux/features/api/employee";
 import PropTypes from "prop-types";
+import {Grid, Slide} from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function ManageEmployeeComponent({ mode, employee, open, handleClose }) {
+function ManageEmployeeComponent({ mode, open, handleClose }) {
     const [name, setName] = useState("");
     const [nameError, setNameError] = useState("");
     const [email, setEmail] = useState("");
@@ -87,6 +87,7 @@ function ManageEmployeeComponent({ mode, employee, open, handleClose }) {
     async function onAddOrUpdateEmployee() {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
+        const [hours, minutes] = normalDailyWorkingHours.split(':').map(Number);
 
         const body = {
             name,
@@ -94,11 +95,12 @@ function ManageEmployeeComponent({ mode, employee, open, handleClose }) {
             phoneNumber,
             email,
             openingBalance,
-            normalDailyWorkingHours,
+            normalDailyWorkingMinute: hours * 60 + minutes,
             salaryPerHour,
             overtimeSalaryPerHour
         };
 
+        console.log(body);
         // TODO : Add Update Employee Mutation
         // const action = mode === "add" ? createEmployee : updateEmployee;
 
@@ -276,46 +278,59 @@ function ManageEmployeeComponent({ mode, employee, open, handleClose }) {
                         <TextField
                             margin="normal"
                             label="Opening Balance"
-                            type="number"
+                            type="text"
                             value={openingBalance}
                             onChange={(e) => {
-                                setOpeningBalance(e.target.value)
-                                setOpeningBalanceError("");
+                                const regex = /^\d*\.?\d{0,2}$/;
+                                const value = e.target.value;
+                                if (value === "" || regex.test(value)) {
+                                    setOpeningBalance(value);
+                                    setOpeningBalanceError("");
+                                }
                             }}
                             fullWidth
                             error={Boolean(openingBalanceError)}
                             helperText={openingBalanceError}
                             className={openingBalanceError ? "error" : ""}
                         />
+
                     </Grid>
 
                     <Grid item xs={12} sm={6} md={4}>
                         <TextField
                             margin="normal"
                             label="Salary per Hour"
-                            type="number"
+                            type="text"
                             value={salaryPerHour}
                             onChange={(e) => {
-                                setSalaryPerHourError("")
-                                setSalaryPerHour(e.target.value);
+                                const value = e.target.value;
+                                const regex = /^\d*\.?\d{0,2}$/;
+                                if (value === "" || regex.test(value)) {
+                                    setSalaryPerHour(value);
+                                    setSalaryPerHourError("");
+                                }
                             }}
                             fullWidth
                             required
                             error={Boolean(salaryPerHourError)}
                             helperText={salaryPerHourError}
                             className={salaryPerHourError ? "error" : ""}
-
                         />
+
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
                         <TextField
                             margin="normal"
                             label="Overtime Salary per Hour"
-                            type="number"
+                            type="text"
                             value={overtimeSalaryPerHour}
                             onChange={(e) => {
-                                setOvertimeSalaryPerHourError("")
-                                setOvertimeSalaryPerHour(e.target.value);
+                                const value = e.target.value;
+                                const regex = /^\d*\.?\d{0,2}$/;
+                                if (value === "" || regex.test(value)) {
+                                    setOvertimeSalaryPerHour(value);
+                                    setOvertimeSalaryPerHourError("");
+                                }
                             }}
                             fullWidth
                             required
@@ -323,6 +338,7 @@ function ManageEmployeeComponent({ mode, employee, open, handleClose }) {
                             helperText={overtimeSalaryPerHourError}
                             className={overtimeSalaryPerHourError ? "error" : ""}
                         />
+
                     </Grid>
                 </Grid>
 

@@ -15,7 +15,6 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import PropTypes from "prop-types";
-import {useDispatch} from "react-redux";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -33,7 +32,6 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
     const currentDate = new Date().toISOString().split('T')[0];
     const [date, setDate] = useState(currentDate);
     const [dateError, setDateError] = useState('');
-    const dispatch = useDispatch();
 
     if (isCreateLoading) {
         toast.loading(mode === "add" ? "Adding time record..." : "Updating time record...", {
@@ -237,6 +235,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
 
                                     if (validValue || value === "") { // Allow empty string to clear the field
                                         setBreakInMinutes(value);
+                                        setBreakTimeError("");
                                     }
                                 }}
                                 error={Boolean(breakTimeError)}

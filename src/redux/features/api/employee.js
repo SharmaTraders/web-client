@@ -4,7 +4,7 @@ import { baseApi } from "./setup";
 const employeeApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         addEmployee: builder.mutation({
-            query: ({ name, address, phoneNumber, email, openingBalance, normalDailyWorkingHours, salaryPerHour, overtimeSalaryPerHour }) => ({
+            query: ({ name, address, phoneNumber, email, openingBalance, normalDailyWorkingMinute, salaryPerHour, overtimeSalaryPerHour }) => ({
                 url: 'employee',
                 method: 'POST',
                 body: {
@@ -13,7 +13,7 @@ const employeeApi = baseApi.injectEndpoints({
                     phoneNumber,
                     email,
                     openingBalance,
-                    normalDailyWorkingHours,
+                    normalDailyWorkingMinute,
                     salaryPerHour,
                     overtimeSalaryPerHour
                 }

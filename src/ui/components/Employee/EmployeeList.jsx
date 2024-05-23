@@ -27,7 +27,7 @@ function EmployeeList() {
     if (error) {
         return <div> Something went wrong </div>;
     }
-    if (!data) return;
+    if (!data) return <div> No Employee found </div>;
 
     const employees = data.employees || [];
 
