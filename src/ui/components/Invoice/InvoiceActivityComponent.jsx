@@ -36,6 +36,7 @@ function InvoiceActivityComponent({mode}) {
     const {data, isLoading} = mode === "purchase" ? purchaseQuery : saleQuery;
 
     if (isLoading) return <StickyHeadTableSkeleton count={6}/>;
+    if (!data) return;
 
     function handlePageChange(event, newPage) {
         setPageNumber(newPage + 1);
