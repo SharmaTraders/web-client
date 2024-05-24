@@ -30,6 +30,8 @@ function getTitle(pathname) {
             return 'Sale Invoice';
         case '/incomes':
             return 'Income';
+        case '/employees':
+            return 'Employees';
         case '/reports/all-transactions':
             return 'All Transactions';
         case '/reports/stock-summary':

@@ -14,6 +14,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import {Link} from 'react-router-dom';
 import {Fragment} from "react";
 import Tooltip from '@mui/material/Tooltip';
+import BadgeIcon from '@mui/icons-material/Badge';
 
 
 function MainListItems() {
@@ -82,6 +83,15 @@ function MainListItems() {
                     <CurrencyRupeeIcon/>
                 </ListItemIcon>
                 <ListItemText primary="Income"/>
+            </ListItemButton>
+            </Tooltip>
+
+            <Tooltip title={"Employees"} placement={"right-end"}>
+            <ListItemButton component={Link} to={"/employees"}>
+                <ListItemIcon>
+                    <BadgeIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Employees"/>
             </ListItemButton>
             </Tooltip>
         </Fragment>

@@ -4,6 +4,7 @@ import {baseApi} from "../features/api/setup";
 import authReducer from "../features/state/authstate";
 import categoryReducer from "../features/state/expenseCategoryState";
 import billingPartyReducer from "../features/state/billingPartyState";
+import employeeReducer from "../features/state/employeeState";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {persistReducer} from "redux-persist";
 import itemReducer from '../features/state/itemState';
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
     auth: authReducer,
     item: itemReducer,
     billingParty: billingPartyReducer,
-    category: categoryReducer
+    category: categoryReducer,
+    employee: employeeReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

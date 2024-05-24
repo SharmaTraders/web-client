@@ -1,0 +1,114 @@
+
+.employee-details-history {
+    flex: 2.5;
+    background-color: #fff;
+    border-radius: 1%;
+}
+
+.employee-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 2%;
+    padding: 0.6dvw 1dvw 0.6dvw 1dvh;
+    border-top: 2px solid #e7f4ef;
+    border-bottom: 2px solid #e7f4ef;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+
+}
+
+.employee-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.employee-selected {
+    background-color: #e7f4ef;
+    border-left: 3px solid var(--primary);
+}
+
+.employee-card:hover {
+    background-color: #e7f4ef;
+}
+
+.employee-details-card{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 1.2rem;
+}
+
+.employee-details-card-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.employee-details-card-1{
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.employee-details-card-2{
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: center;
+    margin-right: 1dvw;
+
+}
+
+.employee-details-card-avatar{
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.primary-color {
+    color: var(--primary);
+}
+
+.error-color{
+    color: var(--tertiary);
+}
+
+.employee-balance{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.employee-details-card-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.8rem;
+}
+
+.employee-list-filter{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem;
+    gap: 2rem;
+    background-color: #fff;
+    border-radius: 2%;
+
+}
+
+/* Tab */
+@media screen and (max-width: 1050px ) and  (min-width: 768px){
+    .employee-list-filter {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+}
+
