@@ -1,18 +1,17 @@
-import Button from "@mui/material/Button";
-import "./Reports.css";
-import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
-import {getFormattedBsDateFromAdDate, getBsToday, getBsFromAdDate} from "../../../utils/dateConverters";
 import React, {useState} from "react";
-import {useGetAllTransactionsReportQuery} from "../../../redux/features/api/reportsApi";
+import {
+    useGetExpenseByCategoryReportQuery,
+} from "../../../redux/features/api/reportsApi";
+import Button from "@mui/material/Button";
+import DownloadIcon from "@mui/icons-material/Download";
+import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
+import {getBsFromAdDate, getBsToday, getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import {StickyHeadTableSkeleton} from "../../components/Item/ItemActivityComponent";
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import {toast} from "react-toastify";
 import jsPDF from "jspdf";
-import DownloadIcon from '@mui/icons-material/Download';
-import "jspdf-autotable";
+import {toast} from "react-toastify";
 
-
-function AllTransactionsReportPage() {
+function ExpenseByCategoryReport(){
     const currentDate = new Date().toISOString().split('T')[0];
     const lastMonth = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
@@ -20,58 +19,10 @@ function AllTransactionsReportPage() {
     const [dateFrom, setDateFrom] = useState(lastMonth);
     const [dateTo, setDateTo] = useState(currentDate);
 
-    const {data, isLoading} = useGetAllTransactionsReportQuery({
+    const {data, isLoading} = useGetExpenseByCategoryReportQuery({
         dateFrom,
         dateTo
     });
-
-    const totalMoneyIn = data?.transactions?.filter(transaction => transaction.type.toLowerCase() === "income" || transaction.type.toLowerCase() === "sales")
-        .reduce((acc, transaction) => acc + transaction.amount, 0);
-
-    const totalMoneyOut = data?.transactions?.filter(transaction => transaction.type.toLowerCase() === "expense" || transaction.type.toLowerCase() === "purchase")
-        .reduce((acc, transaction) => acc + transaction.amount, 0);
-
-
-    function handleDownloadReport() {
-        if (!data || !data.transactions || data.transactions.length === 0) {
-            toast.info("No transactions to download.");
-            return;
-        }
-
-        const doc = new jsPDF();
-        const title = `All Transactions Report`;
-        const subtitle = `From: ${getFormattedBsDateFromAdDate(dateFrom)}        To: ${getFormattedBsDateFromAdDate(dateTo)}`;
-
-        doc.text(title, 14, 22);
-        doc.setFontSize(11);
-        doc.text(subtitle, 14, 32);
-
-        const tableColumn = ["Date", "Type", "Category", "Amount", "Remarks"];
-        const tableRows = [];
-
-        data.transactions.forEach(transaction => {
-            const transactionData = [
-                getFormattedBsDateFromAdDate(transaction.date),
-                transaction.type,
-                transaction.category,
-                transaction.amount,
-                transaction.remarks || "-"
-            ];
-            tableRows.push(transactionData);
-        });
-
-        // Add totals to the document
-        doc.text(`Total money in: Rs. ${totalMoneyIn}`, 14, 42);
-        doc.text(`Total money out: Rs. ${totalMoneyOut}`, 14, 50);
-
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 60,
-        });
-
-        doc.save(`Transactions_Report_${dateFrom}_to_${dateTo}.pdf`);
-    }
 
     function onFromDateChange({adDate}) {
         setDateFrom(adDate);
@@ -81,16 +32,50 @@ function AllTransactionsReportPage() {
         setDateTo(adDate);
     }
 
+    function handleDownloadReport(){
+        if (!data || !data.expenses || data.expenses.length === 0) {
+            toast.info("No expense categories to download.");
+            return;
+        }
 
+        const doc = new jsPDF();
+        const title = `Expense by Category Report`;
+        const subtitle = `From: ${getFormattedBsDateFromAdDate(dateFrom)}        To: ${getFormattedBsDateFromAdDate(dateTo)}`;
+
+        doc.text(title, 14, 22);
+        doc.setFontSize(11);
+        doc.text(subtitle, 14, 32);
+
+        const tableColumn = ["SN", "Category", "Total Expense"];
+        const tableRows = [];
+
+        data.expenses.forEach((expense, index) => {
+            const expenseData = [
+                index + 1,
+                expense.category,
+                expense.amount
+            ];
+            tableRows.push(expenseData);
+        });
+
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 40,
+        });
+
+        doc.save(`Expense_By_Category_Report_${dateFrom}_to_${dateTo}.pdf`);
+
+    }
 
     return <div className={"page"}>
         <div className={"page-header"}>
             <h3>
-                All Transactions
+                Stocks Summary
             </h3>
             <Button variant="contained"
                     color="primary"
-                    startIcon = {<DownloadIcon/>}
+                    startIcon={<DownloadIcon/>}
                     onClick={handleDownloadReport}>
                 Download Report
             </Button>
@@ -118,27 +103,17 @@ function AllTransactionsReportPage() {
                                   onChange={onToDateChange}
                         />
                     </div>
-
-                </div>
-            </div>
-
-            <div className={"report-info"}>
-                <div className={"primary-color"}>
-                    Total money in : {totalMoneyIn ? totalMoneyIn : '0'}
-                </div>
-
-                <div className={"error-color"}>
-                    Total money out : {totalMoneyOut ? totalMoneyOut: '0'}
                 </div>
             </div>
         </div>
+
         <div className={"transaction-report"}>
             {
                 isLoading ?
                     <StickyHeadTableSkeleton count={15}/>
                     :
                     (
-                        data  &&
+                        data &&
                         <ReportTable data={data} dateFrom={dateFrom} dateTo={dateTo}/>
                     )
             }
@@ -146,40 +121,29 @@ function AllTransactionsReportPage() {
     </div>
 }
 
-function ReportTable({data}) {
-
+function ReportTable({data}){
     const columns = [
         {
-            id: 'date',
-            label: 'Date'
-        },
-        {
-            id: 'type',
-            label: 'Type'
+            id: 'sn',
+            label: "SN"
         },
         {
             id: 'category',
             label: 'Category'
         },
-
         {
             id: 'amount',
-            label: 'Amount'
-        },
-        {
-            id: 'remarks',
-            label: 'Remarks'
+            label: 'Total expense'
         }
     ]
-
-    const rows = data?.transactions || [];
+    const rows = data?.expenses || [];
     if (rows.length === 0) return <div className={"center"}>
-        No transaction found between provided dates...
+        No expense category found...
     </div>
 
     return <Paper sx={{width: '100%', overflow: 'hidden', marginTop: '2rem'}}>
         <TableContainer sx={{maxHeight: '95%'}}>
-            <Table stickyHeader aria-label="All transactions report">
+            <Table stickyHeader aria-label="Stock summary report">
                 <TableHead>
                     <TableRow>
                         {columns.map((column) => (
@@ -197,27 +161,14 @@ function ReportTable({data}) {
 
                 <TableBody>
                     {
-                        rows.map(transaction => {
-                            return <TableRow hover role="checkbox" tabIndex={-1} key={transaction.id}>
+                        rows.map((expense, index) => {
+                            return <TableRow hover role="checkbox" tabIndex={-1} key={expense.id}>
                                 {columns.map((column) => {
-                                    const value = transaction[column.id];
-                                    if (column.id === "date") {
-                                        return <TableCell key={column.id} align={column.align}>
-                                            {getFormattedBsDateFromAdDate(value)}
-                                        </TableCell>
-                                    }
+                                    if (column.id === 'sn') return <TableCell key={column.id} align={column.align}>
+                                        {index + 1}
+                                    </TableCell>
 
-                                    if (column.id === "type" || column.id === "amount") {
-                                        let color = '#00a878';
-                                        const redColors = ['expense', 'purchase']
-                                        if (redColors.includes(transaction.type.toLowerCase())) {
-                                            color = '#e3526e';
-                                        }
-                                        return <TableCell key={column.id} align={column.align} sx={{color: color}}>
-                                            {value}
-                                        </TableCell>
-
-                                    }
+                                    const value = expense[column.id];
                                     return <TableCell key={column.id} align={column.align}>
                                         {value || '-'}
                                     </TableCell>
@@ -230,6 +181,7 @@ function ReportTable({data}) {
             </Table>
         </TableContainer>
     </Paper>
+
 }
 
-export default AllTransactionsReportPage;
+export default ExpenseByCategoryReport;
