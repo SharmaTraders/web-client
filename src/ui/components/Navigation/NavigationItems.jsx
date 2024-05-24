@@ -84,6 +84,15 @@ function MainListItems() {
                 <ListItemText primary="Income"/>
             </ListItemButton>
             </Tooltip>
+
+            <Tooltip title={"Employees"} placement={"right-end"}>
+            <ListItemButton component={Link} to={"/employees"}>
+                <ListItemIcon>
+                    <PeopleIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Employees"/>
+            </ListItemButton>
+            </Tooltip>
         </Fragment>
     )
 }

@@ -32,6 +32,8 @@ function getTitle(pathname) {
             return 'Income';
         case '/reports':
             return 'Reports';
+        case '/employees':
+            return 'Employees';
         default:
             return 'Dashboard'; // default title
     }
