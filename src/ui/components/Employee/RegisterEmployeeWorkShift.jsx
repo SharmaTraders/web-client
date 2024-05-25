@@ -71,7 +71,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
         return isValid;
     }
 
-    async function onSave() {
+    async function onRegister() {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
 
@@ -166,7 +166,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
     };
 
     return (
-        <Dialog open={open} TransitionComponent={Transition}>
+        <Dialog fullWidth open={open} TransitionComponent={Transition}>
             <DialogTitle>{mode === "add" ? "Register WorkShift" : "Edit WorkShift"}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -250,8 +250,8 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
                 </LocalizationProvider>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleWorkShiftClose} color="error">Cancel</Button>
-                <Button onClick={onSave}>{mode === "add" ? "Add" : "Save"}</Button>
+                <Button variant = "contained" onClick={handleWorkShiftClose} color="error">Cancel</Button>
+                <Button variant = "contained" onClick={onRegister}>{mode === "add" ? "Register" : "Save"}</Button>
             </DialogActions>
         </Dialog>
     );

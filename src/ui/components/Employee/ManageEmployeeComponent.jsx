@@ -35,10 +35,10 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
     const [overtimeSalaryPerHour, setOvertimeSalaryPerHour] = useState(0);
     const [overtimeSalaryPerHourError, setOvertimeSalaryPerHourError] = useState("");
 
-    const [createEmployee, { isLoading: isCreateLoading }] = useAddEmployeeMutation();
+    const [addEmployee, { isLoading: isCreateLoading }] = useAddEmployeeMutation();
 
     if (isCreateLoading) {
-        toast.loading("Adding Employee...", {
+        toast.loading("Adding EmployeePage...", {
             toastId: "loading-employee-create",
             autoClose: false
         });
@@ -100,11 +100,10 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
             overtimeSalaryPerHour
         };
 
-        console.log(body);
-        // TODO : Add Update Employee Mutation
-        // const action = mode === "add" ? createEmployee : updateEmployee;
+        // TODO : Add Update EmployeePage Mutation
+        // const action = mode === "add" ? addEmployee : updateEmployee;
 
-        const { error } = await createEmployee(body);
+        const { error } = await addEmployee(body);
 
         if (error) {
             handleError(error);
@@ -117,7 +116,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
     }
 
     function handleSuccess() {
-        toast.success("Employee has been added.", {
+        toast.success("EmployeePage has been added.", {
             toastId: "employee"
         });
         // Close the dialogue
@@ -177,14 +176,14 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
 
     return (
         <Dialog open={open} TransitionComponent={Transition}>
-            <DialogTitle>{mode === "add" ? "Add New Employee" : "Edit Employee"}</DialogTitle>
+            <DialogTitle>{mode === "add" ? "Add New EmployeePage" : "Edit EmployeePage"}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Please fill in the following details. Fields marked with * are mandatory.
                 </DialogContentText>
                 <TextField
                     margin="normal"
-                    label="Employee Name"
+                    label="EmployeePage Name"
                     value={name}
                     onChange={(e) => {
                         setName(e.target.value)
@@ -259,7 +258,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
                     <Grid item xs={12} sm={6} md={5}>
                         <TextField
                             margin="dense"
-                            label="Normal Daily Working Hours"
+                            label="Daily Working Hours"
                             value={normalDailyWorkingHours}
                             onChange={(e) => {
                                 setNormalDailyWorkingHours(e.target.value)
@@ -344,8 +343,8 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
 
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="error">Cancel</Button>
-                <Button onClick={onAddOrUpdateEmployee} endIcon={mode === "add" ? <AddIcon /> : <SaveIcon />}>
+                <Button variant = "contained" onClick={handleClose} color="error">Cancel</Button>
+                <Button variant = "contained" onClick={onAddOrUpdateEmployee} endIcon={mode === "add" ? <AddIcon /> : <SaveIcon />}>
                     {mode === "add" ? "Add" : "Save Changes"}
                 </Button>
             </DialogActions>

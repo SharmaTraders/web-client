@@ -6,7 +6,9 @@ import ManageEmployeeComponent from "../../components/Employee/ManageEmployeeCom
 import EmployeeList from "../../components/Employee/EmployeeList";
 import "./Employee.css";
 import EmployeeDetailInfoCard from "../../components/Employee/EmployeeDetailInfoCard";
-function Employee() {
+import EmployeeWorkShiftComponent from "../../components/Employee/EmployeeWorkShiftComponent";
+
+function EmployeePage() {
     const [openAddModal, setOpenAddModal] = useState(false);
 
 
@@ -49,9 +51,7 @@ function Employee() {
 
                 {!isMobile() && (
                     <div className={"employee-details-history"}>
-                        <p>
-                            Party transaction list is not implemented yet...
-                        </p>
+                       <EmployeeWorkShiftComponent/>
                     </div>
                 )}
             </div>
@@ -59,4 +59,4 @@ function Employee() {
     </div>
 }
 
-export default Employee;
+export default EmployeePage;

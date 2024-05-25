@@ -8,12 +8,13 @@ import {useState} from "react";
 import {useSelector} from "react-redux";
 import {selectSelectedEmployee} from "../../../redux/features/state/employeeState";
 import ManageEmployeeComponent from "./ManageEmployeeComponent";
-import AddIcon from "@mui/icons-material/Add";
-import RegisterEmployeeWorkShift from "./RegisterEmployeeWorkShift";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMoneyBill} from "@fortawesome/free-solid-svg-icons/faMoneyBill";
+import UpdateSalaryComponent from "./UpdateSalaryComponent";
 
 function EmployeeDetailInfoCard() {
     const [openEditModal, setOpenEditModal] = useState(false);
-    const [openAddTimeRecordModal, setOpenAddTimeRecordModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const employee = useSelector(selectSelectedEmployee);
 
@@ -22,17 +23,16 @@ function EmployeeDetailInfoCard() {
     </div>
 
     function getClassName() {
-        if (employee.status.toString().toLowerCase()=== "active") {
+        if (employee.status.toString().toLowerCase() === "active") {
             return "primary-color";
-        }
-        else {
+        } else {
             return "error-color";
         }
     }
 
     function getBalanceClassName() {
-        if(employee.balance === 0) return "bold"
-        if(employee.balance < 0) return "primary-color bold"
+        if (employee.balance === 0) return "bold"
+        if (employee.balance < 0) return "primary-color bold"
         return "error-color bold"
     }
 
@@ -40,19 +40,13 @@ function EmployeeDetailInfoCard() {
         setOpenEditModal(true);
     }
 
-    function handleClose() {
+    function handleEditClose() {
         setOpenEditModal(false);
     }
 
-    function handleWorkShiftClose() {
-        setOpenAddTimeRecordModal(false);
+    function handleUpdateSalaryClose(){
+        setOpenUpdateModal(false);
     }
-
-    function onAddTimeRecord() {
-        setOpenAddTimeRecordModal(true);
-    }
-
-
 
     return <div className={"employee-details-card"}>
         <div className={"employee-details-card-info"}>
@@ -95,47 +89,35 @@ function EmployeeDetailInfoCard() {
             </div>
         </div>
 
-
         <div className={"bp-details-card-buttons"}>
-            {
-                <Button variant="contained"
-                        onClick={onAddTimeRecord}
-                        size={"small"}
-                        color="primary"
-                        startIcon={<AddIcon/>}>
-                    Register Work shift
-                </Button>
-            }
+            <Button variant="contained"
+                    onClick={onEdit}
+                    size="small"
+                    color="primary"
+                    startIcon={<EditIcon/>}>
+                Edit
+            </Button>
 
-            {
-                openAddTimeRecordModal
-                &&
-                <RegisterEmployeeWorkShift
-                    mode={"add"}
-                    open={openAddTimeRecordModal}
-                    employee={employee}
-                 handleWorkShiftClose={handleWorkShiftClose}/>
-
-            }
-        </div>
-
-
-        <div className={"bp-details-card-buttons"}>
-
-                <Button variant="contained"
-                        onClick={onEdit}
-                        size={"small"}
-                        color="primary"
-                        startIcon={<EditIcon/>}>
-                    Edit Employee
-                 </Button>
+            <Button variant="contained"
+                    onClick={() => setOpenUpdateModal(true)}
+                    size="small"
+                    color="primary"
+                    startIcon={<FontAwesomeIcon icon={faMoneyBill}/>}>
+                Update Salary
+            </Button>
 
             {
                 openEditModal
                 &&
-                <ManageEmployeeComponent open={openEditModal} handleClose={handleClose} mode={"edit"}
+                <ManageEmployeeComponent open={openEditModal} handleClose={handleEditClose} mode={"edit"}
                                          employee={employee}/>
 
+            }
+
+            {
+                openUpdateModal
+                &&
+                <UpdateSalaryComponent open={openUpdateModal} handleClose={handleUpdateSalaryClose}/>
             }
         </div>
 

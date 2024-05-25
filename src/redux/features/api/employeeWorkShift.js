@@ -4,7 +4,7 @@ const timeRecordApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         registerWorkShift: builder.mutation({
             query: ({ id,startTime, endTime, date, breakInMinutes }) => ({
-                url: `employee/${id}`,
+                url: `employee/${id}/work-shift`,
                 method: 'POST',
                 body: {
                     startTime,
