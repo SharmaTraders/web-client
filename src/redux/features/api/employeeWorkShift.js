@@ -1,10 +1,10 @@
 import { baseApi } from "./setup";
 
-const timeRecordApi = baseApi.injectEndpoints({
+const workShiftApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         registerWorkShift: builder.mutation({
             query: ({ id,startTime, endTime, date, breakInMinutes }) => ({
-                url: `employee/${id}/work-shift`,
+                url: `employees/${id}/work-shift`,
                 method: 'POST',
                 body: {
                     startTime,
@@ -13,11 +13,24 @@ const timeRecordApi = baseApi.injectEndpoints({
                     breakInMinutes
                 }
             }),
-            invalidatesTags: ['WorkShift', 'Employee']
+            invalidatesTags: ['WorkShift']
         }),
+
+        getEmployeeWorkShifts: builder.query({
+            query:
+                ({employeeId, pageNumber, pageSize}) =>
+                `employees/${employeeId}/work-shifts?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+
+            forceRefetch({currentArg, previousArg}) {
+                return currentArg !== previousArg;
+            },
+
+            providesTags: ['WorkShift']
+        })
     })
 });
 
 export const {
-     useRegisterWorkShiftMutation
-} = timeRecordApi;
+     useRegisterWorkShiftMutation,
+    useGetEmployeeWorkShiftsQuery
+} = workShiftApi;

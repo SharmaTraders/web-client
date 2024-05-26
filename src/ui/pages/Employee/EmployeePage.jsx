@@ -46,11 +46,10 @@ function EmployeePage() {
             <div className={"page-details"}>
                 <div className={"page-details-info"}>
                     <EmployeeDetailInfoCard/>
-
                 </div>
 
                 {!isMobile() && (
-                    <div className={"employee-details-history"}>
+                    <div className={"item-details-history"}>
                        <EmployeeWorkShiftComponent/>
                     </div>
                 )}

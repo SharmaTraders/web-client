@@ -164,7 +164,7 @@ function ReportTable({data}) {
 
         {
             id: 'amount',
-            label: 'Amount'
+            label: 'Amount (Rs)'
         },
         {
             id: 'remarks',

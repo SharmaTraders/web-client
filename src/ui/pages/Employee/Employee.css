@@ -19,21 +19,6 @@
 
 }
 
-.employee-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-
-.employee-selected {
-    background-color: #e7f4ef;
-    border-left: 3px solid var(--primary);
-}
-
-.employee-card:hover {
-    background-color: #e7f4ef;
-}
 
 .employee-details-card{
     width: 100%;

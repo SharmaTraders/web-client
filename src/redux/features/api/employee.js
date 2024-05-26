@@ -5,7 +5,7 @@ const employeeApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         addEmployee: builder.mutation({
             query: ({ name, address, phoneNumber, email, openingBalance, normalDailyWorkingMinute, salaryPerHour, overtimeSalaryPerHour }) => ({
-                url: 'employee',
+                url: 'employees',
                 method: 'POST',
                 body: {
                     name,
@@ -21,14 +21,14 @@ const employeeApi = baseApi.injectEndpoints({
             invalidatesTags: ['Employee']
         }),
 
-        getEmployees: builder.query({
+        getAllEmployees: builder.query({
             query: () => `employees`,
             providesTags: ['Employee']
         }),
 
         updateSalary: builder.mutation({
             query: ({employeeId, startDate, salaryPerHour, overtimeSalaryPerHour }) => ({
-                url: `employee/${employeeId}/salary`,
+                url: `employees/${employeeId}/salary`,
                 method: 'PATCH',
                 body: {
                     startDate,
@@ -43,6 +43,6 @@ const employeeApi = baseApi.injectEndpoints({
 
 export const {
     useAddEmployeeMutation,
-    useGetEmployeesQuery,
+    useGetAllEmployeesQuery,
     useUpdateSalaryMutation
 } = employeeApi;

@@ -38,7 +38,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
     const [addEmployee, { isLoading: isCreateLoading }] = useAddEmployeeMutation();
 
     if (isCreateLoading) {
-        toast.loading("Adding EmployeePage...", {
+        toast.loading("Adding Employee...", {
             toastId: "loading-employee-create",
             autoClose: false
         });
@@ -116,7 +116,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
     }
 
     function handleSuccess() {
-        toast.success("EmployeePage has been added.", {
+        toast.success("Employee has been added.", {
             toastId: "employee"
         });
         // Close the dialogue
@@ -176,14 +176,14 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
 
     return (
         <Dialog open={open} TransitionComponent={Transition}>
-            <DialogTitle>{mode === "add" ? "Add New EmployeePage" : "Edit EmployeePage"}</DialogTitle>
+            <DialogTitle>{mode === "add" ? "Add New Employee" : "Edit Employee"}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Please fill in the following details. Fields marked with * are mandatory.
                 </DialogContentText>
                 <TextField
                     margin="normal"
-                    label="EmployeePage Name"
+                    label="Full Name"
                     value={name}
                     onChange={(e) => {
                         setName(e.target.value)

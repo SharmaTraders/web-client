@@ -11,6 +11,8 @@ import ManageEmployeeComponent from "./ManageEmployeeComponent";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMoneyBill} from "@fortawesome/free-solid-svg-icons/faMoneyBill";
 import UpdateSalaryComponent from "./UpdateSalaryComponent";
+import {isMobile} from "../../../utils/SystemInfo";
+import EmployeeWorkShiftsPhoneComponent from "./EmployeeWorkShiftsPhoneComponent";
 
 function EmployeeDetailInfoCard() {
     const [openEditModal, setOpenEditModal] = useState(false);
@@ -48,9 +50,9 @@ function EmployeeDetailInfoCard() {
         setOpenUpdateModal(false);
     }
 
-    return <div className={"employee-details-card"}>
-        <div className={"employee-details-card-info"}>
-            <div className={"employee-details-card-1"}>
+    return <div className={"bp-details-card"}>
+        <div className={"bp-details-card-info"}>
+            <div className={"bp-details-card-1"}>
                 <Avatar
                     sx={
                         {
@@ -90,6 +92,13 @@ function EmployeeDetailInfoCard() {
         </div>
 
         <div className={"bp-details-card-buttons"}>
+
+            {
+                isMobile() &&
+                <EmployeeWorkShiftsPhoneComponent/>
+            }
+
+
             <Button variant="contained"
                     onClick={onEdit}
                     size="small"

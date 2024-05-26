@@ -44,7 +44,9 @@ function ExpenseCategoryList() {
     }
 
     const billingPartyCategory = categories.filter(category => category.toLowerCase() === "billing party");
-    const others = categories.filter(category => category.toLowerCase() !== "billing party");
+    const salaryCategory = categories.filter(category => category.toLowerCase() === "salary")
+    const others = categories.filter(category => category.toLowerCase() !== "billing party" &&
+        category.toLowerCase() !== "salary");
 
     let categoriesToShow = [...others];
 
@@ -60,7 +62,7 @@ function ExpenseCategoryList() {
         categoriesToShow = categoriesToShow.filter(category => category.toLowerCase().includes(searchString.toLowerCase()));
     }
 
-    categoriesToShow = [...billingPartyCategory, ...categoriesToShow];
+    categoriesToShow = [...billingPartyCategory, ...salaryCategory, ...categoriesToShow];
 
     function setSelected(category) {
         dispatch(setSelectedCategory(category));

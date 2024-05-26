@@ -19,7 +19,7 @@ function ItemActivityPhoneComponent() {
         <Button variant="contained"
                 onClick={onShowHistory}
                 size="small"
-                color="primary"
+                color="secondary"
                 startIcon={<ManageSearchIcon/>}
         >
             Stocks History
@@ -32,8 +32,6 @@ function ItemActivityPhoneComponent() {
 
         }
     </>
-
-
 }
 
 export default ItemActivityPhoneComponent;

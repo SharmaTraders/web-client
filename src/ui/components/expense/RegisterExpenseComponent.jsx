@@ -17,6 +17,7 @@ import {faRupeeSign} from "@fortawesome/free-solid-svg-icons/faRupeeSign";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import EmployeeAutoComplete from "../Employee/EmployeeAutoComplete";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -35,6 +36,7 @@ function RegisterExpenseComponent({open, handleClose}) {
     const [remarksError, setRemarksError] = useState("");
 
     const [selectedBillingPartyId, setSelectedBillingPartyId] = useState("");
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
 
     const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -47,14 +49,17 @@ function RegisterExpenseComponent({open, handleClose}) {
 
     async function onRegisterExpenseClick(){
         if (!validateNonEmptyRequiredFields()) return;
-
-        const {error} = await registerExpense({
+        const body ={
             billingPartyId: selectedBillingPartyId || null,
             date,
             remarks,
             amount,
-            categoryName: selectedCategory
-        });
+            categoryName: selectedCategory,
+            employeeId: selectedEmployeeId || null
+        }
+        console.log(body);
+
+        const {error} = await registerExpense(body);
 
         if (error) handleError(error);
         else {
@@ -129,6 +134,10 @@ function RegisterExpenseComponent({open, handleClose}) {
         setSelectedBillingPartyId(party.id);
     }
 
+    function onSelectedEmployee(employee){
+        setSelectedEmployeeId(employee.id);
+    }
+
     function onCategoryChange(category){
         setSelectedCategory(category);
     }
@@ -164,6 +173,12 @@ function RegisterExpenseComponent({open, handleClose}) {
                 selectedCategory.toLowerCase() === "billing party"
                 &&
                 <BillingPartyAutocomplete onChange={onSelectedParty}/>
+            }
+            {
+                selectedCategory &&
+                selectedCategory.toLowerCase() === "salary"
+                &&
+                <EmployeeAutoComplete onChange={onSelectedEmployee}/>
             }
 
             <TextField
