@@ -46,7 +46,7 @@ function EmployeeDetailInfoCard() {
         setOpenEditModal(false);
     }
 
-    function handleUpdateSalaryClose(){
+    function handleUpdateSalaryClose() {
         setOpenUpdateModal(false);
     }
 
@@ -91,7 +91,7 @@ function EmployeeDetailInfoCard() {
             </div>
         </div>
 
-        <div className={"bp-details-card-buttons"}>
+        <div className={"item-details-card-buttons"}>
 
             {
                 isMobile() &&
@@ -129,7 +129,6 @@ function EmployeeDetailInfoCard() {
                 <UpdateSalaryComponent open={openUpdateModal} handleClose={handleUpdateSalaryClose}/>
             }
         </div>
-
     </div>
 
 }

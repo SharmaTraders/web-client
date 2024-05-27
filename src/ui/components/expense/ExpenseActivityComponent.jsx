@@ -74,9 +74,12 @@ function StickyHeadExpenseTable({category}) {
 
     console.log(data);
     const rows = data?.expenses || [];
-    if (rows.length === 0) return <div className={"center"}>
-        No expense records for the category yet..
-    </div>
+    if (rows.length === 0) {
+        if (pageNumber !== 1) setPageNumber(1);
+        return <div className={"center"}>
+            No expense records for the category yet..
+        </div>
+    }
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>

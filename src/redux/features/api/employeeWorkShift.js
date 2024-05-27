@@ -13,7 +13,7 @@ const workShiftApi = baseApi.injectEndpoints({
                     breakInMinutes
                 }
             }),
-            invalidatesTags: ['WorkShift']
+            invalidatesTags: ['WorkShift', 'Employee']
         }),
 
         getEmployeeWorkShifts: builder.query({
@@ -22,7 +22,7 @@ const workShiftApi = baseApi.injectEndpoints({
                 `employees/${employeeId}/work-shifts?pageNumber=${pageNumber}&pageSize=${pageSize}`,
 
             forceRefetch({currentArg, previousArg}) {
-                return currentArg !== previousArg;
+                return true;
             },
 
             providesTags: ['WorkShift']

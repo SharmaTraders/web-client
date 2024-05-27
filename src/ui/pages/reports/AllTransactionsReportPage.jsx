@@ -139,15 +139,14 @@ function AllTransactionsReportPage() {
                     :
                     (
                         data  &&
-                        <ReportTable data={data} dateFrom={dateFrom} dateTo={dateTo}/>
+                        <TransactionReportTable data={data}/>
                     )
             }
         </div>
     </div>
 }
 
-function ReportTable({data}) {
-
+function TransactionReportTable({data}) {
     const columns = [
         {
             id: 'date',

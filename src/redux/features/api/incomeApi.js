@@ -10,8 +10,8 @@ const incomeApi = baseApi.injectEndpoints({
                             pageSize
                         }) => `billing-party/${billingPartyId}/incomes?pageNumber=${pageNumber}&pageSize=${pageSize}`,
 
-                forceRefetch({currentArg, previousArg}) {
-                    return currentArg !== previousArg;
+                forceRefetch(_) {
+                    return true;
                 },
 
                 providesTags: (result, error, arg) => {

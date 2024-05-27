@@ -157,7 +157,7 @@ function BillingPartyCard({party}) {
     }
 
     return <>
-        <div className={"bp-info"}>
+        <div className={"item-info"}>
             <Avatar
                 variant="circular"
                 >

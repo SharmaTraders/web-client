@@ -1,10 +1,7 @@
-import {selectSelectedEmployee} from "../../../redux/features/state/employeeState";
 import {useSelector} from "react-redux";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
+import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 import React, {useState} from "react";
-import RegisterEmployeeWorkShift from "./RegisterEmployeeWorkShift";
-import {useGetEmployeeWorkShiftsQuery} from "../../../redux/features/api/employeeWorkShift";
+import {useGetAllPartyTransactionQuery} from "../../../redux/features/api/billingPartyApi";
 import {StickyHeadTableSkeleton} from "../Item/ItemActivityComponent";
 import {
     Fade,
@@ -21,56 +18,30 @@ import {
 import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import Box from "@mui/material/Box";
 
-function EmployeeWorkShiftComponent() {
-    const [openModal, setOpenModal] = useState(false);
-
-    function handleClose() {
-        setOpenModal(false);
-    }
-
-    function handleOpen() {
-        setOpenModal(true);
-    }
-
-    const selectedEmployee = useSelector(selectSelectedEmployee)
-    if (!selectedEmployee) return <div className={"item-activity"}> Please select an employee to view work shifts</div>
+function BillingPartyActivityComponent(){
+    const selectedBillingParty = useSelector(selectSelectedBillingParty);
+    if(!selectedBillingParty) return <div className={"center"}> Please select a billing party to view activity</div>
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
             <div className={"bold"}>
-                Work Shifts
-            </div>
-
-            <div className={"item-activity-buttons"}>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                    onClick={handleOpen}
-                    startIcon={<AddIcon/>}>
-
-                    Register WorkShift
-                </Button>
-                {
-                    openModal
-                    &&
-                    <RegisterEmployeeWorkShift mode={"add"} handleWorkShiftClose={handleClose} open={openModal}/>
-                }
+                Party Transactions
             </div>
         </div>
+
         <div className={"item-activity-content"}>
-            <StickyHeadWorkShiftsTable employeeId={selectedEmployee.id}/>
+            <StickyHeadPartyTransactionsTable billingPartyId={selectedBillingParty.id}/>
         </div>
-    </div>
 
+    </div>
 }
 
-function StickyHeadWorkShiftsTable({employeeId}) {
+function StickyHeadPartyTransactionsTable({ billingPartyId}) {
     const [pageNumber, setPageNumber] = useState(1);
     const rowsPerPage = 8;
 
-    const {data, isLoading} = useGetEmployeeWorkShiftsQuery({
-        employeeId,
+    const {data, isLoading} = useGetAllPartyTransactionQuery({
+        billingPartyId,
         pageNumber,
         pageSize: rowsPerPage
     });
@@ -78,56 +49,50 @@ function StickyHeadWorkShiftsTable({employeeId}) {
     if (isLoading) return <StickyHeadTableSkeleton count={6}/>
 
     function handlePageChange(event, newPage) {
-        setPageNumber(newPage + 1);
+        setPageNumber(newPage +1);
     }
 
     const columns = [
         {
             id: 'date',
-            label: 'Date',
+            label: 'Date'
         },
         {
-            id: 'startTime',
-            label: 'Start Time',
+            id: 'type',
+            label: 'Type'
         },
         {
-            id: 'endTime',
-            label: 'End Time',
+            id: 'category',
+            label: 'Category'
+        },
+
+        {
+            id: 'amount',
+            label: 'Amount (Rs)'
         },
         {
-            id: 'breakMinutes',
-            label: 'Break (minutes)',
-        },
-        {
-            id: 'overTimeHours',
-            label: 'Over Time (hours)',
-        },
-        {
-            id: 'salaryEarned',
-            label: 'Salary Earned (Rs)',
+            id: 'remarks',
+            label: 'Remarks'
         }
     ]
 
-    const rows = data?.workShifts || [];
-
+    const rows = data?.transactions || [];
     if (rows.length === 0) {
         if (pageNumber !== 1) setPageNumber(1);
         return <div className={"center"}>
-            No work-shift record
+            No transaction found for the party
         </div>
     }
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>
-            <Table stickyHeader aria-label="All item stocks">
+            <Table stickyHeader aria-label="Transaction by party">
                 <TableHead>
                     <TableRow>
                         {columns.map((column) => (
                             <TableCell
                                 key={column.id}
-                                align={column.align}
                                 style={{
-                                    minWidth: column.minWidth,
                                     fontWeight: 'bold',
                                 }}
                             >
@@ -136,19 +101,30 @@ function StickyHeadWorkShiftsTable({employeeId}) {
                         ))}
                     </TableRow>
                 </TableHead>
+
                 <TableBody>
                     {
-                        rows.map(shift => {
-                            return <TableRow hover role="checkbox" tabIndex={-1} key={shift.id}>
+                        rows.map(transaction => {
+                            return <TableRow hover role="checkbox" tabIndex={-1} key={transaction.id}>
                                 {columns.map((column) => {
-                                    const value = shift[column.id];
-
+                                    const value = transaction[column.id];
                                     if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
                                             {getFormattedBsDateFromAdDate(value)}
                                         </TableCell>
                                     }
 
+                                    if (column.id === "type" || column.id === "amount") {
+                                        let color = '#00a878';
+                                        const redColors = ['expense', 'purchase']
+                                        if (redColors.includes(transaction.type.toLowerCase())) {
+                                            color = '#e3526e';
+                                        }
+                                        return <TableCell key={column.id} align={column.align} sx={{color: color}}>
+                                            {value}
+                                        </TableCell>
+
+                                    }
                                     return <TableCell key={column.id} align={column.align}>
                                         {value || '-'}
                                     </TableCell>
@@ -160,20 +136,19 @@ function StickyHeadWorkShiftsTable({employeeId}) {
                 </TableBody>
             </Table>
         </TableContainer>
-
         <TablePagination
-            labelRowsPerPage=''
-            rowsPerPageOptions={[]}
+            labelRowsPerPage = ''
+            rowsPerPageOptions = {[]}
             component="div"
             count={data.totalCount}
-            page={pageNumber - 1}
+            page={pageNumber-1}
             rowsPerPage={rowsPerPage}
             onPageChange={handlePageChange}/>
     </Paper>
 }
 
-function WorkShiftsTableModal({open, handleClose}) {
-    const selectedEmployee = useSelector(selectSelectedEmployee);
+function BillingPartyTransactionsTableModal({open, handleClose}){
+    const selectedParty = useSelector(selectSelectedBillingParty);
     const style = {
         position: 'absolute',
         top: '50%',
@@ -190,13 +165,14 @@ function WorkShiftsTableModal({open, handleClose}) {
     return <Modal open={open}
                   onClose={handleClose}
                   closeAfterTransition>
-        <Fade in={open}>
-            <Box sx={style}>
-                <StickyHeadWorkShiftsTable employeeId={selectedEmployee.id}/>
+        <Fade in = {open}>
+            <Box sx ={style}>
+                <StickyHeadPartyTransactionsTable billingPartyId={selectedParty.id}/>
             </Box>
         </Fade>
     </Modal>
+
 }
 
-export default EmployeeWorkShiftComponent;
-export {WorkShiftsTableModal}
+export default BillingPartyActivityComponent;
+export {BillingPartyTransactionsTableModal}

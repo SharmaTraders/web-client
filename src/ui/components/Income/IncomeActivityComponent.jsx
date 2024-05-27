@@ -76,9 +76,12 @@ function StickyHeadIncomeTable({billingPartyId}) {
     ]
 
     const rows = data?.incomes || [];
-    if (rows.length === 0) return <div className={"center"}>
-        No income records for the party yet..
-    </div>
+    if (rows.length === 0){
+        if (pageNumber !== 1) setPageNumber(1);
+        return <div className={"center"}>
+            No income records for the party yet..
+        </div>
+    }
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>

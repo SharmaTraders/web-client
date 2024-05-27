@@ -21,10 +21,9 @@ import Box from "@mui/material/Box";
 import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 
 
-
 function ItemActivityComponent() {
     const selectedItem = useSelector(selectSelectedItem);
-    if (!selectedItem) return <div className={"item-activity"}> Please select an item to view activity</div>
+    if (!selectedItem) return <div className={"center"}> Please select an item to view activity</div>
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
@@ -45,6 +44,7 @@ function ItemActivityComponent() {
 
 
 }
+
 function StickyHeadStocksTable({itemId}) {
     const [pageNumber, setPageNumber] = useState(1);
     const rowsPerPage = 8;
@@ -58,7 +58,7 @@ function StickyHeadStocksTable({itemId}) {
     if (isLoading) return <StickyHeadTableSkeleton count={6}/>
 
     function handlePageChange(event, newPage) {
-        setPageNumber(newPage+1);
+        setPageNumber(newPage + 1);
     }
 
     const columns = [
@@ -85,9 +85,13 @@ function StickyHeadStocksTable({itemId}) {
 
     const rows = data?.stocks || [];
 
-    if (rows.length ===0) return  <div>
-        No stock record yet
-    </div>
+    if (rows.length === 0) {
+        if (pageNumber !== 1) setPageNumber(1);
+
+        return <div>
+            No stock record yet
+        </div>
+    }
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>
@@ -125,7 +129,7 @@ function StickyHeadStocksTable({itemId}) {
                                         </TableCell>
                                     }
 
-                                    if (column.id === "date"){
+                                    if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
                                             {getFormattedBsDateFromAdDate(value)}
                                         </TableCell>
@@ -145,11 +149,11 @@ function StickyHeadStocksTable({itemId}) {
         </TableContainer>
 
         <TablePagination
-            labelRowsPerPage = ''
-            rowsPerPageOptions = {[]}
+            labelRowsPerPage=''
+            rowsPerPageOptions={[]}
             component="div"
             count={data.totalCount}
-            page={pageNumber-1}
+            page={pageNumber - 1}
             rowsPerPage={rowsPerPage}
             onPageChange={handlePageChange}/>
     </Paper>
@@ -191,7 +195,7 @@ function StickyHeadTableSkeleton({count}) {
 }
 
 
-function StocksTableModal({open, handleClose}){
+function StocksTableModal({open, handleClose}) {
     const selectedItem = useSelector(selectSelectedItem);
     const style = {
         position: 'absolute',
@@ -209,8 +213,8 @@ function StocksTableModal({open, handleClose}){
     return <Modal open={open}
                   onClose={handleClose}
                   closeAfterTransition>
-        <Fade in = {open}>
-            <Box sx ={style}>
+        <Fade in={open}>
+            <Box sx={style}>
                 <StickyHeadStocksTable itemId={selectedItem.id}/>
 
             </Box>

@@ -12,7 +12,7 @@ const expenseApi = baseApi.injectEndpoints({
                     }) => `expenses?category=${categoryName.toLowerCase()}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
 
             forceRefetch({currentArg, previousArg}) {
-                return currentArg !== previousArg;
+                return true;
             },
 
             providesTags: (result, error, arg) => {
@@ -44,7 +44,7 @@ const expenseApi = baseApi.injectEndpoints({
             invalidatesTags: (result, error, arg) => [{
                 type: "Expenses",
                 id: arg.billingPartyId
-            }, 'BillingParty', "Employee"]
+            }, 'BillingParty', 'Employee']
         })
     })
 });

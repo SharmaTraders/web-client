@@ -50,6 +50,12 @@ const billingPartyApi = baseApi
                     }
                 }),
                 invalidatesTags: ['BillingParty']
+            }),
+            getAllPartyTransaction : builder.query({
+              query: ({pageNumber, pageSize, billingPartyId}) => `billingparty/${billingPartyId}/transactions?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+                forceRefetch({currentArg, previousArg}) {
+                    return currentArg !== previousArg;
+                }
             })
         })
     });
@@ -57,5 +63,6 @@ const billingPartyApi = baseApi
 export const {
     useCreateBillingPartyMutation,
     useGetBillingPartiesQuery,
-    useUpdateBillingPartyMutation
+    useUpdateBillingPartyMutation,
+    useGetAllPartyTransactionQuery
 } = billingPartyApi;

@@ -154,7 +154,7 @@ function EmployeeCard({ employee }) {
     }
 
     return <>
-        <div className={"bp-info"}>
+        <div className={"item-info"}>
             <Avatar variant="circular">
                 {employee.name.charAt(0)}
             </Avatar>
@@ -174,7 +174,7 @@ function EmployeeCard({ employee }) {
 
 function EmployeeCardSkeleton() {
     return <>
-        <div className={"bp-info"}>
+        <div className={"item-info"}>
             <Skeleton animation="wave" variant="circular" width={40} height={40}/>
             <Skeleton animation="wave" variant="rounded" width={40} height={10}/>
         </div>
