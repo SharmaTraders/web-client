@@ -1,7 +1,7 @@
-import {selectSelectedCategory} from "../../../redux/features/state/expenseCategoryState";
 import {useSelector} from "react-redux";
+import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
 import React, {useState} from "react";
-import {useGetExpenseByCategoryQuery} from "../../../redux/features/api/expenseApi";
+import {useGetAllPartyTransactionQuery} from "../../../redux/features/api/billingPartyApi";
 import {StickyHeadTableSkeleton} from "../Item/ItemActivityComponent";
 import {
     Fade,
@@ -18,37 +18,30 @@ import {
 import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
 import Box from "@mui/material/Box";
 
-function ExpenseActivityComponent() {
-    const selectedCategory = useSelector(selectSelectedCategory)
+function BillingPartyActivityComponent(){
+    const selectedBillingParty = useSelector(selectSelectedBillingParty);
+    if(!selectedBillingParty) return <div className={"center"}> Please select a billing party to view activity</div>
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
             <div className={"bold"}>
-                Expense Activity
-            </div>
-            <div className={"item-activity-buttons"}>
-                {/* Button */}
+                Party Transactions
             </div>
         </div>
-        <div className={"item-activity-content"}>
-            {
-                selectedCategory ?
-                    <StickyHeadExpenseTable category={selectedCategory}/>
-                    :
-                    <div className={"center"}> Please select a category to view expense activity</div>
-            }
-        </div>
-    </div>
 
+        <div className={"item-activity-content"}>
+            <StickyHeadPartyTransactionsTable billingPartyId={selectedBillingParty.id}/>
+        </div>
+
+    </div>
 }
 
-
-function StickyHeadExpenseTable({category}) {
+function StickyHeadPartyTransactionsTable({ billingPartyId}) {
     const [pageNumber, setPageNumber] = useState(1);
     const rowsPerPage = 8;
 
-    const {data, isLoading} = useGetExpenseByCategoryQuery({
-        categoryName: category,
+    const {data, isLoading} = useGetAllPartyTransactionQuery({
+        billingPartyId,
         pageNumber,
         pageSize: rowsPerPage
     });
@@ -56,42 +49,50 @@ function StickyHeadExpenseTable({category}) {
     if (isLoading) return <StickyHeadTableSkeleton count={6}/>
 
     function handlePageChange(event, newPage) {
-        setPageNumber(newPage + 1);
+        setPageNumber(newPage +1);
     }
 
-    const columns = [{
-        id: 'date',
-        label: 'Date',
-    },
+    const columns = [
+        {
+            id: 'date',
+            label: 'Date'
+        },
+        {
+            id: 'type',
+            label: 'Type'
+        },
+        {
+            id: 'category',
+            label: 'Category'
+        },
+
         {
             id: 'amount',
-            label: 'Amount',
-        }, {
+            label: 'Amount (Rs)'
+        },
+        {
             id: 'remarks',
-            label: 'Remarks',
+            label: 'Remarks'
+        }
+    ]
 
-        }];
-
-    console.log(data);
-    const rows = data?.expenses || [];
+    const rows = data?.transactions || [];
     if (rows.length === 0) {
         if (pageNumber !== 1) setPageNumber(1);
         return <div className={"center"}>
-            No expense records for the category yet..
+            No transaction found for the party
         </div>
     }
 
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         <TableContainer sx={{maxHeight: '85%'}}>
-            <Table stickyHeader aria-label="All expenses by category">
+            <Table stickyHeader aria-label="Transaction by party">
                 <TableHead>
                     <TableRow>
                         {columns.map((column) => (
                             <TableCell
                                 key={column.id}
-                                align={column.align}
                                 style={{
-                                    minWidth: column.minWidth,
                                     fontWeight: 'bold',
                                 }}
                             >
@@ -103,14 +104,26 @@ function StickyHeadExpenseTable({category}) {
 
                 <TableBody>
                     {
-                        rows.map(expense => {
-                            return <TableRow hover role="checkbox" tabIndex={-1} key={expense.id}>
+                        rows.map(transaction => {
+                            return <TableRow hover role="checkbox" tabIndex={-1} key={transaction.id}>
                                 {columns.map((column) => {
-                                    const value = expense[column.id];
+                                    const value = transaction[column.id];
                                     if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
                                             {getFormattedBsDateFromAdDate(value)}
                                         </TableCell>
+                                    }
+
+                                    if (column.id === "type" || column.id === "amount") {
+                                        let color = '#00a878';
+                                        const redColors = ['expense', 'purchase']
+                                        if (redColors.includes(transaction.type.toLowerCase())) {
+                                            color = '#e3526e';
+                                        }
+                                        return <TableCell key={column.id} align={column.align} sx={{color: color}}>
+                                            {value}
+                                        </TableCell>
+
                                     }
                                     return <TableCell key={column.id} align={column.align}>
                                         {value || '-'}
@@ -120,26 +133,22 @@ function StickyHeadExpenseTable({category}) {
                             </TableRow>
                         })
                     }
-
                 </TableBody>
             </Table>
         </TableContainer>
-
         <TablePagination
-            labelRowsPerPage=''
-            rowsPerPageOptions={[]}
+            labelRowsPerPage = ''
+            rowsPerPageOptions = {[]}
             component="div"
             count={data.totalCount}
-            page={pageNumber - 1}
+            page={pageNumber-1}
             rowsPerPage={rowsPerPage}
-            onPageChange={handlePageChange}
-        />
-
+            onPageChange={handlePageChange}/>
     </Paper>
 }
 
-function ExpenseTableModal({open, handleClose}) {
-    const selectedCategory = useSelector(selectSelectedCategory);
+function BillingPartyTransactionsTableModal({open, handleClose}){
+    const selectedParty = useSelector(selectSelectedBillingParty);
     const style = {
         position: 'absolute',
         top: '50%',
@@ -152,23 +161,18 @@ function ExpenseTableModal({open, handleClose}) {
         p: 4,
     };
 
+
     return <Modal open={open}
                   onClose={handleClose}
                   closeAfterTransition>
-        <Fade in={open}>
-            <Box sx={style}>
-                {
-                    selectedCategory ?
-                        <StickyHeadExpenseTable category={selectedCategory}/>
-                        :
-                        <div style={{padding: '1rem'}}> Please select a billing party to view income activity</div>
-                }
+        <Fade in = {open}>
+            <Box sx ={style}>
+                <StickyHeadPartyTransactionsTable billingPartyId={selectedParty.id}/>
             </Box>
         </Fade>
     </Modal>
 
 }
 
-
-export default ExpenseActivityComponent;
-export {ExpenseTableModal};
+export default BillingPartyActivityComponent;
+export {BillingPartyTransactionsTableModal}

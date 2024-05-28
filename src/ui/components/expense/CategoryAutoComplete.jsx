@@ -21,9 +21,10 @@ function CategoryAutoComplete({onChange}) {
     }
 
     const billingParty = categories.filter(category => category.toLowerCase() === "billing party");
-    const otherCategories = categories.filter(category => category.toLowerCase() !== "billing party");
+    const salary = categories.filter(category => category.toLowerCase() === "salary");
+    const otherCategories = categories.filter(category => category.toLowerCase() !== "billing party" && category.toLowerCase() !== "salary");
 
-    const options = ["add_new_category", ...billingParty, ...otherCategories];
+    const options = ["add_new_category", ...billingParty, ...salary, ...otherCategories];
 
     const handleSelect = (event, value) => {
         if (!value) onChange({});

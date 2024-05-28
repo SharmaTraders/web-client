@@ -1,13 +1,12 @@
+import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import React, {useState} from "react";
-import  {StocksTableModal} from "./ItemActivityComponent";
+import {BillingPartyTransactionsTableModal} from "./BillingPartyActivityComponent";
 
-function ItemActivityPhoneComponent() {
-
+function BillingPartyActivityPhoneComponent(){
     const [openModal , setOpenModal] = useState(false);
 
-    function onShowHistory(){
+    function onShowTransactions(){
         setOpenModal(true)
     }
 
@@ -17,21 +16,21 @@ function ItemActivityPhoneComponent() {
 
     return <>
         <Button variant="contained"
-                onClick={onShowHistory}
+                onClick={onShowTransactions}
                 size="small"
                 color="secondary"
                 startIcon={<ManageSearchIcon/>}
         >
-            Stocks History
+            Recent Transactions
         </Button>
 
         {
             openModal
             &&
-            <StocksTableModal open={openModal} handleClose={handleClose}/>
+            <BillingPartyTransactionsTableModal open={openModal} handleClose={handleClose}/>
 
         }
     </>
 }
 
-export default ItemActivityPhoneComponent;
+export default BillingPartyActivityPhoneComponent;

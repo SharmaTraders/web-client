@@ -33,7 +33,7 @@ function AddReduceStockComponent(){
     return <>
         <Button variant="contained"
                 color="primary"
-                size={"small"}
+                size="small"
                 startIcon={<AddIcon/>}
                 onClick={onAddStockClick}>
             Add Stock

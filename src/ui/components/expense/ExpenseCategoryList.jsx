@@ -44,7 +44,9 @@ function ExpenseCategoryList() {
     }
 
     const billingPartyCategory = categories.filter(category => category.toLowerCase() === "billing party");
-    const others = categories.filter(category => category.toLowerCase() !== "billing party");
+    const salaryCategory = categories.filter(category => category.toLowerCase() === "salary")
+    const others = categories.filter(category => category.toLowerCase() !== "billing party" &&
+        category.toLowerCase() !== "salary");
 
     let categoriesToShow = [...others];
 
@@ -60,7 +62,7 @@ function ExpenseCategoryList() {
         categoriesToShow = categoriesToShow.filter(category => category.toLowerCase().includes(searchString.toLowerCase()));
     }
 
-    categoriesToShow = [...billingPartyCategory, ...categoriesToShow];
+    categoriesToShow = [...billingPartyCategory, ...salaryCategory, ...categoriesToShow];
 
     function setSelected(category) {
         dispatch(setSelectedCategory(category));
@@ -113,7 +115,7 @@ function ExpenseCategoryList() {
         <div className="page-list">
             {categoriesToShow.map((category, index) => (
                 <div key={index} className={getClassName(category)} onClick={() => setSelected(category)}>
-                    <div className={"bp-info"}>
+                    <div className={"item-info"}>
                         <CategoryCard category={category}/>
                     </div>
                 </div>
@@ -125,7 +127,7 @@ function ExpenseCategoryList() {
 
 function CategoryCard({category}) {
     return <>
-        <div className={"bp-info"}>
+        <div className={"item-info"}>
             <Avatar variant="circular">
                 {category.charAt(0)}
             </Avatar>
@@ -140,7 +142,7 @@ function CategoryCard({category}) {
 
 function CategoryCardSkeleton() {
     return <>
-        <div className={"bp-info"}>
+        <div className={"item-info"}>
             <Skeleton animation="wave" variant="circular" width={40} height={40}/>
             <Skeleton animation="wave" variant="rounded" width={40} height={10}/>
         </div>

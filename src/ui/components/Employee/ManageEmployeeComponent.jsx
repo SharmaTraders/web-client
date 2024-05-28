@@ -35,7 +35,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
     const [overtimeSalaryPerHour, setOvertimeSalaryPerHour] = useState(0);
     const [overtimeSalaryPerHourError, setOvertimeSalaryPerHourError] = useState("");
 
-    const [createEmployee, { isLoading: isCreateLoading }] = useAddEmployeeMutation();
+    const [addEmployee, { isLoading: isCreateLoading }] = useAddEmployeeMutation();
 
     if (isCreateLoading) {
         toast.loading("Adding Employee...", {
@@ -100,11 +100,10 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
             overtimeSalaryPerHour
         };
 
-        console.log(body);
-        // TODO : Add Update Employee Mutation
-        // const action = mode === "add" ? createEmployee : updateEmployee;
+        // TODO : Add Update EmployeePage Mutation
+        // const action = mode === "add" ? addEmployee : updateEmployee;
 
-        const { error } = await createEmployee(body);
+        const { error } = await addEmployee(body);
 
         if (error) {
             handleError(error);
@@ -184,7 +183,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
                 </DialogContentText>
                 <TextField
                     margin="normal"
-                    label="Employee Name"
+                    label="Full Name"
                     value={name}
                     onChange={(e) => {
                         setName(e.target.value)
@@ -259,7 +258,7 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
                     <Grid item xs={12} sm={6} md={5}>
                         <TextField
                             margin="dense"
-                            label="Normal Daily Working Hours"
+                            label="Daily Working Hours"
                             value={normalDailyWorkingHours}
                             onChange={(e) => {
                                 setNormalDailyWorkingHours(e.target.value)
@@ -344,8 +343,8 @@ function ManageEmployeeComponent({ mode, open, handleClose }) {
 
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="error">Cancel</Button>
-                <Button onClick={onAddOrUpdateEmployee} endIcon={mode === "add" ? <AddIcon /> : <SaveIcon />}>
+                <Button variant = "contained" onClick={handleClose} color="error">Cancel</Button>
+                <Button variant = "contained" onClick={onAddOrUpdateEmployee} endIcon={mode === "add" ? <AddIcon /> : <SaveIcon />}>
                     {mode === "add" ? "Add" : "Save Changes"}
                 </Button>
             </DialogActions>

@@ -1,10 +1,11 @@
+import {selectSelectedEmployee} from "../../../redux/features/state/employeeState";
 import {useSelector} from "react-redux";
-import {selectSelectedItem} from "../../../redux/features/state/itemState";
-import "./ItemComponent.css"
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 import React, {useState} from "react";
-import {useGetStocksByItemQuery} from "../../../redux/features/api/stockApi";
-import Skeleton from "@mui/material/Skeleton";
-import AddReduceStockComponent from "./AddReduceStockComponent";
+import RegisterEmployeeWorkShift from "./RegisterEmployeeWorkShift";
+import {useGetEmployeeWorkShiftsQuery} from "../../../redux/features/api/employeeWorkShift";
+import {StickyHeadTableSkeleton} from "../Item/ItemActivityComponent";
 import {
     Fade,
     Modal,
@@ -17,40 +18,59 @@ import {
     TablePagination,
     TableRow
 } from "@mui/material";
-import Box from "@mui/material/Box";
 import {getFormattedBsDateFromAdDate} from "../../../utils/dateConverters";
+import Box from "@mui/material/Box";
 
+function EmployeeWorkShiftComponent() {
+    const [openModal, setOpenModal] = useState(false);
 
-function ItemActivityComponent() {
-    const selectedItem = useSelector(selectSelectedItem);
-    if (!selectedItem) return <div className={"center"}> Please select an item to view activity</div>
+    function handleClose() {
+        setOpenModal(false);
+    }
+
+    function handleOpen() {
+        setOpenModal(true);
+    }
+
+    const selectedEmployee = useSelector(selectSelectedEmployee)
+    if (!selectedEmployee) return <div className={"item-activity"}> Please select an employee to view work shifts</div>
 
     return <div className={"item-activity"}>
         <div className={"item-activity-headers"}>
             <div className={"bold"}>
-                Activity
+                Work Shifts
             </div>
 
             <div className={"item-activity-buttons"}>
-                <AddReduceStockComponent/>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={handleOpen}
+                    startIcon={<AddIcon/>}>
+
+                    Register WorkShift
+                </Button>
+                {
+                    openModal
+                    &&
+                    <RegisterEmployeeWorkShift mode={"add"} handleWorkShiftClose={handleClose} open={openModal}/>
+                }
             </div>
         </div>
-
         <div className={"item-activity-content"}>
-            <StickyHeadStocksTable itemId={selectedItem.id}/>
+            <StickyHeadWorkShiftsTable employeeId={selectedEmployee.id}/>
         </div>
-
     </div>
-
 
 }
 
-function StickyHeadStocksTable({itemId}) {
+function StickyHeadWorkShiftsTable({employeeId}) {
     const [pageNumber, setPageNumber] = useState(1);
     const rowsPerPage = 8;
 
-    const {data, isLoading} = useGetStocksByItemQuery({
-        itemId,
+    const {data, isLoading} = useGetEmployeeWorkShiftsQuery({
+        employeeId,
         pageNumber,
         pageSize: rowsPerPage
     });
@@ -63,33 +83,37 @@ function StickyHeadStocksTable({itemId}) {
 
     const columns = [
         {
-            id: 'entryCategory', label: 'Type', minWidth: 170,
+            id: 'date',
+            label: 'Date',
         },
         {
-            id: 'date', label: 'Date', minWidth: 100
+            id: 'startTime',
+            label: 'Start Time',
         },
         {
-            id: 'weightChange',
-            label: 'Weight change',
-            minWidth: 170,
-            align: 'center',
+            id: 'endTime',
+            label: 'End Time',
         },
         {
-            id: 'remarks',
-            label: 'Remarks',
-            minWidth: 170,
-            align: 'center',
+            id: 'breakMinutes',
+            label: 'Break (minutes)',
+        },
+        {
+            id: 'overTimeHours',
+            label: 'Over Time (hours)',
+        },
+        {
+            id: 'salaryEarned',
+            label: 'Salary Earned (Rs)',
+        }
+    ]
 
-        },
-    ];
-
-    const rows = data?.stocks || [];
+    const rows = data?.workShifts || [];
 
     if (rows.length === 0) {
         if (pageNumber !== 1) setPageNumber(1);
-
-        return <div>
-            No stock record yet
+        return <div className={"center"}>
+            No work-shift record
         </div>
     }
 
@@ -114,20 +138,10 @@ function StickyHeadStocksTable({itemId}) {
                 </TableHead>
                 <TableBody>
                     {
-                        rows.map(stock => {
-                            return <TableRow hover role="checkbox" tabIndex={-1} key={stock.id}>
+                        rows.map(shift => {
+                            return <TableRow hover role="checkbox" tabIndex={-1} key={shift.id}>
                                 {columns.map((column) => {
-                                    const value = stock[column.id];
-                                    if (column.id === "weightChange" || column.id === "entryCategory") {
-                                        let color = '#00a878';
-                                        if (stock.entryCategory.toLowerCase() === 'reduce stock' || stock.entryCategory.toLowerCase() === "sales") {
-                                            color = '#e3526e';
-                                        }
-
-                                        return <TableCell key={column.id} align={column.align} sx={{color: color}}>
-                                            {value}
-                                        </TableCell>
-                                    }
+                                    const value = shift[column.id];
 
                                     if (column.id === "date") {
                                         return <TableCell key={column.id} align={column.align}>
@@ -138,7 +152,6 @@ function StickyHeadStocksTable({itemId}) {
                                     return <TableCell key={column.id} align={column.align}>
                                         {value || '-'}
                                     </TableCell>
-
                                 })
                                 }
                             </TableRow>
@@ -157,46 +170,10 @@ function StickyHeadStocksTable({itemId}) {
             rowsPerPage={rowsPerPage}
             onPageChange={handlePageChange}/>
     </Paper>
-
 }
 
-function StickyHeadTableSkeleton({count}) {
-    function TableRow() {
-        return <div className={"table-row"}>
-            <div className={"table-text"}>
-                <Skeleton animation="wave" variant="rectangular" width={40} height={10}/>
-
-            </div>
-            <div className={"table-text"}>
-                <Skeleton animation="wave" variant="rectangular" width={40} height={10}/>
-
-            </div>
-            <div className={"table-text"}>
-                <Skeleton animation="wave" variant="rectangular" width={40} height={10}/>
-
-            </div>
-            <div className={"table-text"}>
-                <Skeleton animation="wave" variant="rectangular" width={40} height={10}/>
-            </div>
-        </div>
-    }
-
-    return <>
-        <div className={"table-content"}>
-            {
-                Array.from({length: count}).map((_, index) => {
-                    return <TableRow key={index}/>
-                })
-            }
-        </div>
-
-    </>
-
-}
-
-
-function StocksTableModal({open, handleClose}) {
-    const selectedItem = useSelector(selectSelectedItem);
+function WorkShiftsTableModal({open, handleClose}) {
+    const selectedEmployee = useSelector(selectSelectedEmployee);
     const style = {
         position: 'absolute',
         top: '50%',
@@ -215,13 +192,11 @@ function StocksTableModal({open, handleClose}) {
                   closeAfterTransition>
         <Fade in={open}>
             <Box sx={style}>
-                <StickyHeadStocksTable itemId={selectedItem.id}/>
-
+                <StickyHeadWorkShiftsTable employeeId={selectedEmployee.id}/>
             </Box>
         </Fade>
     </Modal>
-
 }
 
-export default ItemActivityComponent;
-export {StocksTableModal, StickyHeadTableSkeleton} ;
+export default EmployeeWorkShiftComponent;
+export {WorkShiftsTableModal}

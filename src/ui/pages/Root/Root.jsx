@@ -4,21 +4,12 @@ import {Outlet} from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
 import {AppBarComponent} from "../../components/Navigation/AppBarComponent";
 import {DrawerComponent} from "../../components/Navigation/DrawerComponent";
-import { useSelector} from "react-redux";
-import {selectIsLoggedIn} from "../../../redux/features/state/authstate";
-import { redirect } from "react-router-dom";
 
 
 
 function Root() {
 
     const [open, setOpen] = React.useState(false);
-    const isLoggedIn = useSelector(selectIsLoggedIn);
-
-    if (!isLoggedIn) {
-         redirect("/signin");
-         return ;
-    }
 
     const toggleDrawer = () => {
         setOpen(!open);

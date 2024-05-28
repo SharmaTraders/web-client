@@ -9,6 +9,8 @@ import ManageBillingPartyComponent from "./ManageBillingPartyComponent";
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 import {useSelector} from "react-redux";
 import {selectSelectedBillingParty} from "../../../redux/features/state/billingPartyState";
+import {isMobile} from "../../../utils/SystemInfo";
+import BillingPartyActivityPhoneComponent from "./BillingPartyActivityPhoneComponent";
 
 function BillingPartyDetailsInfoCard() {
     const [openEditModal, setOpenEditModal] = useState(false);
@@ -84,7 +86,14 @@ function BillingPartyDetailsInfoCard() {
             </div>
         </div>
 
-        <div className={"bp-details-card-buttons"}>
+        <div className={"item-details-card-buttons"}>
+            {
+                isMobile() &&
+                <>
+                <BillingPartyActivityPhoneComponent/>
+                </>
+            }
+
             {
                 party.name.toLowerCase() !== "cash" &&
                 <Button variant="contained"

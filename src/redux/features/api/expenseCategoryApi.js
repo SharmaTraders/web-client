@@ -4,7 +4,7 @@ const expenseCategoryApi = baseApi.injectEndpoints({
     endpoints: (builder ) => ({
         getAllCategories: builder.query({
             query: () =>"expense-category",
-            provideTags: ["ExpenseCategory"]
+            providesTags: ["ExpenseCategory"]
         }),
 
         addCategory: builder.mutation({

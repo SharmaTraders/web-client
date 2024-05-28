@@ -17,7 +17,7 @@ import React from "react";
 import AddInvoice from "./ui/components/Invoice/AddInvoice";
 import InvoicePage from "./ui/pages/Invoice/InvoicePage";
 import ExpensePage from "./ui/pages/expense/ExpensePage";
-import Employee from "./ui/pages/Employee/Employee";
+import EmployeePage from "./ui/pages/Employee/EmployeePage";
 import AllTransactionsReportPage from "./ui/pages/reports/AllTransactionsReportPage";
 import StocksSummaryReportsPage from "./ui/pages/reports/StocksSummaryReportsPage";
 import ExpenseByCategoryReport from "./ui/pages/reports/ExpenseByCategoryReport";
@@ -50,7 +50,6 @@ function App() {
             <ThemeProvider theme={defaultTheme}>
                 <CssBaseline/>
                 <Routes>
-                    <Route path={"/signin"} element={<SignInPage/>}/>
                     <Route path={""} element={
                         <RequireAuth>
                             <Root/>
@@ -65,7 +64,7 @@ function App() {
                         <Route path={"/incomes"} element = {<IncomePage/>}/>
                         <Route path={"/expenses"} element = {<ExpensePage/>}/>
                         <Route path={"/saleInvoice"} element = {<AddInvoice mode={"sale"}/>}/>
-                        <Route path={"/employees"} element = {<Employee/>}/>
+                        <Route path={"/employees"} element = {<EmployeePage/>}/>
                         <Route path={"/reports/all-transactions"} element = {<AllTransactionsReportPage/>}/>
                         <Route path={"/reports/stock-summary"} element = {<StocksSummaryReportsPage/>}/>
                         <Route path={"/reports/expense-by-category"} element = {<ExpenseByCategoryReport/>}/>

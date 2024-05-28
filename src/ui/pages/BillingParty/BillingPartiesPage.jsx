@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import BillingPartyList from "../../components/BillingParty/BillingPartyList";
 import BillingPartyDetailsInfoCard from "../../components/BillingParty/BillingPartyInfoCard";
 import {isMobile} from "../../../utils/SystemInfo";
+import BillingPartyActivityComponent from "../../components/BillingParty/BillingPartyActivityComponent";
 
 
 function BillingPartiesPage() {
@@ -50,10 +51,8 @@ function BillingPartiesPage() {
                 </div>
 
                 {!isMobile() && (
-                    <div className={"bp-details-history"}>
-                        <p>
-                            Party transaction list is not implemented yet...
-                        </p>
+                    <div className={"item-details-history"}>
+                        <BillingPartyActivityComponent/>
                     </div>
                 )}
             </div>

@@ -1,27 +1,29 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import React, {useState} from "react";
+import {toast} from "react-toastify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import { Grid, Typography } from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import Slide from '@mui/material/Slide';
-import { useRegisterWorkShiftMutation } from "../../../redux/features/api/employeeWorkShift";
+import {useRegisterWorkShiftMutation} from "../../../redux/features/api/employeeWorkShift";
 import Calendar from "@sbmdkl/nepali-datepicker-reactjs";
-import { getBsToday } from "../../../utils/dateConverters";
-import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import {getBsToday} from "../../../utils/dateConverters";
+import {LocalizationProvider, TimePicker} from "@mui/x-date-pickers";
 import TextField from "@mui/material/TextField";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
 import PropTypes from "prop-types";
+import {useSelector} from "react-redux";
+import {selectSelectedEmployee} from "../../../redux/features/state/employeeState";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose }) {
-    const [createTimeRecord, { isLoading: isCreateLoading }] = useRegisterWorkShiftMutation();
+function RegisterEmployeeWorkShift({mode, open, handleWorkShiftClose}) {
+    const [createTimeRecord, {isLoading: isCreateLoading}] = useRegisterWorkShiftMutation();
 
     const [startTime, setStartTime] = useState(null);
     const [startTimeError, setStartTimeError] = useState('');
@@ -33,6 +35,8 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
     const [date, setDate] = useState(currentDate);
     const [dateError, setDateError] = useState('');
 
+    const employee = useSelector(selectSelectedEmployee);
+
     if (isCreateLoading) {
         toast.loading(mode === "add" ? "Adding time record..." : "Updating time record...", {
             toastId: "loading-timeRecord",
@@ -40,7 +44,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
         });
     }
 
-    const handleDateChange = ({ adDate }) => {
+    const handleDateChange = ({adDate}) => {
         setDate(adDate);
         setDateError("");
     };
@@ -71,15 +75,9 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
         return isValid;
     }
 
-    async function onSave() {
+    async function onRegister() {
         const isValid = validateNonEmptyRequiredFields();
         if (!isValid) return;
-
-        const formatTime = (time) => {
-            const hours = time.getHours().toString().padStart(2, '0');
-            const minutes = time.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
-        };
 
         const body = {
             id: employee.id,
@@ -89,13 +87,11 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
             date,
         };
 
-        let result;
-        if (mode === "add") {
-            result = await createTimeRecord(body);
-        }
+        const {error} = await createTimeRecord(body);
 
-        if (result.error) {
-            handleError(result.error);
+
+        if (error) {
+            handleError(error);
         } else {
             handleSuccess();
         }
@@ -105,7 +101,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
     function handleError(error) {
         toast.dismiss("loading-timeRecord");
 
-        if (error.status && error.status ===500){
+        if (error.status && error.status === 500) {
             toast.error("Server error, Please contact support.", {
                 toastId: "employee",
                 autoClose: 7000
@@ -113,7 +109,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
             return;
         }
 
-        if (error.data ) {
+        if (error.data) {
             let problemDetails = error.data;
             let errorMessage = problemDetails.detail;
             let problemType = problemDetails.type;
@@ -166,12 +162,12 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
     };
 
     return (
-        <Dialog open={open} TransitionComponent={Transition}>
+        <Dialog fullWidth open={open} TransitionComponent={Transition}>
             <DialogTitle>{mode === "add" ? "Register WorkShift" : "Edit WorkShift"}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Please fill in the following details to {mode} time record.
-                    <br />
+                    <br/>
                     The fields marked with * are mandatory
                 </DialogContentText>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -183,7 +179,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
                                 language="en"
                                 maxDate={getBsToday()}
                                 placeholder={"Select Date"}
-                                onChange={handleDateChange} />
+                                onChange={handleDateChange}/>
                             {dateError && (
                                 <Typography color="error" variant="body2">
                                     {dateError}
@@ -197,8 +193,9 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
                                 value={startTime}
                                 onChange={handleStartTimeChange}
                                 ampm={false}  // Disable AM/PM format to use 24-hour format
-                                renderInput={(params) => <TextField {...params} fullWidth sx={{ width: '100%', gridColumn: 'span 4' }} />}
-                                sx={{ width: '100%', gridColumn: 'span 4' }}
+                                renderInput={(params) => <TextField {...params} fullWidth
+                                                                    sx={{width: '100%', gridColumn: 'span 4'}}/>}
+                                sx={{width: '100%', gridColumn: 'span 4'}}
                             />
                             {startTimeError && (
                                 <Typography color="error" variant="body2">
@@ -213,7 +210,7 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
                                 onChange={handleEndTimeChange}
                                 ampm={false}  // Disable AM/PM format to use 24-hour format
                                 renderInput={(params) => <TextField {...params} />}
-                                sx={{ width: '100%', gridColumn: 'span 4' }}
+                                sx={{width: '100%', gridColumn: 'span 4'}}
                             />
                             {endTimeError && (
                                 <Typography color="error" variant="body2">
@@ -250,8 +247,8 @@ function RegisterEmployeeWorkShift({ mode, employee, open, handleWorkShiftClose 
                 </LocalizationProvider>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleWorkShiftClose} color="error">Cancel</Button>
-                <Button onClick={onSave}>{mode === "add" ? "Add" : "Save"}</Button>
+                <Button variant="contained" onClick={handleWorkShiftClose} color="error">Cancel</Button>
+                <Button variant="contained" onClick={onRegister}>{mode === "add" ? "Register" : "Save"}</Button>
             </DialogActions>
         </Dialog>
     );
@@ -262,6 +259,12 @@ RegisterEmployeeWorkShift.propTypes = {
     employee: PropTypes.object,
     open: PropTypes.bool.isRequired,
     handleWorkShiftClose: PropTypes.func.isRequired
+};
+
+const formatTime = (time) => {
+    const hours = time.getHours().toString().padStart(2, '0');
+    const minutes = time.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
 };
 
 export default RegisterEmployeeWorkShift;

@@ -71,7 +71,7 @@ function ExpenseByCategoryReport(){
     return <div className={"page"}>
         <div className={"page-header"}>
             <h3>
-                Stocks Summary
+                Expense by category
             </h3>
             <Button variant="contained"
                     color="primary"

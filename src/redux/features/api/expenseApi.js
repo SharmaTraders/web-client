@@ -12,7 +12,7 @@ const expenseApi = baseApi.injectEndpoints({
                     }) => `expenses?category=${categoryName.toLowerCase()}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
 
             forceRefetch({currentArg, previousArg}) {
-                return currentArg !== previousArg;
+                return true;
             },
 
             providesTags: (result, error, arg) => {
@@ -27,6 +27,7 @@ const expenseApi = baseApi.injectEndpoints({
                         remarks,
                         amount,
                         categoryName,
+                employeeId
                     }) => ({
                 url: 'expenses',
                 method: 'POST',
@@ -35,14 +36,15 @@ const expenseApi = baseApi.injectEndpoints({
                     date,
                     remarks,
                     amount,
-                    category: categoryName
+                    category: categoryName,
+                    employeeId
                 }
             }),
 
             invalidatesTags: (result, error, arg) => [{
                 type: "Expenses",
                 id: arg.billingPartyId
-            }, 'BillingParty']
+            }, 'BillingParty', 'Employee']
         })
     })
 });
